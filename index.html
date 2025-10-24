@@ -1,0 +1,2044 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Análise de Despesas por Categoria e Empresa</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background-color: #f8f9fa; }
+        .card { margin-bottom: 20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .card-header { background-color: #007bff; color: white; }
+        .summary-card { background-color: #d4edda; }
+        .filter-section { margin-bottom: 20px; }
+        .chart-container { max-width: 800px; margin: 20px auto; height: 400px; background: white; padding: 15px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        #summary, #insights { display: none; }
+        .card-title { color: black; font-weight: bold; }
+        .card-header h5 { color: white; }
+        .nature-title { color: black; font-weight: bold; }
+        #pdfPreviewModal .modal-lg { max-width: 90%; }
+        #pdfPreview { width: 100%; height: 600px; border: 1px solid #ddd; }
+        .month-checkboxes, .company-checkboxes { max-height: 150px; overflow-y: auto; border: 1px solid #dee2e6; padding: 10px; border-radius: 5px; }
+        .form-check { margin-bottom: 5px; }
+        .company-badge { background-color: #6c757d; color: white; padding: 2px 6px; border-radius: 4px; font-size: 0.8em; margin-left: 5px; }
+        .company-table { font-size: 0.9rem; }
+        .company-table th { background-color: #e9ecef; }
+        .highlight-row { background-color: #fff3cd !important; }
+        #categoryAnalysisBtn { display: none; }
+        #categoryPdfPreview { width: 100%; height: 500px; border: 1px solid #ddd; }
+        .pdf-buttons { margin-top: 10px; }
+        .action-buttons { margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="text-center mb-4">Análise de Despesas por Categoria e Empresa</h1>
+        
+        <div class="row filter-section">
+            <div class="col-md-4">
+                <label for="fileInput" class="form-label">Importar Planilha Excel:</label>
+                <input type="file" id="fileInput" class="form-control" accept=".xlsx, .xls">
+            </div>
+            <div class="col-md-3">
+                <label for="startDate" class="form-label">Data Início (QUITAÇÃO):</label>
+                <input type="date" id="startDate" class="form-control">
+            </div>
+            <div class="col-md-3">
+                <label for="endDate" class="form-label">Data Fim (QUITAÇÃO):</label>
+                <input type="date" id="endDate" class="form-control">
+            </div>
+            <div class="col-md-2 d-flex align-items-end">
+                <button id="analyzeBtn" class="btn btn-primary w-100">Analisar</button>
+            </div>
+        </div>
+        
+        <div class="row filter-section align-items-end">
+            <div class="col-md-3">
+                <label for="categoryFilter" class="form-label">Filtrar por Categoria (NATUREZA):</label>
+                <select id="categoryFilter" class="form-select">
+                    <option value="">Todas</option>
+                </select>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Filtrar por Meses de Quitação:</label>
+                <div class="month-checkboxes" id="monthCheckboxes">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAllMonths" checked>
+                        <label class="form-check-label" for="selectAllMonths">Selecionar Todos</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <label class="form-label">Filtrar por Empresa:</label>
+                <div class="company-checkboxes" id="companyCheckboxes">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="selectAllCompanies" checked>
+                        <label class="form-check-label" for="selectAllCompanies">Selecionar Todas</label>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="showSummary" value="summary" disabled>
+                    <label class="form-check-label" for="showSummary">Mostrar Resumo</label>
+                </div>
+                <div class="form-check form-check-inline">
+                    <input class="form-check-input" type="checkbox" id="showInsights" value="insights" disabled>
+                    <label class="form-check-label" for="showInsights">Mostrar Insights</label>
+                </div>
+                <div class="mt-2">
+                    <button id="categoryAnalysisBtn" class="btn btn-warning w-100 mb-2">Análise por Categoria</button>
+                    <div class="pdf-buttons">
+                        <button id="previewPdfBtn" class="btn btn-info w-100 mb-2">Visualizar PDF Completo</button>
+                        <button id="previewSummaryPdfBtn" class="btn btn-secondary w-100 mb-2">Visualizar PDF Resumo</button>
+                        <button id="pdfBtn" class="btn btn-success w-100">Baixar PDF Completo</button>
+                    </div>
+                    <div class="action-buttons">
+                        <button id="clearFiltersBtn" class="btn btn-outline-danger w-100 mt-2">Limpar Todos os Filtros</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <hr>
+        
+        <div id="chartsArea" class="mt-4"></div>
+        
+        <div id="summary" class="mt-4"></div>
+        <div id="insights" class="mt-4"></div>
+        <div id="results" class="row"></div>
+    </div>
+
+    <div class="modal fade" id="pdfPreviewModal" tabindex="-1" aria-labelledby="pdfPreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="pdfPreviewModalLabel">Pré-visualização do PDF Completo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="pdfPreview" src="about:blank"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" id="downloadPdfFromPreview">Baixar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="summaryPdfPreviewModal" tabindex="-1" aria-labelledby="summaryPdfPreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="summaryPdfPreviewModalLabel">Pré-visualização do PDF Resumo</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="summaryPdfPreview" src="about:blank" style="width: 100%; height: 600px; border: 1px solid #ddd;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" id="downloadSummaryPdfFromPreview">Baixar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="categoryAnalysisModal" tabindex="-1" aria-labelledby="categoryAnalysisModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryAnalysisModalLabel">Análise Detalhada por Categoria</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div id="categoryAnalysisContent"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-info" id="previewCategoryPdf">Visualizar PDF</button>
+                    <button type="button" class="btn btn-success" id="generateCategoryPdf">Baixar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="categoryPdfPreviewModal" tabindex="-1" aria-labelledby="categoryPdfPreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="categoryPdfPreviewModalLabel">Pré-visualização do PDF - Análise por Categoria</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="categoryPdfPreview" src="about:blank"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" id="downloadCategoryPdfFromPreview">Baixar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal para Visualização Prévia dos Cards -->
+    <div class="modal fade" id="quickCategoryPdfPreviewModal" tabindex="-1" aria-labelledby="quickCategoryPdfPreviewModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="quickCategoryPdfPreviewModalLabel">Pré-visualização do PDF - Categoria</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <iframe id="quickCategoryPdfPreview" src="about:blank" style="width: 100%; height: 600px; border: 1px solid #ddd;"></iframe>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                    <button type="button" class="btn btn-success" id="downloadQuickCategoryPdf">Baixar PDF</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        let data = [];
+        let categories = new Set();
+        let companies = new Set();
+        let filteredData = [];
+        let groupedByNature = {};
+        let monthlyTotals = {};
+        let monthlyGrouped = {};
+        let diffDays = 0;
+        let availableMonths = new Set();
+        let chartInstances = {};
+        let currentCategoryForAnalysis = '';
+        let currentQuickCategory = '';
+
+        function excelSerialToDate(serial) {
+            if (!serial || isNaN(serial)) return null;
+            const utc_days = Math.floor(serial - 25569);
+            const utc_value = utc_days * 86400;
+            const date_info = new Date(utc_value * 1000);
+            const localDate = new Date(
+                date_info.getUTCFullYear(),
+                date_info.getUTCMonth(),
+                date_info.getUTCDate(),
+                0, 0, 0, 0
+            );
+            return localDate;
+        }
+
+        function formatDate(date) {
+            if (!date) return '-';
+            return date.toLocaleDateString('pt-BR');
+        }
+
+        function formatMonthYear(date) {
+            if (!date) return '-';
+            return date.toLocaleDateString('pt-BR', { 
+                month: '2-digit', 
+                year: 'numeric' 
+            });
+        }
+
+        function formatCurrency(value) {
+            return 'R$ ' + value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        }
+
+        function calculatePercentage(partial, total) {
+            return total > 0 ? ((partial / total) * 100).toFixed(2) : 0;
+        }
+
+        function safeSubstring(value, start, length) {
+            if (value === null || value === undefined) return '';
+            return String(value).substring(start, length);
+        }
+
+        function getSelectedMonths() {
+            const checkboxes = document.querySelectorAll('#monthCheckboxes input[type="checkbox"]:checked');
+            const selectedMonths = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id !== 'selectAllMonths') {
+                    selectedMonths.push(checkbox.value);
+                }
+            });
+            return selectedMonths;
+        }
+
+        function getSelectedCompanies() {
+            const checkboxes = document.querySelectorAll('#companyCheckboxes input[type="checkbox"]:checked');
+            const selectedCompanies = [];
+            checkboxes.forEach(checkbox => {
+                if (checkbox.id !== 'selectAllCompanies') {
+                    selectedCompanies.push(checkbox.value);
+                }
+            });
+            return selectedCompanies;
+        }
+
+        function getFilteredData() {
+            const startDateInput = document.getElementById('startDate').value;
+            const endDateInput = document.getElementById('endDate').value;
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            const selectedMonths = getSelectedMonths();
+            const selectedCompanies = getSelectedCompanies();
+
+            let filteredResult = data.filter(row => {
+                const value = parseFloat(row[3]);
+                if (isNaN(value) || value <= 0) return false;
+
+                const matchesCat = !selectedCategory || row[6] === selectedCategory;
+                if (!matchesCat) return false;
+
+                const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                const matchesCompany = selectedCompanies.length === 0 || selectedCompanies.includes(company);
+                if (!matchesCompany) return false;
+
+                const quitacaoDate = excelSerialToDate(row[4]);
+                if (!quitacaoDate) return false;
+
+                let matchesDateCriteria = false;
+
+                if (selectedMonths.length > 0) {
+                    const monthKey = `${quitacaoDate.getFullYear()}-${String(quitacaoDate.getMonth() + 1).padStart(2, '0')}`;
+                    matchesDateCriteria = selectedMonths.includes(monthKey);
+                } else if (startDateInput && endDateInput) {
+                    const startDate = new Date(startDateInput + 'T00:00:00');
+                    const endDate = new Date(endDateInput + 'T23:59:59');
+                    matchesDateCriteria = quitacaoDate >= startDate && quitacaoDate <= endDate;
+                } else {
+                    matchesDateCriteria = true;
+                }
+
+                return matchesDateCriteria;
+            });
+
+            return filteredResult;
+        }
+
+        // NOVA FUNÇÃO: Gerar PDF apenas do Resumo e Insights com dados dos cards
+        function generateSummaryPDF(download = true) {
+            if (filteredData.length === 0) {
+                alert('Nenhum dado disponível para gerar PDF. Execute uma análise primeiro.');
+                return null;
+            }
+            
+            // Verificar se há pelo menos um checkbox marcado
+            const showSummary = document.getElementById('showSummary').checked;
+            const showInsights = document.getElementById('showInsights').checked;
+            
+            if (!showSummary && !showInsights) {
+                alert('Para gerar o PDF Resumo, é necessário marcar pelo menos uma das opções:\n\n- "Mostrar Resumo"\n- "Mostrar Insights"');
+                return null;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape'); // SEMPRE em landscape para melhor distribuição
+            let yPosition = 20;
+            
+            doc.setFontSize(18);
+            doc.setTextColor(0, 0, 128);
+            doc.text('RELATÓRIO RESUMIDO DE DESPESAS', 148, yPosition, { align: 'center' });
+            yPosition += 10;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Período: ${getPeriodInfo()}`, 148, yPosition, { align: 'center' });
+            yPosition += 8;
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`, 148, yPosition, { align: 'center' });
+            yPosition += 15;
+            
+            const grandTotal = Object.values(groupedByNature).reduce((sum, { total }) => sum + total, 0);
+            const totalCompanies = new Set(filteredData.map(row => (row[7] && row[7].toString().trim()) || 'Sem Empresa')).size;
+            const totalMonths = Object.keys(monthlyTotals).length;
+            
+            // RESUME SECTION (só incluir se o checkbox estiver marcado)
+            if (showSummary) {
+                doc.setDrawColor(200);
+                doc.setFillColor(240, 248, 255);
+                doc.rect(15, yPosition, 267, 25, 'F');
+                doc.rect(15, yPosition, 267, 25);
+                
+                doc.setFontSize(12);
+                doc.setTextColor(0);
+                doc.text('RESUMO GERAL', 20, yPosition + 8);
+                
+                const cardWidth = 85;
+                const cardSpacing = 5;
+                const startX = 20;
+                
+                doc.setFillColor(220, 237, 200);
+                doc.roundedRect(startX, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+                doc.setFontSize(9);
+                doc.text(`Total: ${formatCurrency(grandTotal)}`, startX + 2, yPosition + 17);
+                
+                doc.setFillColor(255, 243, 205);
+                doc.roundedRect(startX + cardWidth + cardSpacing, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+                doc.text(`Categorias: ${Object.keys(groupedByNature).length}`, startX + cardWidth + cardSpacing + 2, yPosition + 17);
+                
+                doc.setFillColor(209, 231, 221);
+                doc.roundedRect(startX + (cardWidth + cardSpacing) * 2, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+                doc.text(`Empresas: ${totalCompanies}`, startX + (cardWidth + cardSpacing) * 2 + 2, yPosition + 17);
+                
+                yPosition += 35;
+                
+                // Adicionar distribuição por empresa do Resumo
+                const companyTotals = {};
+                filteredData.forEach(row => {
+                    const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                    const value = parseFloat(row[3]);
+                    if (!companyTotals[company]) companyTotals[company] = 0;
+                    companyTotals[company] += value;
+                });
+                
+                const sortedCompanies = Object.entries(companyTotals)
+                    .sort((a, b) => b[1] - a[1])
+                    .slice(0, 10); // Top 10 empresas
+                
+                if (sortedCompanies.length > 0) {
+                    doc.setFontSize(14);
+                    doc.setTextColor(0, 0, 128);
+                    doc.text('PRINCIPAIS EMPRESAS (TOP 10)', 20, yPosition);
+                    yPosition += 10;
+                    
+                    const companyTableData = sortedCompanies.map(([company, total]) => [
+                        company,
+                        formatCurrency(total),
+                        `${calculatePercentage(total, grandTotal)}%`
+                    ]);
+                    
+                    doc.autoTable({
+                        startY: yPosition,
+                        head: [['Empresa', 'Valor (R$)', 'Participação']],
+                        body: companyTableData,
+                        theme: 'grid',
+                        headStyles: { fillColor: [70, 130, 180] },
+                        margin: { left: 20, right: 20 },
+                        styles: { fontSize: 9 }
+                    });
+                    
+                    yPosition = doc.lastAutoTable.finalY + 10;
+                }
+            }
+            
+            // INSIGHTS SECTION (só incluir se o checkbox estiver marcado)
+            if (showInsights) {
+                if (yPosition > 120) {
+                    doc.addPage('landscape');
+                    yPosition = 20;
+                }
+                
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 128);
+                doc.text('PRINCIPAIS INSIGHTS', 20, yPosition);
+                yPosition += 10;
+                
+                const topCategory = Object.entries(groupedByNature)
+                    .reduce((max, [cat, { total }]) => total > max.total ? { cat, total } : max, { cat: '', total: 0 });
+                
+                const companyTotals = {};
+                filteredData.forEach(row => {
+                    const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                    const value = parseFloat(row[3]);
+                    if (!companyTotals[company]) companyTotals[company] = 0;
+                    companyTotals[company] += value;
+                });
+                
+                const topCompany = Object.entries(companyTotals)
+                    .reduce((max, [company, total]) => total > max.total ? { company, total } : max, { company: '', total: 0 });
+                
+                const topMonth = Object.entries(monthlyTotals)
+                    .reduce((max, [month, total]) => total > max.total ? { month, total } : max, { month: '', total: 0 });
+                
+                const insights = [
+                    `Categoria com maior despesa: ${topCategory.cat} (${formatCurrency(topCategory.total)})`,
+                    `Empresa com maior despesa: ${topCompany.company} (${formatCurrency(topCompany.total)})`,
+                    `Mês com maior despesa: ${formatMonthYearFromKey(topMonth.month)} (${formatCurrency(topMonth.total)})`,
+                    `Média mensal: ${formatCurrency(grandTotal / totalMonths)}`,
+                    `Total de categorias: ${Object.keys(groupedByNature).length}`,
+                    `Total de empresas: ${Object.keys(companyTotals).length}`,
+                    `Total de meses analisados: ${totalMonths}`
+                ];
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0);
+                
+                // Criar uma tabela para os insights para melhor organização
+                const insightData = insights.map(insight => [insight]);
+                
+                doc.autoTable({
+                    startY: yPosition,
+                    body: insightData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [0, 0, 128] },
+                    margin: { left: 20, right: 20 },
+                    styles: { fontSize: 10, cellPadding: 3 },
+                    columnStyles: {
+                        0: { cellWidth: 250 }
+                    }
+                });
+                
+                yPosition = doc.lastAutoTable.finalY + 10;
+            }
+            
+            // Adicionar resumo das categorias (dados dos cards)
+            if (yPosition > 100) {
+                doc.addPage('landscape');
+                yPosition = 20;
+            }
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 128);
+            doc.text('RESUMO POR CATEGORIA', 20, yPosition);
+            yPosition += 10;
+            
+            const sortedCategories = Object.entries(groupedByNature)
+                .sort(([, a], [, b]) => b.total - a.total)
+                .slice(0, 15); // Top 15 categorias
+            
+            const categoryTableData = sortedCategories.map(([category, { total, items }]) => [
+                category,
+                formatCurrency(total),
+                `${calculatePercentage(total, grandTotal)}%`,
+                items.length.toString()
+            ]);
+            
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Categoria', 'Valor Total', 'Participação', 'Nº Itens']],
+                body: categoryTableData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 100, 0] },
+                margin: { left: 20, right: 20 },
+                styles: { fontSize: 9 },
+                columnStyles: {
+                    0: { cellWidth: 80 },
+                    1: { cellWidth: 50 },
+                    2: { cellWidth: 40 },
+                    3: { cellWidth: 30 }
+                }
+            });
+            
+            if (download) {
+                doc.save('relatorio-resumo-despesas.pdf');
+            }
+            
+            return doc;
+        }
+
+        function generatePDF(download = true) {
+            if (filteredData.length === 0) {
+                alert('Nenhum dado disponível para gerar PDF. Execute uma análise primeiro.');
+                return null;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            let yPosition = 20;
+            
+            doc.setFontSize(18);
+            doc.setTextColor(0, 0, 128);
+            doc.text('RELATÓRIO DE DESPESAS', 148, yPosition, { align: 'center' });
+            yPosition += 10;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Período: ${getPeriodInfo()}`, 148, yPosition, { align: 'center' });
+            yPosition += 8;
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`, 148, yPosition, { align: 'center' });
+            yPosition += 15;
+            
+            const grandTotal = Object.values(groupedByNature).reduce((sum, { total }) => sum + total, 0);
+            const totalCompanies = new Set(filteredData.map(row => (row[7] && row[7].toString().trim()) || 'Sem Empresa')).size;
+            const totalMonths = Object.keys(monthlyTotals).length;
+            
+            // Verificar quais seções incluir baseado nos checkboxes
+            const showSummary = document.getElementById('showSummary').checked;
+            const showInsights = document.getElementById('showInsights').checked;
+            
+            // RESUME SECTION (só incluir se o checkbox estiver marcado)
+            if (showSummary) {
+                doc.setDrawColor(200);
+                doc.setFillColor(240, 248, 255);
+                doc.rect(15, yPosition, 267, 25, 'F');
+                doc.rect(15, yPosition, 267, 25);
+                
+                doc.setFontSize(12);
+                doc.setTextColor(0);
+                doc.text('RESUMO GERAL', 20, yPosition + 8);
+                
+                const cardWidth = 85;
+                const cardSpacing = 5;
+                const startX = 20;
+                
+                doc.setFillColor(220, 237, 200);
+                doc.roundedRect(startX, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+                doc.setFontSize(9);
+                doc.text(`Total: ${formatCurrency(grandTotal)}`, startX + 2, yPosition + 17);
+                
+                doc.setFillColor(255, 243, 205);
+                doc.roundedRect(startX + cardWidth + cardSpacing, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+                doc.text(`Categorias: ${Object.keys(groupedByNature).length}`, startX + cardWidth + cardSpacing + 2, yPosition + 17);
+                
+                doc.setFillColor(209, 231, 221);
+                doc.roundedRect(startX + (cardWidth + cardSpacing) * 2, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+                doc.text(`Empresas: ${totalCompanies}`, startX + (cardWidth + cardSpacing) * 2 + 2, yPosition + 17);
+                
+                yPosition += 35;
+            }
+            
+            // INSIGHTS SECTION (só incluir se o checkbox estiver marcado)
+            if (showInsights) {
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 128);
+                doc.text('PRINCIPAIS INSIGHTS', 20, yPosition);
+                yPosition += 10;
+                
+                const topCategory = Object.entries(groupedByNature)
+                    .reduce((max, [cat, { total }]) => total > max.total ? { cat, total } : max, { cat: '', total: 0 });
+                
+                const companyTotals = {};
+                filteredData.forEach(row => {
+                    const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                    const value = parseFloat(row[3]);
+                    if (!companyTotals[company]) companyTotals[company] = 0;
+                    companyTotals[company] += value;
+                });
+                
+                const topCompany = Object.entries(companyTotals)
+                    .reduce((max, [company, total]) => total > max.total ? { company, total } : max, { company: '', total: 0 });
+                
+                const topMonth = Object.entries(monthlyTotals)
+                    .reduce((max, [month, total]) => total > max.total ? { month, total } : max, { month: '', total: 0 });
+                
+                const insights = [
+                    `Categoria com maior despesa: ${topCategory.cat} (${formatCurrency(topCategory.total)})`,
+                    `Empresa com maior despesa: ${topCompany.company} (${formatCurrency(topCompany.total)})`,
+                    `Mês com maior despesa: ${formatMonthYearFromKey(topMonth.month)} (${formatCurrency(topMonth.total)})`,
+                    `Média mensal: ${formatCurrency(grandTotal / totalMonths)}`
+                ];
+                
+                doc.setFontSize(10);
+                doc.setTextColor(0);
+                insights.forEach((insight, index) => {
+                    if (yPosition > 180) {
+                        doc.addPage('landscape');
+                        yPosition = 20;
+                    }
+                    doc.text(`- ${insight}`, 25, yPosition + (index * 5));
+                });
+                
+                yPosition += (insights.length * 5) + 10;
+            }
+            
+            // DISTRIBUIÇÃO POR CATEGORIA (sempre incluído)
+            if (yPosition > 140) {
+                doc.addPage('landscape');
+                yPosition = 20;
+            }
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 128);
+            doc.text('DISTRIBUIÇÃO POR CATEGORIA', 20, yPosition);
+            yPosition += 10;
+            
+            const tableData = Object.entries(groupedByNature)
+                .sort(([, a], [, b]) => b.total - a.total)
+                .map(([category, { total }]) => [
+                    category,
+                    formatCurrency(total),
+                    `${calculatePercentage(total, grandTotal)}%`
+                ]);
+            
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Categoria', 'Valor (R$)', 'Participação']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 0, 128] },
+                margin: { left: 20, right: 20 }
+            });
+            
+            yPosition = doc.lastAutoTable.finalY + 10;
+            
+            // DISTRIBUIÇÃO POR EMPRESA (sempre incluído)
+            if (yPosition < 140) {
+                doc.setFontSize(14);
+                doc.setTextColor(0, 0, 128);
+                doc.text('DISTRIBUIÇÃO POR EMPRESA', 20, yPosition);
+                yPosition += 10;
+                
+                const companyTotals = {};
+                filteredData.forEach(row => {
+                    const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                    const value = parseFloat(row[3]);
+                    if (!companyTotals[company]) companyTotals[company] = 0;
+                    companyTotals[company] += value;
+                });
+                
+                const companyTableData = Object.entries(companyTotals)
+                    .sort((a, b) => b[1] - a[1])
+                    .map(([company, total]) => [
+                        company,
+                        formatCurrency(total),
+                        `${calculatePercentage(total, grandTotal)}%`
+                    ]);
+                
+                doc.autoTable({
+                    startY: yPosition,
+                    head: [['Empresa', 'Valor (R$)', 'Participação']],
+                    body: companyTableData,
+                    theme: 'grid',
+                    headStyles: { fillColor: [70, 130, 180] },
+                    margin: { left: 20, right: 20 }
+                });
+                
+                yPosition = doc.lastAutoTable.finalY + 10;
+            }
+            
+            // LISTAGEM COMPLETA DE ITENS (sempre incluído, com coluna A) - ORDENADO POR DATA CRESCENTE
+            if (yPosition > 120) {
+                doc.addPage('landscape');
+                yPosition = 20;
+            }
+            
+            doc.setFontSize(14);
+            doc.setTextColor(0, 0, 128);
+            doc.text('LISTAGEM COMPLETA DE ITENS', 20, yPosition);
+            yPosition += 10;
+            
+            // ORDENAR POR DATA DE QUITAÇÃO CRESCENTE
+            const sortedItems = filteredData
+                .sort((a, b) => {
+                    const dateA = excelSerialToDate(a[4]);
+                    const dateB = excelSerialToDate(b[4]);
+                    return dateA - dateB; // Ordem crescente
+                })
+                .map(item => [
+                    item[0] || '', // COLUNA A - Credor
+                    safeSubstring(item[2] || '', 0, 40), // Descrição
+                    formatCurrency(parseFloat(item[3])),
+                    (item[7] && item[7].toString().trim()) || 'Sem Empresa',
+                    item[6] || 'Sem Categoria', // Categoria
+                    formatDate(excelSerialToDate(item[4])) // Data de quitação
+                ]);
+            
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Credor', 'Descrição', 'Valor', 'Empresa', 'Categoria', 'Quitação']],
+                body: sortedItems,
+                theme: 'grid',
+                headStyles: { fillColor: [70, 130, 180] },
+                margin: { left: 20, right: 20 },
+                styles: { fontSize: 7 },
+                columnStyles: {
+                    0: { cellWidth: 40 },
+                    1: { cellWidth: 50 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 40 },
+                    4: { cellWidth: 40 },
+                    5: { cellWidth: 25 }
+                }
+            });
+            
+            if (download) {
+                doc.save('relatorio-despesas-detalhado.pdf');
+            }
+            
+            return doc;
+        }
+
+        function generateCategoryPDF(download = true) {
+            if (!currentCategoryForAnalysis) {
+                alert('Nenhuma categoria selecionada para análise.');
+                return null;
+            }
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            let yPosition = 20;
+            
+            doc.setFontSize(18);
+            doc.setTextColor(0, 100, 0);
+            doc.text(`RELATÓRIO - ${currentCategoryForAnalysis.toUpperCase()}`, 148, yPosition, { align: 'center' });
+            yPosition += 10;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Período: ${getPeriodInfo()}`, 148, yPosition, { align: 'center' });
+            yPosition += 8;
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`, 148, yPosition, { align: 'center' });
+            yPosition += 15;
+            
+            const categoryData = filteredData.filter(row => row[6] === currentCategoryForAnalysis);
+            const categoryTotal = categoryData.reduce((sum, row) => sum + parseFloat(row[3]), 0);
+            
+            const companyTotals = {};
+            categoryData.forEach(row => {
+                const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                const value = parseFloat(row[3]);
+                if (!companyTotals[company]) companyTotals[company] = 0;
+                companyTotals[company] += value;
+            });
+            
+            // RESUMO DA CATEGORIA
+            doc.setDrawColor(200);
+            doc.setFillColor(240, 248, 255);
+            doc.rect(15, yPosition, 267, 25, 'F');
+            doc.rect(15, yPosition, 267, 25);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0);
+            doc.text('RESUMO DA CATEGORIA', 20, yPosition + 8);
+            
+            const cardWidth = 85;
+            const cardSpacing = 5;
+            const startX = 20;
+            
+            doc.setFillColor(220, 237, 200);
+            doc.roundedRect(startX, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+            doc.setFontSize(9);
+            doc.text(`Total: ${formatCurrency(categoryTotal)}`, startX + 2, yPosition + 17);
+            
+            doc.setFillColor(255, 243, 205);
+            doc.roundedRect(startX + cardWidth + cardSpacing, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+            doc.text(`Itens: ${categoryData.length}`, startX + cardWidth + cardSpacing + 2, yPosition + 17);
+            
+            doc.setFillColor(209, 231, 221);
+            doc.roundedRect(startX + (cardWidth + cardSpacing) * 2, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+            doc.text(`Empresas: ${Object.keys(companyTotals).length}`, startX + (cardWidth + cardSpacing) * 2 + 2, yPosition + 17);
+            
+            yPosition += 35;
+            
+            // DISTRIBUIÇÃO POR EMPRESA
+            doc.setFontSize(14);
+            doc.setTextColor(0, 100, 0);
+            doc.text('DISTRIBUIÇÃO POR EMPRESA', 20, yPosition);
+            yPosition += 10;
+            
+            const tableData = Object.entries(companyTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([company, total]) => [
+                    company,
+                    formatCurrency(total),
+                    `${calculatePercentage(total, categoryTotal)}%`
+                ]);
+            
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Empresa', 'Valor (R$)', 'Participação']],
+                body: tableData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 100, 0] },
+                margin: { left: 20, right: 20 }
+            });
+            
+            yPosition = doc.lastAutoTable.finalY + 15;
+            
+            // LISTAGEM COMPLETA DE ITENS (TODOS OS ITENS, não apenas top 20) - ORDENADO POR DATA CRESCENTE
+            doc.setFontSize(14);
+            doc.setTextColor(0, 100, 0);
+            
+            if (yPosition > 160) {
+                doc.addPage('landscape');
+                yPosition = 20;
+            }
+            
+            doc.text('LISTAGEM COMPLETA DE ITENS', 20, yPosition);
+            yPosition += 10;
+            
+            // ORDENAR POR DATA DE QUITAÇÃO CRESCENTE
+            const sortedItems = categoryData
+                .sort((a, b) => {
+                    const dateA = excelSerialToDate(a[4]);
+                    const dateB = excelSerialToDate(b[4]);
+                    return dateA - dateB; // Ordem crescente
+                })
+                .map(item => [
+                    item[0] || '', // COLUNA A - Credor
+                    safeSubstring(item[2] || '', 0, 50), // Descrição
+                    formatCurrency(parseFloat(item[3])),
+                    (item[7] && item[7].toString().trim()) || 'Sem Empresa',
+                    formatDate(excelSerialToDate(item[1])), // Vencimento
+                    formatDate(excelSerialToDate(item[4])) // Quitação
+                ]);
+            
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Credor', 'Descrição', 'Valor', 'Empresa', 'Vencimento', 'Quitação']],
+                body: sortedItems,
+                theme: 'grid',
+                headStyles: { fillColor: [70, 130, 180] },
+                margin: { left: 20, right: 20 },
+                styles: { fontSize: 7 },
+                columnStyles: {
+                    0: { cellWidth: 40 },
+                    1: { cellWidth: 60 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 40 },
+                    4: { cellWidth: 25 },
+                    5: { cellWidth: 25 }
+                }
+            });
+            
+            if (download) {
+                doc.save(`relatorio-${currentCategoryForAnalysis}.pdf`);
+            }
+            
+            return doc;
+        }
+
+        function generateQuickCategoryPDF(category, preview = false) {
+            currentQuickCategory = category;
+            
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF('landscape');
+            let yPosition = 20;
+            
+            // Cabeçalho
+            doc.setFontSize(18);
+            doc.setTextColor(0, 100, 0);
+            doc.text(`RELATÓRIO COMPLETO - ${category.toUpperCase()}`, 148, yPosition, { align: 'center' });
+            yPosition += 10;
+            
+            doc.setFontSize(10);
+            doc.setTextColor(100);
+            doc.text(`Período: ${getPeriodInfo()}`, 148, yPosition, { align: 'center' });
+            yPosition += 8;
+            doc.text(`Gerado em: ${new Date().toLocaleDateString('pt-BR')} ${new Date().toLocaleTimeString('pt-BR')}`, 148, yPosition, { align: 'center' });
+            yPosition += 15;
+            
+            // Filtrar dados da categoria
+            const categoryData = filteredData.filter(row => row[6] === category);
+            const categoryTotal = categoryData.reduce((sum, row) => sum + parseFloat(row[3]), 0);
+            
+            // Agrupar por empresa
+            const companyTotals = {};
+            categoryData.forEach(row => {
+                const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                const value = parseFloat(row[3]);
+                if (!companyTotals[company]) companyTotals[company] = 0;
+                companyTotals[company] += value;
+            });
+            
+            // Cards de Resumo
+            doc.setDrawColor(200);
+            doc.setFillColor(240, 248, 255);
+            doc.rect(15, yPosition, 267, 25, 'F');
+            doc.rect(15, yPosition, 267, 25);
+            
+            doc.setFontSize(12);
+            doc.setTextColor(0);
+            doc.text('RESUMO DA CATEGORIA', 20, yPosition + 8);
+            
+            const cardWidth = 85;
+            const cardSpacing = 5;
+            const startX = 20;
+            
+            doc.setFillColor(220, 237, 200);
+            doc.roundedRect(startX, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+            doc.setFontSize(9);
+            doc.text(`Total: ${formatCurrency(categoryTotal)}`, startX + 2, yPosition + 17);
+            
+            doc.setFillColor(255, 243, 205);
+            doc.roundedRect(startX + cardWidth + cardSpacing, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+            doc.text(`Itens: ${categoryData.length}`, startX + cardWidth + cardSpacing + 2, yPosition + 17);
+            
+            doc.setFillColor(209, 231, 221);
+            doc.roundedRect(startX + (cardWidth + cardSpacing) * 2, yPosition + 12, cardWidth, 8, 2, 2, 'F');
+            doc.text(`Empresas: ${Object.keys(companyTotals).length}`, startX + (cardWidth + cardSpacing) * 2 + 2, yPosition + 17);
+            
+            yPosition += 35;
+            
+            // Tabela de Empresas
+            doc.setFontSize(14);
+            doc.setTextColor(0, 100, 0);
+            doc.text('DISTRIBUIÇÃO POR EMPRESA', 20, yPosition);
+            yPosition += 10;
+            
+            const companyTableData = Object.entries(companyTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([company, total]) => [
+                    company,
+                    formatCurrency(total),
+                    `${calculatePercentage(total, categoryTotal)}%`
+                ]);
+            
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Empresa', 'Valor (R$)', 'Participação']],
+                body: companyTableData,
+                theme: 'grid',
+                headStyles: { fillColor: [0, 100, 0] },
+                margin: { left: 20, right: 20 }
+            });
+            
+            yPosition = doc.lastAutoTable.finalY + 15;
+            
+            // Listagem completa de itens (COM COLUNA A) - ORDENADO POR DATA CRESCENTE
+            doc.setFontSize(14);
+            doc.setTextColor(0, 100, 0);
+            
+            if (yPosition > 160) {
+                doc.addPage('landscape');
+                yPosition = 20;
+            }
+            
+            doc.text('LISTAGEM COMPLETA DE ITENS', 20, yPosition);
+            yPosition += 10;
+            
+            // ORDENAR POR DATA DE QUITAÇÃO CRESCENTE
+            const sortedItems = categoryData
+                .sort((a, b) => {
+                    const dateA = excelSerialToDate(a[4]);
+                    const dateB = excelSerialToDate(b[4]);
+                    return dateA - dateB; // Ordem crescente
+                })
+                .map(item => [
+                    item[0] || '', // COLUNA A - Credor
+                    safeSubstring(item[2] || '', 0, 60), // Descrição
+                    formatCurrency(parseFloat(item[3])),
+                    (item[7] && item[7].toString().trim()) || 'Sem Empresa',
+                    formatDate(excelSerialToDate(item[1])), // Vencimento
+                    formatDate(excelSerialToDate(item[4])) // Quitação
+                ]);
+            
+            doc.autoTable({
+                startY: yPosition,
+                head: [['Credor', 'Descrição', 'Valor', 'Empresa', 'Vencimento', 'Quitação']],
+                body: sortedItems,
+                theme: 'grid',
+                headStyles: { fillColor: [70, 130, 180] },
+                margin: { left: 20, right: 20 },
+                styles: { fontSize: 7 },
+                columnStyles: {
+                    0: { cellWidth: 40 },
+                    1: { cellWidth: 70 },
+                    2: { cellWidth: 30 },
+                    3: { cellWidth: 50 },
+                    4: { cellWidth: 25 },
+                    5: { cellWidth: 25 }
+                }
+            });
+            
+            if (preview) {
+                const pdfBlob = doc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                document.getElementById('quickCategoryPdfPreview').src = pdfUrl;
+                const modal = new bootstrap.Modal(document.getElementById('quickCategoryPdfPreviewModal'));
+                modal.show();
+                return null;
+            } else {
+                doc.save(`relatorio-completo-${category}.pdf`);
+                return doc;
+            }
+        }
+
+        // NOVA FUNÇÃO: Limpar todos os filtros e resultados
+        function clearAllFilters() {
+            // Limpar dados filtrados
+            filteredData = [];
+            groupedByNature = {};
+            monthlyTotals = {};
+            monthlyGrouped = {};
+            
+            // Limpar filtros de data
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            
+            // Limpar seleção de categoria
+            document.getElementById('categoryFilter').value = '';
+            
+            // DESMARCAR todas as empresas e meses (não selecionar todas)
+            document.getElementById('selectAllCompanies').checked = false;
+            document.querySelectorAll('.company-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            document.getElementById('selectAllMonths').checked = false;
+            document.querySelectorAll('.month-checkbox').forEach(checkbox => {
+                checkbox.checked = false;
+            });
+            
+            // Desabilitar e desmarcar checkboxes de exibição
+            document.getElementById('showSummary').checked = false;
+            document.getElementById('showSummary').disabled = true;
+            document.getElementById('showInsights').checked = false;
+            document.getElementById('showInsights').disabled = true;
+            
+            // Ocultar seções
+            document.getElementById('summary').style.display = 'none';
+            document.getElementById('insights').style.display = 'none';
+            
+            // Limpar área de gráficos
+            document.getElementById('chartsArea').innerHTML = '';
+            
+            // Limpar área de resultados
+            document.getElementById('results').innerHTML = '';
+            
+            // Ocultar botão de análise por categoria
+            document.getElementById('categoryAnalysisBtn').style.display = 'none';
+            
+            // Destruir instâncias de gráficos
+            Object.values(chartInstances).forEach(chart => {
+                if (chart && typeof chart.destroy === 'function') {
+                    chart.destroy();
+                }
+            });
+            chartInstances = {};
+            
+            alert('Todos os filtros e resultados foram limpos com sucesso!\n\nTodos os checkboxes de filtro foram desmarcados.');
+        }
+
+        // Detectar se é ambiente mobile
+        function isMobile() {
+            return /Mobi|Android/i.test(navigator.userAgent);
+        }
+
+        function previewPDF() {
+            const pdfDoc = generatePDF(false);
+            if (pdfDoc) {
+                const pdfBlob = pdfDoc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                if (isMobile()) {
+                    window.open(pdfUrl, '_blank');
+                } else {
+                    document.getElementById('pdfPreview').src = pdfUrl;
+                    const modal = new bootstrap.Modal(document.getElementById('pdfPreviewModal'));
+                    modal.show();
+                }
+            }
+        }
+
+        // NOVA FUNÇÃO: Visualizar PDF do Resumo
+        function previewSummaryPDF() {
+            const pdfDoc = generateSummaryPDF(false);
+            if (pdfDoc) {
+                const pdfBlob = pdfDoc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                if (isMobile()) {
+                    window.open(pdfUrl, '_blank');
+                } else {
+                    document.getElementById('summaryPdfPreview').src = pdfUrl;
+                    const modal = new bootstrap.Modal(document.getElementById('summaryPdfPreviewModal'));
+                    modal.show();
+                }
+            }
+        }
+
+        function previewCategoryPDF() {
+            const pdfDoc = generateCategoryPDF(false);
+            if (pdfDoc) {
+                const pdfBlob = pdfDoc.output('blob');
+                const pdfUrl = URL.createObjectURL(pdfBlob);
+                if (isMobile()) {
+                    window.open(pdfUrl, '_blank');
+                } else {
+                    document.getElementById('categoryPdfPreview').src = pdfUrl;
+                    const modal = new bootstrap.Modal(document.getElementById('categoryPdfPreviewModal'));
+                    modal.show();
+                }
+            }
+        }
+
+        function getPeriodInfo() {
+            const selectedMonths = getSelectedMonths();
+            const startDateInput = document.getElementById('startDate').value;
+            const endDateInput = document.getElementById('endDate').value;
+            
+            if (selectedMonths.length > 0) {
+                return `${selectedMonths.length} meses selecionados`;
+            } else if (startDateInput && endDateInput) {
+                return `${formatDate(new Date(startDateInput))} a ${formatDate(new Date(endDateInput))}`;
+            } else {
+                return 'Período completo';
+            }
+        }
+
+        function formatMonthYearFromKey(monthKey) {
+            if (!monthKey || monthKey === 'Sem Data') return 'Sem Data';
+            const [year, month] = monthKey.split('-');
+            return formatMonthYear(new Date(year, month - 1, 1));
+        }
+
+        document.getElementById('fileInput').addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                try {
+                    const workbook = XLSX.read(e.target.result, { type: 'binary' });
+                    const sheetName = workbook.SheetNames[0];
+                    const sheet = workbook.Sheets[sheetName];
+                    const rawData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
+                    
+                    data = rawData.slice(1).filter(row => row && row.length > 0 && row.some(cell => cell !== null && cell !== ''));
+                    
+                    categories = new Set();
+                    data.forEach(row => {
+                        if (row[6]) categories.add(row[6]);
+                    });
+                    
+                    const select = document.getElementById('categoryFilter');
+                    select.innerHTML = '<option value="">Todas</option>';
+                    Array.from(categories).sort().forEach(cat => {
+                        const option = document.createElement('option');
+                        option.value = cat;
+                        option.textContent = cat;
+                        select.appendChild(option);
+                    });
+
+                    companies = new Set();
+                    data.forEach(row => {
+                        const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                        companies.add(company);
+                    });
+                    
+                    const companyCheckboxes = document.getElementById('companyCheckboxes');
+                    companyCheckboxes.innerHTML = '<div class="form-check"><input class="form-check-input" type="checkbox" id="selectAllCompanies" checked><label class="form-check-label" for="selectAllCompanies">Selecionar Todas</label></div>';
+                    
+                    Array.from(companies).sort().forEach(company => {
+                        const div = document.createElement('div');
+                        div.className = 'form-check';
+                        div.innerHTML = `
+                            <input class="form-check-input company-checkbox" type="checkbox" id="company-${company}" value="${company}" checked>
+                            <label class="form-check-label" for="company-${company}">${company}</label>
+                        `;
+                        companyCheckboxes.appendChild(div);
+                    });
+
+                    document.getElementById('selectAllCompanies').addEventListener('change', function() {
+                        const checkboxes = document.querySelectorAll('.company-checkbox');
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                    });
+
+                    availableMonths = new Set();
+                    data.forEach(row => {
+                        const quitacaoDate = excelSerialToDate(row[4]);
+                        if (quitacaoDate) {
+                            const monthKey = `${quitacaoDate.getFullYear()}-${String(quitacaoDate.getMonth() + 1).padStart(2, '0')}`;
+                            availableMonths.add(monthKey);
+                        }
+                    });
+
+                    const monthCheckboxes = document.getElementById('monthCheckboxes');
+                    monthCheckboxes.innerHTML = '<div class="form-check"><input class="form-check-input" type="checkbox" id="selectAllMonths" checked><label class="form-check-label" for="selectAllMonths">Selecionar Todos</label></div>';
+                    
+                    Array.from(availableMonths).sort().forEach(month => {
+                        const [year, monthNum] = month.split('-');
+                        const date = new Date(year, monthNum - 1, 1);
+                        const formattedMonth = formatMonthYear(date);
+                        
+                        const div = document.createElement('div');
+                        div.className = 'form-check';
+                        div.innerHTML = `
+                            <input class="form-check-input month-checkbox" type="checkbox" id="month-${month}" value="${month}" checked>
+                            <label class="form-check-label" for="month-${month}">${formattedMonth}</label>
+                        `;
+                        monthCheckboxes.appendChild(div);
+                    });
+
+                    document.getElementById('selectAllMonths').addEventListener('change', function() {
+                        const checkboxes = document.querySelectorAll('.month-checkbox');
+                        checkboxes.forEach(checkbox => {
+                            checkbox.checked = this.checked;
+                        });
+                    });
+                    
+                    alert(`Arquivo carregado com sucesso!\n\n- ${data.length} registros\n- ${categories.size} categorias\n- ${companies.size} empresas\n- ${availableMonths.size} meses disponíveis`);
+                    
+                } catch (error) {
+                    console.error('Erro ao carregar arquivo:', error);
+                    alert('Erro ao carregar o arquivo. Verifique se é um Excel válido.\n\nErro: ' + error.message);
+                }
+            };
+            reader.onerror = () => {
+                alert('Erro ao ler o arquivo.');
+            };
+            reader.readAsBinaryString(file);
+        });
+        
+        document.getElementById('showSummary').addEventListener('change', (event) => {
+            document.getElementById('summary').style.display = event.target.checked ? 'block' : 'none';
+        });
+
+        document.getElementById('showInsights').addEventListener('change', (event) => {
+            document.getElementById('insights').style.display = event.target.checked ? 'block' : 'none';
+        });
+
+        document.getElementById('analyzeBtn').addEventListener('click', () => {
+            const selectedMonths = getSelectedMonths();
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            const selectedCompanies = getSelectedCompanies();
+            const startDateInput = document.getElementById('startDate').value;
+            const endDateInput = document.getElementById('endDate').value;
+            
+            if (selectedMonths.length === 0 && (!startDateInput || !endDateInput)) {
+                alert('Por favor, selecione:\n- Um período (datas de início e fim) \nOU\n- Meses de quitação específicos');
+                return;
+            }
+            
+            if (data.length === 0) {
+                alert('Por favor, importe a planilha primeiro.');
+                return;
+            }
+            
+            try {
+                filteredData = getFilteredData();
+
+                if (filteredData.length === 0) {
+                    alert('Nenhum dado encontrado para os filtros selecionados.\n\nVerifique:\n- Datas/meses de quitação\n- Empresas selecionadas\n- Categoria selecionada');
+                    return;
+                }
+
+                document.getElementById('categoryAnalysisBtn').style.display = selectedCategory ? 'block' : 'none';
+
+                document.getElementById('chartsArea').innerHTML = '';
+                document.getElementById('summary').style.display = 'none';
+                document.getElementById('insights').style.display = 'none';
+                document.getElementById('showSummary').checked = false;
+                document.getElementById('showInsights').checked = false;
+                document.getElementById('showSummary').disabled = false;
+                document.getElementById('showInsights').disabled = false;
+
+                let startDate, endDate;
+
+                if (selectedMonths.length > 0) {
+                    const months = selectedMonths.sort();
+                    const firstMonth = months[0].split('-');
+                    const lastMonth = months[months.length - 1].split('-');
+                    
+                    startDate = new Date(
+                        parseInt(firstMonth[0]),
+                        parseInt(firstMonth[1]) - 1,
+                        1, 0, 0, 0, 0
+                    );
+                    
+                    endDate = new Date(
+                        parseInt(lastMonth[0]),
+                        parseInt(lastMonth[1]),
+                        0, 23, 59, 59, 999
+                    );
+                    
+                    diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                } else if (startDateInput && endDateInput) {
+                    startDate = new Date(startDateInput + 'T00:00:00');
+                    endDate = new Date(endDateInput + 'T23:59:59');
+                    diffDays = Math.ceil((endDate - startDate) / (1000 * 60 * 60 * 24));
+                } else {
+                    startDate = new Date();
+                    endDate = new Date();
+                    diffDays = 0;
+                }
+
+                groupedByNature = {};
+                filteredData.forEach(row => {
+                    const nature = row[6] || 'Sem Categoria';
+                    const value = parseFloat(row[3]);
+                    if (!groupedByNature[nature]) groupedByNature[nature] = { total: 0, items: [] };
+                    groupedByNature[nature].total += value;
+                    groupedByNature[nature].items.push(row);
+                });
+
+                monthlyGrouped = {};
+                monthlyTotals = {};
+                filteredData.forEach(row => {
+                    const quitacaoDate = excelSerialToDate(row[4]);
+                    const monthKey = quitacaoDate ? 
+                        `${quitacaoDate.getFullYear()}-${String(quitacaoDate.getMonth() + 1).padStart(2, '0')}` : 'Sem Data';
+                    const nature = row[6] || 'Sem Categoria';
+                    const value = parseFloat(row[3]);
+                    
+                    if (!monthlyGrouped[monthKey]) monthlyGrouped[monthKey] = {};
+                    if (!monthlyGrouped[monthKey][nature]) monthlyGrouped[monthKey][nature] = 0;
+                    monthlyGrouped[monthKey][nature] += value;
+
+                    if (!monthlyTotals[monthKey]) monthlyTotals[monthKey] = 0;
+                    monthlyTotals[monthKey] += value;
+                });
+
+                renderCharts();
+                renderSummary(startDate, endDate, selectedCategory, selectedMonths, selectedCompanies);
+                renderInsights();
+                renderDetails();
+                
+                alert(`Análise concluída com sucesso!\n\n- ${filteredData.length} registros analisados\n- ${Object.keys(groupedByNature).length} categorias\n- ${Object.keys(monthlyTotals).length} meses`);
+                
+            } catch (error) {
+                console.error('Erro durante a análise:', error);
+                alert('Erro durante a análise: ' + error.message);
+            }
+        });
+
+        function renderSummary(startDate, endDate, selectedCategory, selectedMonths, selectedCompanies) {
+            const grandTotal = Object.values(groupedByNature).reduce((sum, { total }) => sum + total, 0);
+            const summaryDiv = document.getElementById('summary');
+            const totalMonths = Object.keys(monthlyTotals).length;
+            
+            const companyTotals = {};
+            filteredData.forEach(row => {
+                const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                const value = parseFloat(row[3]);
+                if (!companyTotals[company]) companyTotals[company] = 0;
+                companyTotals[company] += value;
+            });
+            
+            const sortedCompanies = Object.entries(companyTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([company, total]) => ({
+                    company,
+                    total,
+                    percentage: calculatePercentage(total, grandTotal)
+                }));
+            
+            let periodInfo = '';
+            if (selectedMonths.length > 0) {
+                periodInfo = `<p>Meses de Quitação Selecionados: ${selectedMonths.length} meses</p>`;
+            } else {
+                periodInfo = `<p>Período de Quitação: ${formatDate(startDate)} a ${formatDate(endDate)} (${diffDays} dias)</p>`;
+            }
+            
+            let companyInfo = '';
+            if (selectedCompanies.length > 0) {
+                companyInfo = `<p>Empresas Selecionadas: ${selectedCompanies.join(', ')}</p>`;
+            } else {
+                companyInfo = `<p>Empresas Selecionadas: Todas</p>`;
+            }
+            
+            let companyTableHTML = '';
+            if (sortedCompanies.length > 0) {
+                companyTableHTML = `
+                    <div class="mt-4">
+                        <h5>Distribuição por Empresa</h5>
+                        <div class="table-responsive">
+                            <table class="table table-sm table-bordered company-table">
+                                <thead>
+                                    <tr>
+                                        <th>Empresa</th>
+                                        <th>Valor Total</th>
+                                        <th>Participação</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${sortedCompanies.map((item, index) => `
+                                        <tr ${index === 0 ? 'class="highlight-row"' : ''}>
+                                            <td>${item.company}</td>
+                                            <td>${formatCurrency(item.total)}</td>
+                                            <td>${item.percentage}%</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            summaryDiv.innerHTML = `
+                <div class="card summary-card">
+                    <div class="card-header">Resumo Geral</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Total de Despesas: ${formatCurrency(grandTotal)}</h5>
+                        ${periodInfo}
+                        <p>Categoria Filtrada: ${selectedCategory || 'Todas'}</p>
+                        ${companyInfo}
+                        ${companyTableHTML}
+                        ${(diffDays >= 30 || selectedMonths.length > 0) && grandTotal > 0 ? `<p>Média Mensal Estimada (em ${totalMonths} meses): ${formatCurrency(grandTotal / totalMonths)}</p>` : ''}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCharts() {
+            Object.values(chartInstances).forEach(chart => {
+                if (chart && typeof chart.destroy === 'function') {
+                    chart.destroy();
+                }
+            });
+            chartInstances = {};
+
+            const chartsArea = document.getElementById('chartsArea');
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            const grandTotal = Object.values(groupedByNature).reduce((sum, { total }) => sum + total, 0);
+
+            if (Object.keys(groupedByNature).length > 0) {
+                const chartContainer = document.createElement('div');
+                chartContainer.className = 'chart-container';
+                chartContainer.innerHTML = `
+                    <h5 class="text-center mb-3">Distribuição de Despesas por Categoria</h5>
+                    <canvas id="categoryChart"></canvas>
+                `;
+                chartsArea.appendChild(chartContainer);
+
+                const ctx = document.getElementById('categoryChart').getContext('2d');
+                const labels = Object.keys(groupedByNature);
+                const dataValues = Object.values(groupedByNature).map(g => g.total);
+
+                chartInstances.categoryChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Valor (R$)',
+                            data: dataValues,
+                            backgroundColor: 'rgba(54, 162, 235, 0.8)',
+                            borderColor: 'rgba(54, 162, 235, 1)',
+                            borderWidth: 2
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        plugins: {
+                            tooltip: {
+                                callbacks: {
+                                    label: (context) => {
+                                        const percentage = ((context.raw / grandTotal) * 100).toFixed(1);
+                                        return `${context.label}: ${formatCurrency(context.raw)} (${percentage}%)`;
+                                    }
+                                }
+                            }
+                        },
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (R$)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (!selectedCategory && Object.keys(monthlyGrouped).length > 1) {
+                const chartContainer = document.createElement('div');
+                chartContainer.className = 'chart-container';
+                chartContainer.innerHTML = `
+                    <h5 class="text-center mb-3">Comparativo Mensal entre Categorias</h5>
+                    <canvas id="categoryComparisonChart"></canvas>
+                `;
+                chartsArea.appendChild(chartContainer);
+
+                const months = Object.keys(monthlyGrouped).sort();
+                const allCategories = new Set();
+                
+                months.forEach(month => {
+                    Object.keys(monthlyGrouped[month]).forEach(cat => allCategories.add(cat));
+                });
+
+                const datasets = Array.from(allCategories).map((category, index) => {
+                    const hue = (index * 360 / allCategories.size) % 360;
+                    return {
+                        label: category,
+                        data: months.map(month => monthlyGrouped[month][category] || 0),
+                        backgroundColor: `hsla(${hue}, 70%, 65%, 0.7)`,
+                        borderColor: `hsla(${hue}, 70%, 45%, 1)`,
+                        borderWidth: 1
+                    };
+                });
+
+                const ctx = document.getElementById('categoryComparisonChart').getContext('2d');
+                chartInstances.categoryComparisonChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months.map(month => {
+                            const [year, monthNum] = month.split('-');
+                            return formatMonthYear(new Date(year, monthNum - 1, 1));
+                        }),
+                        datasets: datasets
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                stacked: false,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (R$)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (selectedCategory) {
+                const chartContainer = document.createElement('div');
+                chartContainer.className = 'chart-container';
+                chartContainer.innerHTML = `
+                    <h5 class="text-center mb-3">Evolução Mensal - ${selectedCategory}</h5>
+                    <canvas id="comparisonChart"></canvas>
+                `;
+                chartsArea.appendChild(chartContainer);
+
+                const monthlyData = {};
+                filteredData.forEach(row => {
+                    if (row[6] === selectedCategory) {
+                        const quitacaoDate = excelSerialToDate(row[4]);
+                        const monthKey = quitacaoDate ? 
+                            `${quitacaoDate.getFullYear()}-${String(quitacaoDate.getMonth() + 1).padStart(2, '0')}` : 'Sem Data';
+                        const value = parseFloat(row[3]);
+                        
+                        if (!monthlyData[monthKey]) monthlyData[monthKey] = 0;
+                        monthlyData[monthKey] += value;
+                    }
+                });
+
+                const months = Object.keys(monthlyData).sort();
+                const values = months.map(month => monthlyData[month]);
+
+                const ctx = document.getElementById('comparisonChart').getContext('2d');
+                chartInstances.comparisonChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months.map(month => {
+                            const [year, monthNum] = month.split('-');
+                            return formatMonthYear(new Date(year, monthNum - 1, 1));
+                        }),
+                        datasets: [{
+                            label: selectedCategory,
+                            data: values,
+                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                            borderColor: 'rgba(255, 99, 132, 1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (R$)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (Object.keys(monthlyTotals).length > 1) {
+                const chartContainer = document.createElement('div');
+                chartContainer.className = 'chart-container';
+                chartContainer.innerHTML = `
+                    <h5 class="text-center mb-3">Tendência de Despesas Mensais</h5>
+                    <canvas id="trendChart"></canvas>
+                `;
+                chartsArea.appendChild(chartContainer);
+
+                const months = Object.keys(monthlyTotals).sort();
+                const totals = months.map(month => monthlyTotals[month]);
+
+                const ctx = document.getElementById('trendChart').getContext('2d');
+                chartInstances.trendChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: months.map(month => {
+                            const [year, monthNum] = month.split('-');
+                            return formatMonthYear(new Date(year, monthNum - 1, 1));
+                        }),
+                        datasets: [{
+                            label: 'Total Mensal',
+                            data: totals,
+                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                            borderColor: 'rgba(75, 192, 192, 1)',
+                            borderWidth: 3,
+                            fill: true,
+                            tension: 0.4
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                title: {
+                                    display: true,
+                                    text: 'Valor (R$)'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function renderInsights() {
+            const insightsDiv = document.getElementById('insights');
+            const grandTotal = Object.values(groupedByNature).reduce((sum, { total }) => sum + total, 0);
+            
+            if (grandTotal === 0) {
+                insightsDiv.innerHTML = '<div class="alert alert-warning">Nenhum dado para gerar insights.</div>';
+                return;
+            }
+
+            const topCategory = Object.entries(groupedByNature)
+                .reduce((max, [cat, { total }]) => total > max.total ? { cat, total } : max, { cat: '', total: 0 });
+            
+            const totalMonths = Object.keys(monthlyTotals).length;
+            const avgMonthly = grandTotal / totalMonths;
+            
+            const topMonth = Object.entries(monthlyTotals)
+                .reduce((max, [month, total]) => total > max.total ? { month, total } : max, { month: '', total: 0 });
+            
+            const companyTotals = {};
+            filteredData.forEach(row => {
+                const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                const value = parseFloat(row[3]);
+                if (!companyTotals[company]) companyTotals[company] = 0;
+                companyTotals[company] += value;
+            });
+            
+            const topCompany = Object.entries(companyTotals)
+                .reduce((max, [company, total]) => total > max.total ? { company, total } : max, { company: '', total: 0 });
+
+            insightsDiv.innerHTML = `
+                <div class="card">
+                    <div class="card-header">Insights e Análises</div>
+                    <div class="card-body">
+                        <h5 class="card-title">Principais Observações:</h5>
+                        <ul>
+                            <li><strong>Categoria com Maior Despesa:</strong> ${topCategory.cat} (${formatCurrency(topCategory.total)} - ${calculatePercentage(topCategory.total, grandTotal)}%)</li>
+                            <li><strong>Média Mensal:</strong> ${formatCurrency(avgMonthly)} (em ${totalMonths} meses)</li>
+                            <li><strong>Mês com Maior Despesa:</strong> ${topMonth.month} (${formatCurrency(topMonth.total)})</li>
+                            <li><strong>Empresa com Maior Despesa:</strong> ${topCompany.company} (${formatCurrency(topCompany.total)} - ${calculatePercentage(topCompany.total, grandTotal)}%)</li>
+                            <li><strong>Total de Categorias:</strong> ${Object.keys(groupedByNature).length}</li>
+                            <li><strong>Total de Empresas:</strong> ${Object.keys(companyTotals).length}</li>
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderDetails() {
+            const resultsDiv = document.getElementById('results');
+            const grandTotal = Object.values(groupedByNature).reduce((sum, { total }) => sum + total, 0);
+            
+            resultsDiv.innerHTML = '<h2>Detalhes por Categoria</h2>';
+
+            const sortedCategories = Object.entries(groupedByNature)
+                .sort(([, a], [, b]) => b.total - a.total);
+
+            sortedCategories.forEach(([nature, { total, items }]) => {
+                const percentage = calculatePercentage(total, grandTotal);
+                
+                const sortedItems = items.sort((a, b) => parseFloat(b[3]) - parseFloat(a[3]));
+                
+                const card = document.createElement('div');
+                card.className = 'col-md-6 col-lg-4 mb-4';
+                card.innerHTML = `
+                    <div class="card h-100">
+                        <div class="card-header d-flex justify-content-between align-items-center">
+                            <span class="nature-title">${nature}</span>
+                            <div class="d-flex align-items-center gap-2">
+                                <span class="badge bg-primary">${formatCurrency(total)}</span>
+                                <button class="btn btn-sm btn-outline-light pdf-category-btn" data-category="${nature}" title="Visualizar PDF desta categoria">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                                        <path d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V14a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h5.5v2z"/>
+                                        <path d="M4.603 14.087a.81.81 0 0 1-.438-.42c-.195-.388-.13-.776.08-1.102.198-.307.526-.568.897-.787a7.68 7.68 0 0 1 1.482-.645 19.697 19.697 0 0 0 1.062-2.227 7.269 7.269 0 0 1-.43-1.295c-.086-.4-.119-.796-.046-1.136.075-.354.274-.672.65-.823.192-.077.4-.12.602-.077a.7.7 0 0 1 .477.365c.088.164.12.356.127.538.007.188-.012.396-.047.614-.084.51-.27 1.134-.52 1.794a10.954 10.954 0 0 0 .98 1.686 a5.753 5.753 0 0 1 1.334.05c.364.066.734.195.96.465.12.144.193.32.2.518.007.192-.047.382-.138.563a1.04 1.04 0 0 1-.354.416.856.856 0 0 1-.51.138c-.331-.014-.654-.196-.933-.417a5.712 5.712 0 0 1-.911-.95 11.651 11.651 0 0 0-1.997.406 11.307 11.307 0 0 1-1.02 1.51c-.292.35-.609.656-.927.787a.793.793 0 0 1-.58.029zm1.379-1.901c-.166.076-.32.156-.459.238-.328.194-.541.383-.647.547-.094.145-.096.25-.04.361.01.022.02.036.026.044a.266.266 0 0 0 .035-.012c.137-.056.355-.235.635-.572a8.18 8.18 0 0 0 .45-.606zm1.64-1.33a12.71 12.71 0 0 1 1.01-.193 11.744 11.744 0 0 1-.51-.858 20.801 20.801 0 0 1-.5 1.05zm2.446.45c.15.163.296.3.435.41.24.19.407.253.498.256a.107.107 0 0 0 .07-.015.307.307 0 0 0 .094-.125.436.436 0 0 0 .059-.2.095.095 0 0 0-.026-.063c-.052-.062-.2-.152-.518-.209a3.876 3.876 0 0 0-.612-.053zM8.078 7.8a6.7 6.7 0 0 0 .2-.828c.031-.188.043-.343.038-.465a.613.613 0 0 0-.032-.198.517.517 0 0 0-.145.04c-.087.035-.158.106-.196.283-.04.192-.03.469.046.822.024.111.054.227.09.346z"/>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">Participação: ${percentage}%</p>
+                            <p class="card-text">Número de Itens: ${items.length}</p>
+                            <div class="table-responsive">
+                                <table class="table table-sm table-bordered">
+                                    <thead>
+                                        <tr>
+                                            <th>Credor</th>
+                                            <th>Descrição</th>
+                                            <th>Valor</th>
+                                            <th>Empresa</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${sortedItems.slice(0, 10).map(item => `
+                                            <tr>
+                                                <td title="${item[0] || ''}">${safeSubstring(item[0], 0, 15)}${(item[0] || '').length > 15 ? '...' : ''}</td>
+                                                <td title="${item[2] || ''}">${safeSubstring(item[2], 0, 20)}${(item[2] || '').length > 20 ? '...' : ''}</td>
+                                                <td>${formatCurrency(parseFloat(item[3]))}</td>
+                                                <td>${(item[7] && item[7].toString().trim()) || 'Sem Empresa'}</td>
+                                            </tr>
+                                        `).join('')}
+                                        ${items.length > 10 ? `
+                                            <tr>
+                                                <td colspan="4" class="text-center text-muted">
+                                                    ... e mais ${items.length - 10} itens
+                                                </td>
+                                            </tr>
+                                        ` : ''}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                resultsDiv.appendChild(card);
+            });
+
+            // Adicionar event listeners aos botões PDF de cada card
+            document.querySelectorAll('.pdf-category-btn').forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    const category = this.getAttribute('data-category');
+                    if (isMobile()) {
+                        const pdfDoc = generateQuickCategoryPDF(category, false);
+                        const pdfBlob = pdfDoc.output('blob');
+                        const pdfUrl = URL.createObjectURL(pdfBlob);
+                        window.open(pdfUrl, '_blank');
+                    } else {
+                        generateQuickCategoryPDF(category, true); // Agora abre em preview
+                    }
+                });
+            });
+        }
+
+        document.getElementById('categoryAnalysisBtn').addEventListener('click', () => {
+            const selectedCategory = document.getElementById('categoryFilter').value;
+            if (!selectedCategory) {
+                alert('Por favor, selecione uma categoria específica primeiro.');
+                return;
+            }
+            showCategoryAnalysis(selectedCategory);
+        });
+
+        function showCategoryAnalysis(category) {
+            currentCategoryForAnalysis = category;
+            
+            const categoryData = filteredData.filter(row => row[6] === category);
+            
+            const companyTotals = {};
+            categoryData.forEach(row => {
+                const company = (row[7] && row[7].toString().trim()) || 'Sem Empresa';
+                const value = parseFloat(row[3]);
+                if (!companyTotals[company]) companyTotals[company] = 0;
+                companyTotals[company] += value;
+            });
+            
+            const monthlyTotalsCategory = {};
+            categoryData.forEach(row => {
+                const quitacaoDate = excelSerialToDate(row[4]);
+                const monthKey = quitacaoDate ? 
+                    `${quitacaoDate.getFullYear()}-${String(quitacaoDate.getMonth() + 1).padStart(2, '0')}` : 'Sem Data';
+                const value = parseFloat(row[3]);
+                
+                if (!monthlyTotalsCategory[monthKey]) monthlyTotalsCategory[monthKey] = 0;
+                monthlyTotalsCategory[monthKey] += value;
+            });
+            
+            const categoryTotal = categoryData.reduce((sum, row) => sum + parseFloat(row[3]), 0);
+            
+            const sortedCompanies = Object.entries(companyTotals)
+                .sort((a, b) => b[1] - a[1])
+                .map(([company, total]) => ({
+                    company,
+                    total,
+                    percentage: calculatePercentage(total, categoryTotal)
+                }));
+            
+            const sortedMonths = Object.entries(monthlyTotalsCategory)
+                .sort(([a], [b]) => a.localeCompare(b))
+                .map(([month, total]) => ({
+                    month,
+                    total,
+                    percentage: calculatePercentage(total, categoryTotal)
+                }));
+            
+            const sortedItems = categoryData.sort((a, b) => parseFloat(b[3]) - parseFloat(a[3]));
+            
+            const analysisContent = document.getElementById('categoryAnalysisContent');
+            analysisContent.innerHTML = `
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="card mb-4">
+                            <div class="card-header bg-primary text-white">
+                                <h4 class="mb-0">Análise Detalhada - ${category}</h4>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="card text-white bg-success mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Total da Categoria</h5>
+                                                <p class="card-text h3">${formatCurrency(categoryTotal)}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card text-white bg-info mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Número de Itens</h5>
+                                                <p class="card-text h3">${categoryData.length}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="card text-white bg-warning mb-3">
+                                            <div class="card-body">
+                                                <h5 class="card-title">Número de Empresas</h5>
+                                                <p class="card-text h3">${Object.keys(companyTotals).length}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Distribuição por Empresa</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Empresa</th>
+                                                <th>Valor</th>
+                                                <th>Participação</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${sortedCompanies.map((item, index) => `
+                                                <tr ${index === 0 ? 'class="table-warning"' : ''}>
+                                                    <td>${item.company}</td>
+                                                    <td>${formatCurrency(item.total)}</td>
+                                                    <td>${item.percentage}%</td>
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Evolução Mensal</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered">
+                                        <thead>
+                                            <tr>
+                                                <th>Mês</th>
+                                                <th>Valor</th>
+                                                <th>Participação</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${sortedMonths.map(item => {
+                                                const [year, month] = item.month.split('-');
+                                                const formattedMonth = formatMonthYear(new Date(year, month - 1, 1));
+                                                return `
+                                                    <tr>
+                                                        <td>${formattedMonth}</td>
+                                                        <td>${formatCurrency(item.total)}</td>
+                                                        <td>${item.percentage}%</td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="row mt-4">
+                    <div class="col-md-12">
+                        <div class="card">
+                            <div class="card-header">
+                                <h5>Detalhamento dos Itens (Top 50)</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-sm table-bordered table-striped">
+                                        <thead>
+                                            <tr>
+                                                <th>Credor</th>
+                                                <th>Descrição</th>
+                                                <th>Valor</th>
+                                                <th>Empresa</th>
+                                                <th>Data Venc.</th>
+                                                <th>Data Quitação</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            ${sortedItems.slice(0, 50).map(item => {
+                                                const venctoDate = excelSerialToDate(item[1]);
+                                                const quitacaoDate = excelSerialToDate(item[4]);
+                                                return `
+                                                    <tr>
+                                                        <td title="${item[0] || ''}">${safeSubstring(item[0], 0, 20)}${(item[0] || '').length > 20 ? '...' : ''}</td>
+                                                        <td title="${item[2] || ''}">${safeSubstring(item[2], 0, 40)}${(item[2] || '').length > 40 ? '...' : ''}</td>
+                                                        <td>${formatCurrency(parseFloat(item[3]))}</td>
+                                                        <td>${(item[7] && item[7].toString().trim()) || 'Sem Empresa'}</td>
+                                                        <td>${formatDate(venctoDate)}</td>
+                                                        <td>${formatDate(quitacaoDate)}</td>
+                                                    </tr>
+                                                `;
+                                            }).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            const modal = new bootstrap.Modal(document.getElementById('categoryAnalysisModal'));
+            modal.show();
+        }
+
+        // Event Listeners
+        document.getElementById('pdfBtn').addEventListener('click', () => generatePDF(true));
+        document.getElementById('previewPdfBtn').addEventListener('click', previewPDF);
+        document.getElementById('previewSummaryPdfBtn').addEventListener('click', previewSummaryPDF);
+        document.getElementById('previewCategoryPdf').addEventListener('click', previewCategoryPDF);
+        document.getElementById('generateCategoryPdf').addEventListener('click', () => generateCategoryPDF(true));
+        document.getElementById('downloadPdfFromPreview').addEventListener('click', () => generatePDF(true));
+        document.getElementById('downloadCategoryPdfFromPreview').addEventListener('click', () => generateCategoryPDF(true));
+        document.getElementById('downloadSummaryPdfFromPreview').addEventListener('click', () => generateSummaryPDF(true));
+        document.getElementById('downloadQuickCategoryPdf').addEventListener('click', function() {
+            if (currentQuickCategory) {
+                generateQuickCategoryPDF(currentQuickCategory, false); // Download direto
+                const modal = bootstrap.Modal.getInstance(document.getElementById('quickCategoryPdfPreviewModal'));
+                modal.hide();
+            }
+        });
+
+        // NOVO EVENT LISTENER: Botão Limpar Filtros
+        document.getElementById('clearFiltersBtn').addEventListener('click', clearAllFilters);
+    </script>
+</body>
+</html>
