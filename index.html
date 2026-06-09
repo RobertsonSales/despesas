@@ -166,6 +166,18 @@
         .bg-primary-soft { background: rgba(79, 70, 229, 0.15); color: var(--primary); }
         .badge { font-weight: 600; padding: 0.4em 0.8em; }
 
+        .alert-info {
+            background-color: #e0f2fe;
+            border-color: #0284c7;
+            color: #0c4a6e;
+        }
+
+        [data-theme="dark"] .alert-info {
+            background-color: #082f49;
+            border-color: #0284c7;
+            color: #e0f2fe;
+        }
+
         @media (max-width: 768px) {
             .brand-title span { display: none; }
             .btn span { display: none; }
@@ -208,7 +220,7 @@
             </div>
         </div>
 
-        <div class="row" id="mainContent" style="display: none;color: white;">
+        <div class="row" id="mainContent" style="display: none;">
             <!-- Filters Sidebar -->
             <div class="col-lg-3">
                 <div class="card">
@@ -326,14 +338,14 @@
     <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
-                <div class="modal-header">
+                <div class="modal-header d-flex justify-content-between align-items-center">
                     <h5 class="modal-title fw-bold" id="detailModalLabel">Análise Estrutural</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <div class="d-flex gap-2 align-items-center">
+                        <button type="button" class="btn btn-primary btn-sm" onclick="openPdfPreviewFromDetail('category')"><i class="fas fa-file-pdf me-1"></i>PDF desta Categoria</button>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
                 </div>
                 <div class="modal-body" id="detailBody"></div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" onclick="openPdfPreview('category')"><i class="fas fa-file-pdf"></i>PDF desta Categoria</button>
-                </div>
             </div>
         </div>
     </div>
@@ -363,6 +375,16 @@
             const checked = document.getElementById(type === 'month' ? 'allMonths' : 'allCompanies').checked;
             document.querySelectorAll(`.${type}-check`).forEach(i => i.checked = checked);
             applyFilters();
+        }
+
+        function resetFilters() {
+            document.getElementById('startDate').value = '';
+            document.getElementById('endDate').value = '';
+            document.getElementById('categoryFilter').value = '';
+            document.getElementById('allMonths').checked = true;
+            document.getElementById('allCompanies').checked = true;
+            toggleAll('month');
+            toggleAll('company');
         }
 
         // ============== FORMATTERS ==============
@@ -401,7 +423,15 @@
             reader.onload = (evt) => {
                 try {
                     const wb = XLSX.read(evt.target.result, { type: 'binary' });
-                    const json = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]], { header: 1 });
+                    
+                    // Adequar ao nome da aba "Despesas"
+                    let sheetName = wb.SheetNames.find(name => name.trim() === 'Despesas');
+                    if (!sheetName) {
+                        console.warn('Aba "Despesas" não encontrada. Usando a primeira aba disponível.');
+                        sheetName = wb.SheetNames[0];
+                    }
+                    
+                    const json = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1 });
                     rawData = json.slice(1).filter(r => r[COLS.VALOR]).map(r => {
                         r[8] = parseCurrency(r[COLS.VALOR]);
                         r[9] = parseDate(r[COLS.QUITACAO]);
@@ -441,8 +471,10 @@
         }
 
         function applyFilters() {
-            const start = document.getElementById('startDate').value ? new Date(document.getElementById('startDate').value) : null;
-            const end = document.getElementById('endDate').value ? new Date(document.getElementById('endDate').value) : null;
+            const startInput = document.getElementById('startDate').value;
+            const endInput = document.getElementById('endDate').value;
+            const start = startInput ? new Date(startInput + 'T00:00:00') : null;
+            const end = endInput ? new Date(endInput + 'T23:59:59') : null;
             const cat = document.getElementById('categoryFilter').value;
             const selMos = Array.from(document.querySelectorAll('.month-check:checked')).map(i => i.value);
             const selCos = Array.from(document.querySelectorAll('.company-check:checked')).map(i => i.value);
@@ -498,6 +530,7 @@
             const ctx = document.getElementById('mainChart').getContext('2d');
             if(chart) chart.destroy();
             const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            
             chart = new Chart(ctx, {
                 type: 'doughnut',
                 data: { 
@@ -540,14 +573,14 @@
                 let yPosition = 15;
 
                 // ===== CABEÇALHO DO SISTEMA =====
-                // Background do cabeçalho
                 doc.setFillColor(248, 250, 252);
                 doc.rect(0, 0, pageWidth, 35, 'F');
                 doc.setDrawColor(226, 232, 240);
                 doc.line(0, 35, pageWidth, 35);
 
+                // Melhor dimensionamento do nome da aplicação
                 doc.setFont('helvetica', 'bold');
-                doc.setFontSize(20);
+                doc.setFontSize(16);
                 doc.setTextColor(79, 70, 229);
                 doc.text('GRUPO LABMEDIC - SISTEMA DE GESTÃO FINANCEIRA', 15, 18);
                 
@@ -597,7 +630,6 @@
                     const companies = Object.entries(companyData).sort((a, b) => b[1].total - a[1].total);
 
                     if (type === 'category') {
-                        // RENDERIZAR CARDS PARA ANÁLISE DETALHADA
                         doc.setFont('helvetica', 'bold');
                         doc.setFontSize(11);
                         doc.setTextColor(79, 70, 229);
@@ -610,26 +642,21 @@
                         let xPos = 15;
 
                         companies.forEach(([co, data], index) => {
-                            // Quebra de linha para cards se ultrapassar a largura
                             if (xPos + cardWidth > pageWidth - 15) {
                                 xPos = 15;
                                 yPosition += cardHeight + gap;
                             }
                             
-                            // Verificar se precisa de nova página
                             if(yPosition + cardHeight > pageHeight - 20) {
                                 doc.addPage();
-                                // Redesenhar cabeçalho simplificado em novas páginas se desejar, ou apenas resetar Y
                                 yPosition = 20;
                                 xPos = 15;
                             }
 
-                            // Desenhar Card
                             doc.setDrawColor(226, 232, 240);
                             doc.setFillColor(255, 255, 255);
                             doc.roundedRect(xPos, yPosition, cardWidth, cardHeight, 3, 3, 'FD');
                             
-                            // Conteúdo do Card
                             doc.setFontSize(8);
                             doc.setTextColor(100, 116, 139);
                             doc.setFont('helvetica', 'bold');
@@ -649,7 +676,6 @@
                         
                         yPosition += cardHeight + 10;
                     } else {
-                        // RENDERIZAR TABELA PARA RELATÓRIO COMPLETO
                         const companySummary = companies.map(([co, data]) => [
                             co,
                             data.count.toString(),
@@ -677,7 +703,6 @@
                         yPosition = doc.lastAutoTable.finalY + 10;
                     }
 
-                    // Verificar se precisa de nova página antes da tabela principal
                     if(yPosition > pageHeight - 40) {
                         doc.addPage();
                         yPosition = 20;
@@ -685,7 +710,7 @@
                 }
 
                 // ===== TABELA PRINCIPAL =====
-                let tableHead = [['Empresa', 'Credor', 'Quitação', 'Valor', 'Natureza']];
+                let tableHead = [['Empresa', 'Credor', 'Descrição', 'Quitação', 'Valor', 'Natureza']];
                 let tableBody = [];
 
                 if(type === 'summary') {
@@ -707,6 +732,7 @@
                     tableBody = dataToExport.map(r => [
                         r[COLS.EMPRESA] || '-',
                         r[COLS.CREDOR] || '-',
+                        r[COLS.DESC] || '-',
                         formatDateBR(r[9]),
                         r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
                         r[COLS.NATUREZA]
@@ -715,6 +741,7 @@
                     tableBody = filteredData.map(r => [
                         r[COLS.EMPRESA] || '-',
                         r[COLS.CREDOR] || '-',
+                        r[COLS.DESC] || '-',
                         formatDateBR(r[9]),
                         r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
                         r[COLS.NATUREZA]
@@ -732,14 +759,11 @@
                     margin: { left: 15, right: 15 }
                 });
 
-                // Gerar blob e URL
                 currentPdfBlob = doc.output('blob');
                 const pdfUrl = URL.createObjectURL(currentPdfBlob);
                 
-                // Atualizar preview
                 document.getElementById('pdfPreviewFrame').src = pdfUrl;
                 
-                // Configurar download com nome descritivo
                 const nomeArquivo = gerarNomeArquivo(type, dataGeracao);
                 document.getElementById('downloadPdfBtn').onclick = function() {
                     const link = document.createElement('a');
@@ -750,13 +774,29 @@
                     document.body.removeChild(link);
                 };
                 
-                // Mostrar modal
                 const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {});
                 pdfModal.show();
             } catch(err) {
                 console.error('Erro ao gerar PDF:', err);
                 alert('Erro ao gerar PDF: ' + err.message);
             }
+        }
+
+        function openPdfPreviewFromDetail(type) {
+            // Fechar o modal de detalhes primeiro
+            const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
+            if (detailModal) {
+                detailModal.hide();
+            }
+            
+            // Aguardar um pouco para garantir que o modal foi fechado
+            setTimeout(() => {
+                // Exibir aviso ao usuário
+                alert('⚠️ Gerando PDF...\n\nO documento será exibido em uma nova janela de visualização.');
+                
+                // Gerar o PDF
+                openPdfPreview(type);
+            }, 300);
         }
 
         function gerarNomeArquivo(type, data) {
@@ -780,6 +820,16 @@
             const data = filteredData.filter(r => r[COLS.NATUREZA] === cat);
             const total = data.reduce((s,r) => s + r[8], 0);
             
+            // Ordenar por empresa (alfabeticamente) e depois por valor (decrescente)
+            const sortedData = [...data].sort((a, b) => {
+                const empresaA = (a[COLS.EMPRESA] || 'Sem Empresa').toString().trim();
+                const empresaB = (b[COLS.EMPRESA] || 'Sem Empresa').toString().trim();
+                
+                if (empresaA < empresaB) return -1;
+                if (empresaA > empresaB) return 1;
+                return b[8] - a[8]; // Dentro da mesma empresa, maior valor primeiro
+            });
+            
             document.getElementById('detailModalLabel').innerText = `Estrutura de Gastos: ${cat}`;
             document.getElementById('detailBody').innerHTML = `
                 <div class="row g-3 mb-4">
@@ -793,39 +843,31 @@
                             <tr>
                                 <th>Empresa</th>
                                 <th>Credor</th>
+                                <th>Descrição</th>
                                 <th>Data</th>
                                 <th class="text-end">Valor</th>
-                                <th>Natureza</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${data.map(r => `
+                            ${sortedData.map(r => `
                                 <tr>
-                                    <td><small>${r[COLS.EMPRESA] || '-'}</small></td>
+                                    <td>${r[COLS.EMPRESA] || '-'}</td>
                                     <td>${r[COLS.CREDOR] || '-'}</td>
+                                    <td>${r[COLS.DESC] || '-'}</td>
                                     <td>${formatDateBR(r[9])}</td>
-                                    <td class="text-end fw-bold">${r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
-                                    <td><span class="badge bg-primary-soft">${r[COLS.NATUREZA]}</span></td>
-                                </tr>`).join('')}
+                                    <td class="text-end">${r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
+                                </tr>
+                            `).join('')}
                         </tbody>
                     </table>
-                </div>`;
+                </div>
+            `;
             
             const detailModal = new bootstrap.Modal(document.getElementById('detailModal'), {});
             detailModal.show();
         }
 
-        function resetFilters() {
-            document.getElementById('categoryFilter').value = '';
-            document.getElementById('startDate').value = '';
-            document.getElementById('endDate').value = '';
-            document.getElementById('allMonths').checked = true;
-            document.getElementById('allCompanies').checked = true;
-            toggleAll('month');
-            toggleAll('company');
-        }
-
-        initTheme();
+        window.onload = initTheme;
     </script>
 </body>
 </html>
