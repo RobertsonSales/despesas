@@ -178,6 +178,112 @@
             color: #e0f2fe;
         }
 
+        /* ===== YEAR SELECTOR ===== */
+        .year-selector-wrap {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+        .year-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            border: 1.5px solid var(--border-color);
+            font-size: 0.78rem;
+            font-weight: 700;
+            cursor: pointer;
+            background: var(--bg-body);
+            color: var(--text-muted);
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .year-pill input[type="checkbox"] { display: none; }
+        .year-pill.active {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        .year-pill:not(.active):hover {
+            border-color: var(--primary);
+            color: var(--primary);
+        }
+
+        /* ===== MOBILE COLLAPSIBLE FILTER ===== */
+        @media (max-width: 991px) {
+            .filter-sidebar-toggle {
+                display: flex !important;
+            }
+            .filter-sidebar-body {
+                overflow: hidden;
+                max-height: 0;
+                transition: max-height 0.4s ease, opacity 0.3s ease;
+                opacity: 0;
+            }
+            .filter-sidebar-body.open {
+                max-height: 1200px;
+                opacity: 1;
+            }
+            .filter-sidebar-toggle .toggle-icon {
+                transition: transform 0.3s ease;
+            }
+            .filter-sidebar-toggle.expanded .toggle-icon {
+                transform: rotate(180deg);
+            }
+        }
+
+        .filter-sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: var(--text-main);
+        }
+        .filter-sidebar-toggle .toggle-label {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .filter-sidebar-toggle .toggle-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: var(--primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+        }
+        .filter-sidebar-toggle .toggle-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+        }
+
+        /* Desktop: sempre visível */
+        @media (min-width: 992px) {
+            .filter-sidebar-body {
+                max-height: none !important;
+                opacity: 1 !important;
+                overflow: visible !important;
+            }
+        }
+
         @media (max-width: 768px) {
             .brand-title span { display: none; }
             .btn span { display: none; }
@@ -224,13 +330,30 @@
             <!-- Filters Sidebar -->
             <div class="col-lg-3">
                 <div class="card">
-                    <div class="card-header text-primary">Refinar Busca</div>
+                    <div class="card-header" style="cursor:default;">
+                        <!-- Mobile toggle button -->
+                        <button class="filter-sidebar-toggle" id="filterToggleBtn" onclick="toggleFilterSidebar()" aria-expanded="false" aria-controls="filterSidebarBody">
+                            <span class="toggle-label">
+                                <i class="fas fa-sliders-h"></i>
+                                Refinar Busca
+                                <span class="toggle-badge" id="activeFiltersBadge" style="display:none">●</span>
+                            </span>
+                            <span class="toggle-icon"><i class="fas fa-chevron-down toggle-icon-i"></i></span>
+                        </button>
+                        <!-- Desktop label (always visible) -->
+                        <span class="text-primary d-none d-lg-inline fw-bold"><i class="fas fa-sliders-h me-2"></i>Refinar Busca</span>
+                    </div>
+                    <div class="filter-sidebar-body" id="filterSidebarBody">
                     <div class="card-body">
                         <div class="mb-4">
-                            <label class="form-label">Categoria Principal</label>
-                            <select id="categoryFilter" class="form-select" onchange="applyFilters()">
-                                <option value="">Todas as Categorias</option>
-                            </select>
+                            <label class="form-label d-flex justify-content-between align-items-center">
+                                Categoria Principal
+                                <div class="form-check m-0">
+                                    <input class="form-check-input" type="checkbox" id="allCategories" checked onclick="toggleAll('category')">
+                                    <label class="form-check-label small" for="allCategories">Todas</label>
+                                </div>
+                            </label>
+                            <div class="scroll-list" id="categoryList" style="max-height:130px;font-size:0.8rem;"></div>
                         </div>
                         <div class="mb-4">
                             <label class="form-label d-flex justify-content-between align-items-center">
@@ -240,6 +363,8 @@
                                     <label class="form-check-label small" for="allMonths">Todos</label>
                                 </div>
                             </label>
+                            <!-- Year selector pills -->
+                            <div class="year-selector-wrap" id="yearSelector"></div>
                             <div class="scroll-list" id="monthList"></div>
                         </div>
                         <div class="mb-4">
@@ -253,6 +378,7 @@
                             <div class="scroll-list" id="companyList"></div>
                         </div>
                         <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetFilters()">Limpar Filtros</button>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -372,7 +498,8 @@
         }
 
         function toggleAll(type) {
-            const checked = document.getElementById(type === 'month' ? 'allMonths' : 'allCompanies').checked;
+            const idMap = { month: 'allMonths', company: 'allCompanies', category: 'allCategories' };
+            const checked = document.getElementById(idMap[type]).checked;
             document.querySelectorAll(`.${type}-check`).forEach(i => i.checked = checked);
             applyFilters();
         }
@@ -380,11 +507,32 @@
         function resetFilters() {
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
-            document.getElementById('categoryFilter').value = '';
+            // Reset categories
+            document.getElementById('allCategories').checked = true;
+            document.querySelectorAll('.category-check').forEach(i => i.checked = true);
+            // Reset years: select all
+            const allMonths = new Set();
+            rawData.forEach(r => {
+                if (r[9]) allMonths.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2,'0')}`);
+            });
+            const years = new Set(Array.from(allMonths).map(m => m.split('-')[0]));
+            selectedYears = new Set(Array.from(years));
+            renderYearSelector(years);
+            renderMonthList(allMonths, true);
             document.getElementById('allMonths').checked = true;
             document.getElementById('allCompanies').checked = true;
-            toggleAll('month');
             toggleAll('company');
+            applyFilters();
+        }
+
+        // ===== MOBILE FILTER TOGGLE =====
+        function toggleFilterSidebar() {
+            const body = document.getElementById('filterSidebarBody');
+            const btn = document.getElementById('filterToggleBtn');
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open', !isOpen);
+            btn.classList.toggle('expanded', !isOpen);
+            btn.setAttribute('aria-expanded', String(!isOpen));
         }
 
         // ============== FORMATTERS ==============
@@ -405,14 +553,34 @@
             return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
         }
 
+        // Conversão de serial Excel para Date LOCAL — sem nenhum envolvimento de UTC.
+        // Usa a base 30/12/1899 em tempo LOCAL, garantindo resultado idêntico
+        // independentemente do fuso horário do navegador.
+        function excelSerialToLocalDate(serial) {
+            const base = new Date(1899, 11, 30); // 30/12/1899 — hora local, sem UTC
+            base.setDate(base.getDate() + Math.trunc(serial));
+            return base;
+        }
+
         function parseDate(v) {
-            if(!v) return null;
-            if(typeof v === 'number') return new Date(Math.round((v - 25569) * 864e5));
-            const p = v.toString().split(/[-/]/);
-            if(p.length === 3) {
-                let d = parseInt(p[0]), m = parseInt(p[1]) - 1, y = parseInt(p[2]);
-                if(y < 100) y += 2000;
-                return new Date(y, m, d);
+            if (v === null || v === undefined || v === '') return null;
+            // Date object vindo do SheetJS (cellDates:true): extrair componentes UTC
+            if (v instanceof Date) {
+                return new Date(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate());
+            }
+            // Serial numérico (caso mais comum com raw:true)
+            if (typeof v === 'number') return excelSerialToLocalDate(v);
+            // String no formato ISO: "2025-07-01" — new Date(str) é UTC; extrair componentes
+            const raw = v.toString().trim();
+            if (!raw) return null;
+            const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+            // String no formato BR: "01/07/2025" ou "01-07-2025"
+            const br = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
+            if (br) {
+                let y = Number(br[3]);
+                if (y < 100) y += 2000;
+                return new Date(y, Number(br[2]) - 1, Number(br[1]));
             }
             return null;
         }
@@ -431,8 +599,8 @@
                         sheetName = wb.SheetNames[0];
                     }
                     
-                    const json = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1 });
-                    rawData = json.slice(1).filter(r => r[COLS.VALOR]).map(r => {
+                    const json = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, raw: true });
+                    rawData = json.slice(1).filter(r => typeof r[COLS.VALOR] === 'number' && r[COLS.VALOR]).map(r => {
                         r[8] = parseCurrency(r[COLS.VALOR]);
                         r[9] = parseDate(r[COLS.QUITACAO]);
                         r[10] = parseDate(r[COLS.VENCTO]);
@@ -446,6 +614,9 @@
             reader.readAsBinaryString(e.target.files[0]);
         });
 
+        // Keeps track of which years are selected in the year-pill selector
+        let selectedYears = new Set();
+
         function initFilters() {
             const cats = new Set(), cos = new Set(), mos = new Set();
             rawData.forEach(r => {
@@ -455,19 +626,105 @@
                 if(r[9]) mos.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2, '0')}`);
             });
 
-            const catSel = document.getElementById('categoryFilter');
-            catSel.innerHTML = '<option value="">Todas as Categorias</option>';
-            Array.from(cats).sort().forEach(c => catSel.innerHTML += `<option value="${c}">${c}</option>`);
+            // Category checklist (multi-select, small font)
+            const catEl = document.getElementById('categoryList');
+            catEl.innerHTML = '';
+            Array.from(cats).sort().forEach(c => {
+                catEl.innerHTML += `<div class="form-check"><input class="form-check-input category-check" type="checkbox" value="${c}" id="cat-${c}" checked onchange="syncAllCheckbox('category');applyFilters()"><label class="form-check-label small" for="cat-${c}" style="font-size:0.8rem">${c}</label></div>`;
+            });
+
+            // Build year set from months — default: ALL years active
+            const years = new Set(Array.from(mos).map(m => m.split('-')[0]));
+            selectedYears = new Set(Array.from(years));
+
+            renderYearSelector(years);
+            renderMonthList(mos, true);
 
             const renderChecklist = (id, items, cls) => {
                 const el = document.getElementById(id); el.innerHTML = '';
                 Array.from(items).sort().reverse().forEach(i => {
                     const label = i.includes('-') ? i.split('-').reverse().join('/') : i;
-                    el.innerHTML += `<div class="form-check"><input class="form-check-input ${cls}" type="checkbox" value="${i}" id="${i}" checked onchange="applyFilters()"><label class="form-check-label small" for="${i}">${label}</label></div>`;
+                    el.innerHTML += `<div class="form-check"><input class="form-check-input ${cls}" type="checkbox" value="${i}" id="co-${i}" checked onchange="applyFilters()"><label class="form-check-label small" for="co-${i}">${label}</label></div>`;
                 });
             };
-            renderChecklist('monthList', mos, 'month-check');
             renderChecklist('companyList', cos, 'company-check');
+        }
+
+        function syncAllCheckbox(type) {
+            const idMap = { month: 'allMonths', company: 'allCompanies', category: 'allCategories' };
+            const all = document.querySelectorAll(`.${type}-check`);
+            const checked = document.querySelectorAll(`.${type}-check:checked`);
+            document.getElementById(idMap[type]).checked = all.length > 0 && all.length === checked.length;
+        }
+
+        function renderYearSelector(years) {
+            const wrap = document.getElementById('yearSelector');
+            wrap.innerHTML = '';
+            const sortedYears = Array.from(years).sort();
+            // "Todos" pill
+            const allPill = document.createElement('label');
+            allPill.className = 'year-pill' + (selectedYears.size === sortedYears.length ? ' active' : '');
+            allPill.id = 'year-pill-all';
+            allPill.innerHTML = `<i class="fas fa-calendar-check"></i>Todos`;
+            allPill.addEventListener('click', function(e) {
+                e.preventDefault();
+                selectedYears = new Set(sortedYears);
+                const allMonths = new Set();
+                rawData.forEach(r => {
+                    if (r[9]) allMonths.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2,'0')}`);
+                });
+                // Update pill styles
+                document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('active'));
+                allPill.classList.add('active');
+                renderMonthList(allMonths, true);
+                applyFilters();
+            });
+            wrap.appendChild(allPill);
+
+            sortedYears.forEach(y => {
+                const pill = document.createElement('label');
+                pill.className = 'year-pill' + (selectedYears.has(y) && selectedYears.size === 1 ? ' active' : '');
+                pill.id = `year-pill-${y}`;
+                pill.innerHTML = `<i class="fas fa-calendar-alt"></i>${y}`;
+                pill.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    // Exclusive selection: only this year active
+                    selectedYears = new Set([y]);
+                    // Update pill styles
+                    document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
+                    const allMonths = new Set();
+                    rawData.forEach(r => {
+                        if (r[9]) allMonths.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2,'0')}`);
+                    });
+                    renderMonthList(allMonths, true);
+                    applyFilters();
+                });
+                wrap.appendChild(pill);
+            });
+
+            // Highlight "Todos" if all years selected
+            if (selectedYears.size === sortedYears.length) {
+                allPill.classList.add('active');
+            }
+        }
+
+        function renderMonthList(allMonths, checkAll) {
+            const el = document.getElementById('monthList');
+            const prevChecked = new Set(
+                Array.from(document.querySelectorAll('.month-check:checked')).map(i => i.value)
+            );
+            const hadPrev = !checkAll && document.querySelectorAll('.month-check').length > 0;
+            el.innerHTML = '';
+            const visible = Array.from(allMonths)
+                .filter(m => selectedYears.has(m.split('-')[0]))
+                .sort().reverse();
+            visible.forEach(i => {
+                const label = i.split('-').reverse().join('/');
+                const isChecked = hadPrev ? prevChecked.has(i) : true;
+                el.innerHTML += `<div class="form-check"><input class="form-check-input month-check" type="checkbox" value="${i}" id="m-${i}" ${isChecked ? 'checked' : ''} onchange="syncAllCheckbox('month');applyFilters()"><label class="form-check-label small" for="m-${i}">${label}</label></div>`;
+            });
+            syncAllCheckbox('month');
         }
 
         function applyFilters() {
@@ -475,7 +732,7 @@
             const endInput = document.getElementById('endDate').value;
             const start = startInput ? new Date(startInput + 'T00:00:00') : null;
             const end = endInput ? new Date(endInput + 'T23:59:59') : null;
-            const cat = document.getElementById('categoryFilter').value;
+            const selCats = Array.from(document.querySelectorAll('.category-check:checked')).map(i => i.value);
             const selMos = Array.from(document.querySelectorAll('.month-check:checked')).map(i => i.value);
             const selCos = Array.from(document.querySelectorAll('.company-check:checked')).map(i => i.value);
 
@@ -483,7 +740,7 @@
                 const d = r[9]; if(!d) return false;
                 if(start && d < start) return false;
                 if(end && d > end) return false;
-                if(cat && r[COLS.NATUREZA] !== cat) return false;
+                if(selCats.length && !selCats.includes(r[COLS.NATUREZA])) return false;
                 if(selMos.length && !selMos.includes(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2, '0')}`)) return false;
                 const co = (r[COLS.EMPRESA] || 'Sem Empresa').toString().trim();
                 if(selCos.length && !selCos.includes(co)) return false;
@@ -522,7 +779,8 @@
             });
 
             renderChart();
-            document.getElementById('btnDetail').style.display = document.getElementById('categoryFilter').value ? 'inline-flex' : 'none';
+            const selCatsForDetail = Array.from(document.querySelectorAll('.category-check:checked')).map(i => i.value);
+            document.getElementById('btnDetail').style.display = selCatsForDetail.length === 1 ? 'inline-flex' : 'none';
         }
 
         function renderChart() {
@@ -603,7 +861,7 @@
 
                 // ===== TÍTULO DO RELATÓRIO =====
                 let reportTitle = 'RELATÓRIO GERAL DE DESPESAS';
-                const selectedCategory = document.getElementById('categoryFilter').value;
+                const selectedCategory = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value).join(', ');
                 if(type === 'summary') reportTitle = 'RESUMO EXECUTIVO POR CATEGORIA';
                 else if(type === 'category') reportTitle = `ANÁLISE DETALHADA: ${selectedCategory.toUpperCase()}`;
 
@@ -726,7 +984,7 @@
                     
                     tableHead = [['Categoria', 'Total Acumulado']];
                 } else if(type === 'category') {
-                    const cat = document.getElementById('categoryFilter').value;
+                    const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value)[0] || '';
                     const dataToExport = filteredData.filter(r => r[COLS.NATUREZA] === cat);
                     
                     tableBody = dataToExport.map(r => [
@@ -808,7 +1066,7 @@
             let nomeRelatorio = 'Relatorio Geral de Despesas';
             if(type === 'summary') nomeRelatorio = 'Resumo Executivo por Categoria';
             else if(type === 'category') {
-                const cat = document.getElementById('categoryFilter').value || 'Categoria';
+                const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value).join(', ') || 'Categoria';
                 nomeRelatorio = `Analise Detalhada - ${cat}`;
             }
             
@@ -816,7 +1074,7 @@
         }
 
         function showCategoryDetail() {
-            const cat = document.getElementById('categoryFilter').value;
+            const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value)[0] || '';
             const data = filteredData.filter(r => r[COLS.NATUREZA] === cat);
             const total = data.reduce((s,r) => s + r[8], 0);
             
