@@ -284,6 +284,84 @@
             }
         }
 
+        /* ===== SEARCH BOX ===== */
+        .smart-search-wrap {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .smart-search-wrap .search-icon {
+            position: absolute;
+            left: 12px;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            pointer-events: none;
+            z-index: 1;
+        }
+        .smart-search-wrap .search-clear-btn {
+            position: absolute;
+            right: 10px;
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            padding: 2px 4px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            display: none;
+            z-index: 1;
+        }
+        .smart-search-wrap .search-clear-btn:hover { color: var(--danger); }
+        #smartSearch {
+            padding-left: 34px;
+            padding-right: 30px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--bg-card);
+            color: var(--text-main);
+            font-size: 0.875rem;
+            height: 38px;
+            width: 260px;
+            transition: var(--transition);
+        }
+        #smartSearch:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79,70,229,0.15);
+            outline: none;
+        }
+        #smartSearch::placeholder { color: var(--text-muted); }
+        .search-active-indicator {
+            display: none;
+            font-size: 0.7rem;
+            color: var(--primary);
+            font-weight: 700;
+            background: rgba(79,70,229,0.1);
+            border-radius: 20px;
+            padding: 2px 8px;
+            white-space: nowrap;
+            align-items: center;
+            gap: 4px;
+        }
+        .btn-clear-all {
+            border: 2px solid var(--danger);
+            color: var(--danger);
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 0.4rem 1rem;
+            font-size: 0.82rem;
+            transition: var(--transition);
+            white-space: nowrap;
+        }
+        .btn-clear-all:hover {
+            background: var(--danger);
+            color: white;
+            transform: translateY(-1px);
+        }
+
         @media (max-width: 768px) {
             .brand-title span { display: none; }
             .btn span { display: none; }
@@ -400,10 +478,18 @@
                     </div>
                 </div>
 
-                <div class="d-flex flex-wrap gap-2 mb-4">
+                <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
                     <button class="btn btn-success shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
                     <button class="btn btn-outline-primary shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
                     <button class="btn btn-primary shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
+                    <div class="vr mx-1 d-none d-md-block" style="opacity:0.25;"></div>
+                    <div class="smart-search-wrap">
+                        <i class="fas fa-search search-icon"></i>
+                        <input type="text" id="smartSearch" placeholder="Buscar em qualquer coluna..." oninput="onSearchInput()" autocomplete="off">
+                        <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" title="Limpar busca"><i class="fas fa-times"></i></button>
+                    </div>
+                    <span class="search-active-indicator" id="searchActiveIndicator"><i class="fas fa-filter"></i>&nbsp;<span id="searchResultCount">0</span>&nbsp;resultados</span>
+                    <button class="btn-clear-all shadow-sm" onclick="resetFilters()" title="Limpar todos os filtros selecionados"><i class="fas fa-times-circle"></i>Limpar Filtros</button>
                 </div>
 
                 <div class="row">
@@ -481,6 +567,7 @@
         let filteredData = [];
         let chart = null;
         let currentPdfBlob = null;
+        let searchTerm = '';
 
         const COLS = { CREDOR:0, VENCTO:1, DESC:2, VALOR:3, QUITACAO:4, BANCO:5, NATUREZA:6, EMPRESA:7 };
 
@@ -507,6 +594,12 @@
         function resetFilters() {
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
+            // Reset search
+            if (document.getElementById('smartSearch')) {
+                document.getElementById('smartSearch').value = '';
+                searchTerm = '';
+                document.getElementById('searchClearBtn').style.display = 'none';
+            }
             // Reset categories
             document.getElementById('allCategories').checked = true;
             document.querySelectorAll('.category-check').forEach(i => i.checked = true);
@@ -535,11 +628,31 @@
             btn.setAttribute('aria-expanded', String(!isOpen));
         }
 
+        // ===== SMART SEARCH =====
+        function onSearchInput() {
+            searchTerm = (document.getElementById('smartSearch').value || '').trim().toLowerCase();
+            const clearBtn = document.getElementById('searchClearBtn');
+            clearBtn.style.display = searchTerm ? 'block' : 'none';
+            applyFilters();
+        }
+
+        function clearSearch() {
+            document.getElementById('smartSearch').value = '';
+            searchTerm = '';
+            document.getElementById('searchClearBtn').style.display = 'none';
+            applyFilters();
+        }
+
         // ============== FORMATTERS ==============
         function parseCurrency(v) {
-            if(!v) return 0;
+            if(v === null || v === undefined || v === '') return 0;
             if(typeof v === 'number') return v;
-            let cleaned = v.toString().replace(/R\$/g, '').replace(/\s/g, '').replace(/\./g, '').replace(',', '.');
+            // Remove R$, espaços normais e não-separáveis (\xa0), depois formata separadores BR
+            let cleaned = v.toString()
+                .replace(/R\$/g, '')
+                .replace(/[\s\u00A0]/g, '')
+                .replace(/\./g, '')
+                .replace(',', '.');
             return parseFloat(cleaned) || 0;
         }
 
@@ -600,12 +713,16 @@
                     }
                     
                     const json = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, raw: true });
-                    rawData = json.slice(1).filter(r => typeof r[COLS.VALOR] === 'number' && r[COLS.VALOR]).map(r => {
+                    rawData = json.slice(1).map(r => {
                         r[8] = parseCurrency(r[COLS.VALOR]);
                         r[9] = parseDate(r[COLS.QUITACAO]);
                         r[10] = parseDate(r[COLS.VENCTO]);
+                        // Normaliza NATUREZA nula para categoria genérica
+                        if (!r[COLS.NATUREZA] || String(r[COLS.NATUREZA]).trim() === '') {
+                            r[COLS.NATUREZA] = 'SEM CATEGORIA';
+                        }
                         return r;
-                    });
+                    }).filter(r => r[8] > 0);
                     initFilters();
                     document.getElementById('mainContent').style.display = 'flex';
                     applyFilters();
@@ -744,6 +861,16 @@
                 if(selMos.length && !selMos.includes(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2, '0')}`)) return false;
                 const co = (r[COLS.EMPRESA] || 'Sem Empresa').toString().trim();
                 if(selCos.length && !selCos.includes(co)) return false;
+                // Smart search across all columns
+                if(searchTerm) {
+                    const haystack = [
+                        r[COLS.EMPRESA], r[COLS.CREDOR], r[COLS.DESC],
+                        r[COLS.NATUREZA], r[COLS.BANCO],
+                        formatDateBR(r[9]), formatDateBR(r[10]),
+                        r[8] ? r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'}) : ''
+                    ].map(v => (v || '').toString().toLowerCase()).join(' ');
+                    if (!haystack.includes(searchTerm)) return false;
+                }
                 return true;
             });
 
@@ -764,6 +891,17 @@
             document.getElementById('statCount').innerText = filteredData.length;
             document.getElementById('statCats').innerText = new Set(filteredData.map(r => r[COLS.NATUREZA])).size;
             document.getElementById('tableCount').innerText = `${filteredData.length} registros`;
+
+            // Update search indicator
+            const indicator = document.getElementById('searchActiveIndicator');
+            if (indicator) {
+                if (searchTerm) {
+                    document.getElementById('searchResultCount').innerText = filteredData.length;
+                    indicator.style.display = 'inline-flex';
+                } else {
+                    indicator.style.display = 'none';
+                }
+            }
 
             const tbody = document.getElementById('tableBody');
             tbody.innerHTML = '';
@@ -972,17 +1110,191 @@
                 let tableBody = [];
 
                 if(type === 'summary') {
-                    const map = {};
+
+                    // ── 1. RESUMO POR CATEGORIA ──────────────────────────────────
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(79, 70, 229);
+                    doc.text('RESUMO POR CATEGORIA', 15, yPosition);
+                    yPosition += 6;
+
+                    const catMap = {};
                     filteredData.forEach(r => {
                         const cat = r[COLS.NATUREZA] || 'Sem Categoria';
-                        map[cat] = (map[cat] || 0) + r[8];
+                        catMap[cat] = (catMap[cat] || 0) + r[8];
                     });
-                    
-                    tableBody = Object.entries(map)
-                        .sort((a,b) => b[1] - a[1])
-                        .map(([cat, val]) => [cat, val.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})]);
-                    
-                    tableHead = [['Categoria', 'Total Acumulado']];
+                    const grandTotal = filteredData.reduce((s, r) => s + r[8], 0);
+
+                    const catSummaryRows = Object.entries(catMap)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([cat, val]) => [
+                            cat,
+                            val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                            grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) + '%' : '0%'
+                        ]);
+
+                    // Linha de total geral
+                    catSummaryRows.push([
+                        { content: 'TOTAL GERAL', styles: { fontStyle: 'bold', fillColor: [237, 233, 254], textColor: [79, 70, 229] } },
+                        { content: grandTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), styles: { fontStyle: 'bold', halign: 'right', fillColor: [237, 233, 254], textColor: [79, 70, 229] } },
+                        { content: '100%', styles: { fontStyle: 'bold', halign: 'center', fillColor: [237, 233, 254], textColor: [79, 70, 229] } }
+                    ]);
+
+                    doc.autoTable({
+                        startY: yPosition,
+                        head: [['Categoria', 'Total Acumulado', '% do Total']],
+                        body: catSummaryRows,
+                        theme: 'striped',
+                        styles: { fontSize: 8, textColor: [0, 0, 0] },
+                        headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+                        columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' } },
+                        bodyStyles: { textColor: [0, 0, 0] },
+                        margin: { left: 15, right: 15 }
+                    });
+                    yPosition = doc.lastAutoTable.finalY + 14;
+
+                    // ── 2. TABELA PIVÔ: linhas = categoria, colunas = empresas ───────
+                    if (yPosition > pageHeight - 40) { doc.addPage(); yPosition = 20; }
+
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(79, 70, 229);
+                    doc.text('VOLUME POR EMPRESA × CATEGORIA', 15, yPosition);
+                    yPosition += 5;
+
+                    doc.setFont('helvetica', 'italic');
+                    doc.setFontSize(7.5);
+                    doc.setTextColor(100, 116, 139);
+                    const selCatsLabel = Array.from(document.querySelectorAll('.category-check:checked')).map(i => i.value).join(', ') || 'Todas';
+                    const selMosLabel  = Array.from(document.querySelectorAll('.month-check:checked')).map(i => i.value).join(', ')  || 'Todos';
+                    const searchLabel  = searchTerm ? ` | Busca: "${searchTerm}"` : '';
+                    doc.text(
+                        `Filtros — Categorias: ${selCatsLabel.substring(0, 70)} | Meses: ${selMosLabel.substring(0, 50)}${searchLabel}`,
+                        15, yPosition + 4
+                    );
+                    yPosition += 11;
+
+                    // ── Monta estrutura pivô ──────────────────────────────────────────
+                    // pivot[categoria][empresa] = valor
+                    const pivot = {};
+                    const empTotals = {};   // total por empresa
+                    const catTotals = {};   // total por categoria
+
+                    filteredData.forEach(r => {
+                        const cat = (r[COLS.NATUREZA] || 'Sem Categoria').toString().trim();
+                        const emp = (r[COLS.EMPRESA]  || 'Sem Empresa'  ).toString().trim();
+                        const val = r[8];
+
+                        if (!pivot[cat]) pivot[cat] = {};
+                        pivot[cat][emp] = (pivot[cat][emp] || 0) + val;
+
+                        empTotals[emp] = (empTotals[emp] || 0) + val;
+                        catTotals[cat] = (catTotals[cat] || 0) + val;
+                    });
+
+                    // Empresas ordenadas por total desc
+                    const empresasCols = Object.entries(empTotals)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([e]) => e);
+
+                    // Categorias ordenadas por total desc
+                    const categoriaRows = Object.entries(catTotals)
+                        .sort((a, b) => b[1] - a[1])
+                        .map(([c]) => c);
+
+                    // ── Cabeçalho dinâmico ────────────────────────────────────────────
+                    const brl = v => v > 0
+                        ? v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+                        : '-';
+
+                    const pivotHead = [['Categoria', ...empresasCols, 'Total Geral']];
+
+                    // ── Linhas de dados ───────────────────────────────────────────────
+                    const pivotBody = categoriaRows.map((cat, rowIdx) => {
+                        const bg = rowIdx % 2 === 0 ? [248, 250, 252] : [255, 255, 255];
+                        const catRow = [
+                            { content: cat, styles: { fontStyle: 'bold', fillColor: bg, textColor: [30, 41, 59] } }
+                        ];
+                        empresasCols.forEach(emp => {
+                            const v = (pivot[cat] && pivot[cat][emp]) || 0;
+                            catRow.push({
+                                content: brl(v),
+                                styles: {
+                                    halign: 'right',
+                                    fillColor: bg,
+                                    textColor: v > 0 ? [30, 41, 59] : [180, 180, 180]
+                                }
+                            });
+                        });
+                        // Total da categoria
+                        catRow.push({
+                            content: brl(catTotals[cat]),
+                            styles: { halign: 'right', fontStyle: 'bold', fillColor: bg, textColor: [79, 70, 229] }
+                        });
+                        return catRow;
+                    });
+
+                    // ── Linha de totais por empresa ───────────────────────────────────
+                    const totalRow = [
+                        { content: 'TOTAL GERAL', styles: { fontStyle: 'bold', fillColor: [79, 70, 229], textColor: [255, 255, 255] } }
+                    ];
+                    empresasCols.forEach(emp => {
+                        totalRow.push({
+                            content: brl(empTotals[emp]),
+                            styles: { halign: 'right', fontStyle: 'bold', fillColor: [79, 70, 229], textColor: [255, 255, 255] }
+                        });
+                    });
+                    totalRow.push({
+                        content: brl(grandTotal),
+                        styles: { halign: 'right', fontStyle: 'bold', fillColor: [30, 41, 59], textColor: [255, 255, 255] }
+                    });
+                    pivotBody.push(totalRow);
+
+                    // ── Larguras de coluna ────────────────────────────────────────────
+                    // Página landscape A4: 297mm - 30mm margens = 267mm utilizáveis
+                    const usableWidth = pageWidth - 30;
+                    const catColW   = Math.min(60, usableWidth * 0.28);
+                    const totalColW = Math.min(32, usableWidth * 0.12);
+                    const remaining = usableWidth - catColW - totalColW;
+                    const empColW   = empresasCols.length > 0
+                        ? Math.max(22, remaining / empresasCols.length)
+                        : remaining;
+
+                    // Tamanho da fonte adaptável: reduz se muitas empresas
+                    const pivotFontSize = empresasCols.length <= 4 ? 8
+                        : empresasCols.length <= 7 ? 7
+                        : 6;
+
+                    const colStyles = { 0: { cellWidth: catColW, fontStyle: 'bold' } };
+                    empresasCols.forEach((_, i) => {
+                        colStyles[i + 1] = { cellWidth: empColW, halign: 'right' };
+                    });
+                    colStyles[empresasCols.length + 1] = { cellWidth: totalColW, halign: 'right', fontStyle: 'bold' };
+
+                    doc.autoTable({
+                        startY: yPosition,
+                        head: pivotHead,
+                        body: pivotBody,
+                        theme: 'plain',
+                        styles: { fontSize: pivotFontSize, cellPadding: 2.5, overflow: 'ellipsize' },
+                        headStyles: {
+                            fillColor: [30, 41, 59],
+                            textColor: [255, 255, 255],
+                            fontStyle: 'bold',
+                            halign: 'right',
+                            fontSize: pivotFontSize
+                        },
+                        columnStyles: colStyles,
+                        didParseCell: function(data) {
+                            // Cabeçalho coluna 0 (Categoria) alinhado à esquerda
+                            if (data.section === 'head' && data.column.index === 0) {
+                                data.cell.styles.halign = 'left';
+                            }
+                        },
+                        margin: { left: 15, right: 15 }
+                    });
+
+                    tableHead = null; // tabela principal não deve ser re-impressa no modo summary
                 } else if(type === 'category') {
                     const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value)[0] || '';
                     const dataToExport = filteredData.filter(r => r[COLS.NATUREZA] === cat);
@@ -1006,6 +1318,7 @@
                     ]);
                 }
 
+                if (tableHead !== null) {
                 doc.autoTable({
                     startY: yPosition,
                     head: tableHead,
@@ -1016,6 +1329,7 @@
                     bodyStyles: { textColor: [0, 0, 0] },
                     margin: { left: 15, right: 15 }
                 });
+                }
 
                 currentPdfBlob = doc.output('blob');
                 const pdfUrl = URL.createObjectURL(currentPdfBlob);
@@ -1129,3 +1443,4 @@
     </script>
 </body>
 </html>
+
