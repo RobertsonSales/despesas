@@ -362,6 +362,80 @@
             transform: translateY(-1px);
         }
 
+        .comparison-panel .card-header {
+            align-items: flex-start;
+            gap: 1rem;
+        }
+        .comparison-panel .comparison-header-meta {
+            font-size: 0.82rem;
+            color: var(--text-muted);
+            font-weight: 500;
+            margin-top: 0.35rem;
+        }
+        .comparison-summary-card {
+            height: 100%;
+            padding: 1rem 1.1rem;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(79,70,229,0.08) 0%, rgba(79,70,229,0.02) 100%);
+            border: 1px solid rgba(79,70,229,0.14);
+        }
+        .comparison-summary-card .summary-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            font-weight: 700;
+            margin-bottom: 0.35rem;
+        }
+        .comparison-summary-card .summary-value {
+            font-size: 1.18rem;
+            font-weight: 800;
+            color: var(--text-main);
+            line-height: 1.15;
+        }
+        .comparison-summary-card .summary-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            margin-top: 0.35rem;
+        }
+        .comparison-chart-wrap {
+            position: relative;
+            min-height: 360px;
+            height: 360px;
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(79,70,229,0.02) 100%);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .comparison-chart-stage {
+            position: relative;
+            flex: 1 1 auto;
+            min-height: 0;
+            width: 100%;
+        }
+        .comparison-chart-stage canvas {
+            display: block;
+            width: 100% !important;
+            height: 100% !important;
+        }
+        .comparison-chart-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+        }
+        .comparison-empty-state {
+            border: 1px dashed var(--border-color);
+            border-radius: 12px;
+            padding: 1rem;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            background: var(--bg-body);
+        }
+
         @media (max-width: 768px) {
             .brand-title span { display: none; }
             .btn span { display: none; }
@@ -503,6 +577,43 @@
                     </div>
                 </div>
 
+                <div class="card mt-4 comparison-panel d-none" id="comparisonSection">
+                    <div class="card-header text-primary">
+                        <div>
+                            <span>Performance Comparativa das Categorias Selecionadas</span>
+                            <div class="comparison-header-meta" id="comparisonSubtitle">Selecione categorias específicas para visualizar os comparativos automáticos.</div>
+                        </div>
+                        <div class="d-flex gap-2 align-items-center flex-wrap">
+                            <span class="badge bg-primary-soft" id="comparisonBadge">0 categorias</span>
+                            <button class="btn btn-outline-primary btn-sm" id="comparisonPdfBtn" onclick="openPdfPreview('comparison')">
+                                <i class="fas fa-chart-line"></i><span>PDF Comparativo</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row g-3 mb-3" id="comparisonCards"></div>
+                        <div class="row g-4">
+                            <div class="col-xl-7">
+                                <div class="comparison-chart-wrap">
+                                    <div class="comparison-chart-title">Total acumulado e participação por categoria</div>
+                                    <div class="comparison-chart-stage">
+                                        <canvas id="categoryComparisonChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-5">
+                                <div class="comparison-chart-wrap">
+                                    <div class="comparison-chart-title">Ticket médio por categoria</div>
+                                    <div class="comparison-chart-stage">
+                                        <canvas id="categoryAverageChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="comparison-empty-state mt-3" id="comparisonHint">O quadro comparativo é habilitado automaticamente quando o filtro de categorias estiver ativo.</div>
+                    </div>
+                </div>
+
                 <div class="card mt-4">
                     <div class="card-header text-primary">
                         <span>Detalhamento dos Lançamentos</span>
@@ -566,6 +677,10 @@
         let rawData = [];
         let filteredData = [];
         let chart = null;
+        let comparisonChart = null;
+        let comparisonAverageChart = null;
+        let comparisonRenderFrame = null;
+        let comparisonRenderKey = '';
         let currentPdfBlob = null;
         let searchTerm = '';
 
@@ -577,6 +692,7 @@
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
             if(chart) renderChart();
+            scheduleComparisonPanelRender();
         }
 
         function initTheme() {
@@ -664,6 +780,317 @@
         function formatDateTimeBR(date) {
             if(!date) return '-';
             return date.toLocaleDateString('pt-BR') + ' ' + date.toLocaleTimeString('pt-BR', {hour: '2-digit', minute: '2-digit'});
+        }
+
+        function formatCurrencyBR(value) {
+            return Number(value || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+        }
+
+        function getCompanyName(row) {
+            return (row[COLS.EMPRESA] || 'Sem Empresa').toString().trim() || 'Sem Empresa';
+        }
+
+        function getSelectedCategories() {
+            return Array.from(document.querySelectorAll('.category-check:checked')).map(i => i.value);
+        }
+
+        function getCategoryFilterState() {
+            const totalCategories = document.querySelectorAll('.category-check').length;
+            const selectedCategories = getSelectedCategories();
+            return {
+                totalCategories,
+                selectedCategories,
+                isActive: totalCategories > 0 && selectedCategories.length > 0 && selectedCategories.length < totalCategories
+            };
+        }
+
+        function getComparisonPalette(alpha = 0.9) {
+            const colors = [
+                `rgba(79, 70, 229, ${alpha})`,
+                `rgba(16, 185, 129, ${alpha})`,
+                `rgba(245, 158, 11, ${alpha})`,
+                `rgba(239, 68, 68, ${alpha})`,
+                `rgba(59, 130, 246, ${alpha})`,
+                `rgba(139, 92, 246, ${alpha})`,
+                `rgba(236, 72, 153, ${alpha})`,
+                `rgba(6, 182, 212, ${alpha})`
+            ];
+            return colors;
+        }
+
+        function buildCategoryComparisonMetrics(data = filteredData) {
+            const categoriesInScope = new Set(getSelectedCategories());
+            const map = {};
+
+            data.forEach(r => {
+                const category = (r[COLS.NATUREZA] || 'SEM CATEGORIA').toString().trim();
+                if (categoriesInScope.size && !categoriesInScope.has(category)) return;
+                if (!map[category]) map[category] = { label: category, total: 0, count: 0, companies: new Set() };
+                map[category].total += r[8];
+                map[category].count += 1;
+                map[category].companies.add(getCompanyName(r));
+            });
+
+            const metrics = Object.values(map).map(item => ({
+                label: item.label,
+                total: item.total,
+                count: item.count,
+                average: item.count ? item.total / item.count : 0,
+                companies: item.companies.size
+            })).sort((a, b) => b.total - a.total);
+
+            const totalCompared = metrics.reduce((sum, item) => sum + item.total, 0);
+            metrics.forEach(item => item.share = totalCompared ? (item.total / totalCompared) * 100 : 0);
+            return metrics;
+        }
+
+        function buildCompanySummary(data) {
+            const map = {};
+            data.forEach(r => {
+                const company = getCompanyName(r);
+                if (!map[company]) map[company] = { total: 0, count: 0, categories: new Set() };
+                map[company].total += r[8];
+                map[company].count += 1;
+                map[company].categories.add((r[COLS.NATUREZA] || 'SEM CATEGORIA').toString().trim());
+            });
+
+            return Object.entries(map).map(([company, info]) => ({
+                company,
+                total: info.total,
+                count: info.count,
+                average: info.count ? info.total / info.count : 0,
+                categories: info.categories.size
+            })).sort((a, b) => b.total - a.total);
+        }
+
+        function destroyComparisonCharts() {
+            if (comparisonChart) { comparisonChart.destroy(); comparisonChart = null; }
+            if (comparisonAverageChart) { comparisonAverageChart.destroy(); comparisonAverageChart = null; }
+            comparisonRenderKey = '';
+        }
+
+        function buildComparisonRenderKey(metrics, selectedCategories) {
+            const theme = document.documentElement.getAttribute('data-theme') || 'light';
+            const metricSignature = metrics.map(item => `${item.label}:${item.total.toFixed(2)}:${item.average.toFixed(2)}:${item.count}`).join('|');
+            return [theme, filteredData.length, selectedCategories.join('|'), metricSignature].join('::');
+        }
+
+        function scheduleComparisonPanelRender() {
+            if (comparisonRenderFrame) cancelAnimationFrame(comparisonRenderFrame);
+            comparisonRenderFrame = requestAnimationFrame(() => {
+                comparisonRenderFrame = null;
+                renderComparisonPanel();
+            });
+        }
+
+        function renderComparisonPanel() {
+            const section = document.getElementById('comparisonSection');
+            if (!section) return;
+
+            const { isActive, selectedCategories } = getCategoryFilterState();
+            const comparisonHint = document.getElementById('comparisonHint');
+            const comparisonCards = document.getElementById('comparisonCards');
+
+            if (!isActive || !selectedCategories.length || !filteredData.length) {
+                section.classList.add('d-none');
+                destroyComparisonCharts();
+                comparisonCards.innerHTML = '';
+                if (comparisonHint) comparisonHint.style.display = 'block';
+                return;
+            }
+
+            const metrics = buildCategoryComparisonMetrics();
+            if (!metrics.length) {
+                section.classList.add('d-none');
+                destroyComparisonCharts();
+                comparisonCards.innerHTML = '';
+                if (comparisonHint) comparisonHint.style.display = 'block';
+                return;
+            }
+
+            section.classList.remove('d-none');
+            if (comparisonHint) comparisonHint.style.display = 'none';
+
+            const renderKey = buildComparisonRenderKey(metrics, selectedCategories);
+            if (renderKey === comparisonRenderKey && comparisonChart && comparisonAverageChart) {
+                return;
+            }
+
+            const totalCompared = metrics.reduce((sum, item) => sum + item.total, 0);
+            const totalItems = metrics.reduce((sum, item) => sum + item.count, 0);
+            const totalCompanies = new Set(filteredData.map(r => getCompanyName(r))).size;
+            const topCategory = metrics[0];
+
+            document.getElementById('comparisonBadge').innerText = `${metrics.length} categorias`;
+            document.getElementById('comparisonSubtitle').innerText = `Comparativo liberado para: ${selectedCategories.join(', ')}.`;
+
+            comparisonCards.innerHTML = `
+                <div class="col-md-6 col-xl-3">
+                    <div class="comparison-summary-card">
+                        <div class="summary-label">Categorias comparadas</div>
+                        <div class="summary-value">${metrics.length}</div>
+                        <div class="summary-meta">Filtros ativos na visão analítica</div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="comparison-summary-card">
+                        <div class="summary-label">Total comparado</div>
+                        <div class="summary-value">${formatCurrencyBR(totalCompared)}</div>
+                        <div class="summary-meta">${totalItems} itens consolidados</div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="comparison-summary-card">
+                        <div class="summary-label">Categoria líder</div>
+                        <div class="summary-value">${topCategory.label}</div>
+                        <div class="summary-meta">${topCategory.share.toFixed(1)}% do total filtrado</div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-xl-3">
+                    <div class="comparison-summary-card">
+                        <div class="summary-label">Empresas impactadas</div>
+                        <div class="summary-value">${totalCompanies}</div>
+                        <div class="summary-meta">Ticket médio: ${formatCurrencyBR(totalItems ? totalCompared / totalItems : 0)}</div>
+                    </div>
+                </div>
+            `;
+
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+            const palette = getComparisonPalette(0.85);
+            const borderPalette = getComparisonPalette(1);
+            destroyComparisonCharts();
+
+            const comparisonCanvas = document.getElementById('categoryComparisonChart');
+            const averageCanvas = document.getElementById('categoryAverageChart');
+            if (!comparisonCanvas || !averageCanvas) return;
+
+            const comparisonCtx = comparisonCanvas.getContext('2d');
+            comparisonChart = new Chart(comparisonCtx, {
+                type: 'bar',
+                data: {
+                    labels: metrics.map(item => item.label),
+                    datasets: [{
+                        label: 'Total acumulado',
+                        data: metrics.map(item => item.total),
+                        backgroundColor: metrics.map((_, index) => palette[index % palette.length]),
+                        borderColor: metrics.map((_, index) => borderPalette[index % borderPalette.length]),
+                        borderWidth: 1.5,
+                        borderRadius: 8,
+                        maxBarThickness: 42
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    resizeDelay: 150,
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b',
+                                callback: value => formatCurrencyBR(value)
+                            },
+                            grid: { color: isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.10)' }
+                        },
+                        x: {
+                            ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: context => `Total: ${formatCurrencyBR(context.parsed.y)}`,
+                                afterLabel: context => `Participação: ${metrics[context.dataIndex].share.toFixed(1)}%`
+                            }
+                        }
+                    }
+                }
+            });
+
+            const averageCtx = averageCanvas.getContext('2d');
+            comparisonAverageChart = new Chart(averageCtx, {
+                type: 'bar',
+                data: {
+                    labels: metrics.map(item => item.label),
+                    datasets: [{
+                        label: 'Ticket médio',
+                        data: metrics.map(item => item.average),
+                        backgroundColor: metrics.map((_, index) => palette[index % palette.length]),
+                        borderColor: metrics.map((_, index) => borderPalette[index % borderPalette.length]),
+                        borderWidth: 1.5,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    animation: false,
+                    resizeDelay: 150,
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b',
+                                callback: value => formatCurrencyBR(value)
+                            },
+                            grid: { color: isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.10)' }
+                        },
+                        y: {
+                            ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: context => `Ticket médio: ${formatCurrencyBR(context.parsed.x)}`,
+                                afterLabel: context => `${metrics[context.dataIndex].count} itens | ${metrics[context.dataIndex].companies} empresas`
+                            }
+                        }
+                    }
+                }
+            });
+
+            comparisonRenderKey = renderKey;
+        }
+
+        function ensurePdfSpace(doc, yPosition, requiredHeight, pageHeight) {
+            if (yPosition + requiredHeight > pageHeight - 15) {
+                doc.addPage();
+                return 20;
+            }
+            return yPosition;
+        }
+
+        function drawPdfMetricCards(doc, cards, yPosition, pageWidth, pageHeight) {
+            const marginX = 15;
+            const gap = 5;
+            const cardWidth = (pageWidth - (marginX * 2) - (gap * (cards.length - 1))) / cards.length;
+            const cardHeight = 24;
+            yPosition = ensurePdfSpace(doc, yPosition, cardHeight + 4, pageHeight);
+
+            cards.forEach((card, index) => {
+                const x = marginX + (cardWidth + gap) * index;
+                doc.setDrawColor(226, 232, 240);
+                doc.setFillColor(255, 255, 255);
+                doc.roundedRect(x, yPosition, cardWidth, cardHeight, 3, 3, 'FD');
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(7.5);
+                doc.setTextColor(100, 116, 139);
+                doc.text(card.label.toUpperCase(), x + 3.5, yPosition + 6);
+                doc.setFontSize(11);
+                doc.setTextColor(30, 41, 59);
+                doc.text(card.value, x + 3.5, yPosition + 13);
+                doc.setFont('helvetica', 'normal');
+                doc.setFontSize(7);
+                doc.setTextColor(100, 116, 139);
+                doc.text(card.meta, x + 3.5, yPosition + 19);
+            });
+
+            return yPosition + cardHeight + 8;
         }
 
         // Conversão de serial Excel para Date LOCAL — sem nenhum envolvimento de UTC.
@@ -917,6 +1344,7 @@
             });
 
             renderChart();
+            scheduleComparisonPanelRender();
             const selCatsForDetail = Array.from(document.querySelectorAll('.category-check:checked')).map(i => i.value);
             document.getElementById('btnDetail').style.display = selCatsForDetail.length === 1 ? 'inline-flex' : 'none';
         }
@@ -967,6 +1395,9 @@
                 const pageWidth = doc.internal.pageSize.getWidth();
                 const pageHeight = doc.internal.pageSize.getHeight();
                 let yPosition = 15;
+                const selectedCategories = getSelectedCategories();
+                const selectedCategory = selectedCategories.join(', ');
+                const comparisonMetrics = buildCategoryComparisonMetrics();
 
                 // ===== CABEÇALHO DO SISTEMA =====
                 doc.setFillColor(248, 250, 252);
@@ -999,9 +1430,9 @@
 
                 // ===== TÍTULO DO RELATÓRIO =====
                 let reportTitle = 'RELATÓRIO GERAL DE DESPESAS';
-                const selectedCategory = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value).join(', ');
                 if(type === 'summary') reportTitle = 'RESUMO EXECUTIVO POR CATEGORIA';
                 else if(type === 'category') reportTitle = `ANÁLISE DETALHADA: ${selectedCategory.toUpperCase()}`;
+                else if(type === 'comparison') reportTitle = 'RELATÓRIO COMPARATIVO DE PERFORMANCE';
 
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(16);
@@ -1010,14 +1441,103 @@
                 yPosition += 12;
 
                 // ===== RESUMO POR EMPRESA =====
-                if(type !== 'summary') {
+                let detailTableTitle = '';
+                if(type === 'comparison') {
+                    if (!comparisonMetrics.length) {
+                        alert('Selecione categorias específicas para gerar o PDF comparativo.');
+                        return;
+                    }
+
+                    const comparisonTotal = comparisonMetrics.reduce((sum, item) => sum + item.total, 0);
+                    const comparisonCount = comparisonMetrics.reduce((sum, item) => sum + item.count, 0);
+                    const comparisonCompanies = new Set(filteredData.map(r => getCompanyName(r))).size;
+                    const topCategory = comparisonMetrics[0];
+
+                    yPosition = drawPdfMetricCards(doc, [
+                        { label: 'Categorias', value: String(comparisonMetrics.length), meta: 'Segmentos em comparação' },
+                        { label: 'Total comparado', value: formatCurrencyBR(comparisonTotal), meta: `${comparisonCount} itens filtrados` },
+                        { label: 'Categoria líder', value: topCategory.label.substring(0, 28), meta: `${topCategory.share.toFixed(1)}% do volume` },
+                        { label: 'Empresas', value: String(comparisonCompanies), meta: `Ticket médio ${formatCurrencyBR(comparisonCount ? comparisonTotal / comparisonCount : 0)}` }
+                    ], yPosition, pageWidth, pageHeight);
+
+                    const comparisonCanvas = document.getElementById('categoryComparisonChart');
+                    const averageCanvas = document.getElementById('categoryAverageChart');
+                    if (comparisonCanvas && averageCanvas) {
+                        yPosition = ensurePdfSpace(doc, yPosition, 76, pageHeight);
+                        doc.setFont('helvetica', 'bold');
+                        doc.setFontSize(11);
+                        doc.setTextColor(79, 70, 229);
+                        doc.text('PAINEL VISUAL DE PERFORMANCE', 15, yPosition);
+                        yPosition += 5;
+
+                        doc.addImage(comparisonCanvas.toDataURL('image/png', 1.0), 'PNG', 15, yPosition, 165, 60);
+                        doc.addImage(averageCanvas.toDataURL('image/png', 1.0), 'PNG', 188, yPosition, 94, 60);
+                        yPosition += 68;
+                    }
+
+                    yPosition = ensurePdfSpace(doc, yPosition, 34, pageHeight);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(79, 70, 229);
+                    doc.text('QUADRO COMPARATIVO POR CATEGORIA', 15, yPosition);
+                    yPosition += 6;
+
+                    doc.autoTable({
+                        startY: yPosition,
+                        head: [['Categoria', 'Empresas', 'Qtd. Itens', 'Total', '% do Total', 'Ticket Médio']],
+                        body: comparisonMetrics.map(item => [
+                            item.label,
+                            item.companies.toString(),
+                            item.count.toString(),
+                            formatCurrencyBR(item.total),
+                            `${item.share.toFixed(1)}%`,
+                            formatCurrencyBR(item.average)
+                        ]),
+                        theme: 'striped',
+                        styles: { fontSize: 8, textColor: [0, 0, 0] },
+                        headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+                        columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' }, 3: { halign: 'right' }, 4: { halign: 'center' }, 5: { halign: 'right' } },
+                        bodyStyles: { textColor: [0, 0, 0] },
+                        margin: { left: 15, right: 15 }
+                    });
+                    yPosition = doc.lastAutoTable.finalY + 10;
+
+                    const companySummary = buildCompanySummary(filteredData).map(item => [
+                        item.company,
+                        item.categories.toString(),
+                        item.count.toString(),
+                        formatCurrencyBR(item.total),
+                        formatCurrencyBR(item.average)
+                    ]);
+
+                    yPosition = ensurePdfSpace(doc, yPosition, 30, pageHeight);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(79, 70, 229);
+                    doc.text('CONSOLIDADO POR EMPRESA', 15, yPosition);
+                    yPosition += 6;
+
+                    doc.autoTable({
+                        startY: yPosition,
+                        head: [['Empresa', 'Categorias', 'Qtd. Itens', 'Total', 'Ticket Médio']],
+                        body: companySummary,
+                        theme: 'grid',
+                        styles: { fontSize: 8, textColor: [0, 0, 0] },
+                        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
+                        columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' }, 3: { halign: 'right' }, 4: { halign: 'right' } },
+                        bodyStyles: { textColor: [0, 0, 0] },
+                        margin: { left: 15, right: 15 }
+                    });
+                    yPosition = doc.lastAutoTable.finalY + 10;
+                    detailTableTitle = 'LISTAGEM DE ITENS POR EMPRESA';
+                } else if(type !== 'summary') {
                     const companyData = {};
                     let dataToProcess = type === 'category' 
                         ? filteredData.filter(r => r[COLS.NATUREZA] === selectedCategory)
                         : filteredData;
 
                     dataToProcess.forEach(r => {
-                        const co = r[COLS.EMPRESA] || 'Sem Empresa';
+                        const co = getCompanyName(r);
                         if(!companyData[co]) companyData[co] = { total: 0, count: 0 };
                         companyData[co].total += r[8];
                         companyData[co].count += 1;
@@ -1037,7 +1557,7 @@
                         const gap = 5;
                         let xPos = 15;
 
-                        companies.forEach(([co, data], index) => {
+                        companies.forEach(([co, data]) => {
                             if (xPos + cardWidth > pageWidth - 15) {
                                 xPos = 15;
                                 yPosition += cardHeight + gap;
@@ -1060,12 +1580,12 @@
                             
                             doc.setFontSize(10);
                             doc.setTextColor(79, 70, 229);
-                            doc.text(data.total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}), xPos + 4, yPosition + 14);
+                            doc.text(formatCurrencyBR(data.total), xPos + 4, yPosition + 14);
                             
                             doc.setFontSize(7);
                             doc.setTextColor(100, 116, 139);
                             doc.setFont('helvetica', 'normal');
-                            doc.text(`${data.count} itens | Avg: ${(data.total/data.count).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}`, xPos + 4, yPosition + 20);
+                            doc.text(`${data.count} itens | Avg: ${formatCurrencyBR(data.total / data.count)}`, xPos + 4, yPosition + 20);
 
                             xPos += cardWidth + gap;
                         });
@@ -1075,8 +1595,8 @@
                         const companySummary = companies.map(([co, data]) => [
                             co,
                             data.count.toString(),
-                            data.total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
-                            (data.total / data.count).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})
+                            formatCurrencyBR(data.total),
+                            formatCurrencyBR(data.total / data.count)
                         ]);
 
                         doc.setFont('helvetica', 'bold');
@@ -1304,8 +1824,26 @@
                         r[COLS.CREDOR] || '-',
                         r[COLS.DESC] || '-',
                         formatDateBR(r[9]),
-                        r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
+                        formatCurrencyBR(r[8]),
                         r[COLS.NATUREZA]
+                    ]);
+                } else if(type === 'comparison') {
+                    tableHead = [['Empresa', 'Categoria', 'Credor', 'Descrição', 'Quitação', 'Valor']];
+                    const dataToExport = [...filteredData].sort((a, b) => {
+                        const companyDiff = getCompanyName(a).localeCompare(getCompanyName(b));
+                        if (companyDiff !== 0) return companyDiff;
+                        const categoryDiff = (a[COLS.NATUREZA] || '').toString().localeCompare((b[COLS.NATUREZA] || '').toString());
+                        if (categoryDiff !== 0) return categoryDiff;
+                        return b[8] - a[8];
+                    });
+
+                    tableBody = dataToExport.map(r => [
+                        getCompanyName(r),
+                        r[COLS.NATUREZA] || '-',
+                        r[COLS.CREDOR] || '-',
+                        r[COLS.DESC] || '-',
+                        formatDateBR(r[9]),
+                        formatCurrencyBR(r[8])
                     ]);
                 } else {
                     tableBody = filteredData.map(r => [
@@ -1313,12 +1851,20 @@
                         r[COLS.CREDOR] || '-',
                         r[COLS.DESC] || '-',
                         formatDateBR(r[9]),
-                        r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'}),
+                        formatCurrencyBR(r[8]),
                         r[COLS.NATUREZA]
                     ]);
                 }
 
                 if (tableHead !== null) {
+                if (detailTableTitle) {
+                    yPosition = ensurePdfSpace(doc, yPosition, 18, pageHeight);
+                    doc.setFont('helvetica', 'bold');
+                    doc.setFontSize(11);
+                    doc.setTextColor(79, 70, 229);
+                    doc.text(detailTableTitle, 15, yPosition);
+                    yPosition += 6;
+                }
                 doc.autoTable({
                     startY: yPosition,
                     head: tableHead,
@@ -1379,6 +1925,7 @@
             
             let nomeRelatorio = 'Relatorio Geral de Despesas';
             if(type === 'summary') nomeRelatorio = 'Resumo Executivo por Categoria';
+            else if(type === 'comparison') nomeRelatorio = 'Relatorio Comparativo de Performance';
             else if(type === 'category') {
                 const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value).join(', ') || 'Categoria';
                 nomeRelatorio = `Analise Detalhada - ${cat}`;
@@ -1441,6 +1988,7 @@
 
         window.onload = initTheme;
     </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
-
