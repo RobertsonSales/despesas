@@ -290,6 +290,12 @@
             display: flex;
             align-items: center;
         }
+        .sidebar-search-block {
+            margin-top: 1rem;
+        }
+        .sidebar-smart-search {
+            width: 100%;
+        }
         .smart-search-wrap .search-icon {
             position: absolute;
             left: 12px;
@@ -321,7 +327,7 @@
             color: var(--text-main);
             font-size: 0.875rem;
             height: 38px;
-            width: 260px;
+            width: 100%;
             transition: var(--transition);
         }
         #smartSearch:focus {
@@ -414,17 +420,11 @@
             position: relative;
             flex: 1 1 auto;
             min-height: 0;
-            width: 100%;
-        }
-        .comparison-chart-stage canvas {
-            display: block;
-            width: 100% !important;
-            height: 100% !important;
         }
         .comparison-chart-title {
             font-size: 0.85rem;
             font-weight: 700;
-            color: var(--text-main);
+            color: var(--text-muted);
             margin-bottom: 0.75rem;
         }
         .comparison-empty-state {
@@ -436,9 +436,162 @@
             background: var(--bg-body);
         }
 
+        /* ===== TABS NAVIGATION ===== */
+        .nav-tabs {
+            border-bottom: 2px solid var(--border-color);
+            gap: 0.5rem;
+        }
+        .nav-link {
+            color: var(--text-muted);
+            border: none;
+            border-bottom: 3px solid transparent;
+            padding: 0.75rem 1.25rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+        .nav-link:hover {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+        }
+        .nav-link.active {
+            color: var(--primary);
+            border-bottom-color: var(--primary);
+            background: transparent;
+        }
+
+        /* ===== RECEITAS TAB SPECIFIC ===== */
+        .receitas-filter-pane {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .receitas-filter-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .receitas-filter-section:last-child {
+            margin-bottom: 0;
+        }
+
+        .receitas-filter-label {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+        
+        [data-theme="dark"] .receitas-filter-label { color: #ffffff; }
+
+        .receitas-scroll-list {
+            max-height: 160px;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px;
+            background: var(--bg-body);
+        }
+
+        .receitas-checkbox-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 4px 0;
+            cursor: pointer;
+        }
+
+        .receitas-checkbox-wrapper input[type="checkbox"] {
+            cursor: pointer;
+            width: 16px;
+            height: 16px;
+            accent-color: var(--primary);
+            border-radius: 4px;
+        }
+
+        .receitas-checkbox-wrapper label {
+            cursor: pointer;
+            margin: 0;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-main);
+            text-transform: uppercase;
+        }
+
+        [data-theme="dark"] .receitas-checkbox-wrapper label {
+            color: #ffffff !important;
+        }
+
+        .receitas-metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .receitas-metric-card {
+            padding: 1.75rem;
+            border-radius: var(--radius);
+            background: linear-gradient(135deg, rgba(79,70,229,0.12) 0%, rgba(79,70,229,0.04) 100%);
+            border: 2px solid rgba(79,70,229,0.25);
+            box-shadow: 0 4px 16px rgba(79,70,229,0.12);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .receitas-metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--primary), var(--success));
+        }
+
+        .receitas-metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(79,70,229,0.18);
+            border-color: rgba(79,70,229,0.4);
+        }
+
+        .receitas-metric-label {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .receitas-metric-value {
+            font-size: 1.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            line-height: 1.2;
+            margin-bottom: 0.5rem;
+        }
+
+        .receitas-metric-meta {
+            font-size: 0.8rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
         @media (max-width: 768px) {
             .brand-title span { display: none; }
             .btn span { display: none; }
+            .receitas-filter-group {
+                grid-template-columns: 1fr;
+            }
+            .receitas-metric-grid {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
@@ -478,163 +631,319 @@
             </div>
         </div>
 
-        <div class="row" id="mainContent" style="display: none;">
-            <!-- Filters Sidebar -->
-            <div class="col-lg-3">
-                <div class="card">
-                    <div class="card-header" style="cursor:default;">
-                        <!-- Mobile toggle button -->
-                        <button class="filter-sidebar-toggle" id="filterToggleBtn" onclick="toggleFilterSidebar()" aria-expanded="false" aria-controls="filterSidebarBody">
-                            <span class="toggle-label">
-                                <i class="fas fa-sliders-h"></i>
-                                Refinar Busca
-                                <span class="toggle-badge" id="activeFiltersBadge" style="display:none">●</span>
-                            </span>
-                            <span class="toggle-icon"><i class="fas fa-chevron-down toggle-icon-i"></i></span>
-                        </button>
-                        <!-- Desktop label (always visible) -->
-                        <span class="text-primary d-none d-lg-inline fw-bold"><i class="fas fa-sliders-h me-2"></i>Refinar Busca</span>
-                    </div>
-                    <div class="filter-sidebar-body" id="filterSidebarBody">
-                    <div class="card-body">
-                        <div class="mb-4">
-                            <label class="form-label d-flex justify-content-between align-items-center">
-                                Categoria Principal
-                                <div class="form-check m-0">
-                                    <input class="form-check-input" type="checkbox" id="allCategories" checked onclick="toggleAll('category')">
-                                    <label class="form-check-label small" for="allCategories">Todas</label>
-                                </div>
-                            </label>
-                            <div class="scroll-list" id="categoryList" style="max-height:130px;font-size:0.8rem;"></div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label d-flex justify-content-between align-items-center">
-                                Meses de Quitação
-                                <div class="form-check m-0">
-                                    <input class="form-check-input" type="checkbox" id="allMonths" checked onclick="toggleAll('month')">
-                                    <label class="form-check-label small" for="allMonths">Todos</label>
-                                </div>
-                            </label>
-                            <!-- Year selector pills -->
-                            <div class="year-selector-wrap" id="yearSelector"></div>
-                            <div class="scroll-list" id="monthList"></div>
-                        </div>
-                        <div class="mb-4">
-                            <label class="form-label d-flex justify-content-between align-items-center">
-                                Empresas
-                                <div class="form-check m-0">
-                                    <input class="form-check-input" type="checkbox" id="allCompanies" checked onclick="toggleAll('company')">
-                                    <label class="form-check-label small" for="allCompanies">Todas</label>
-                                </div>
-                            </label>
-                            <div class="scroll-list" id="companyList"></div>
-                        </div>
-                        <button class="btn btn-outline-secondary btn-sm w-100" onclick="resetFilters()">Limpar Filtros</button>
-                    </div>
-                    </div>
-                </div>
-            </div>
+        <!-- TABS NAVIGATION -->
+        <ul class="nav nav-tabs" id="mainTabs" role="tablist" style="display: none;">
+            <li class="nav-item" role="presentation">
+                <button class="nav-link active" id="despesas-tab" data-bs-toggle="tab" data-bs-target="#despesas-content" type="button" role="tab" aria-controls="despesas-content" aria-selected="true">
+                    <i class="fas fa-chart-bar me-2"></i>Despesas
+                </button>
+            </li>
+            <li class="nav-item" role="presentation">
+                <button class="nav-link" id="receitas-tab" data-bs-toggle="tab" data-bs-target="#receitas-content" type="button" role="tab" aria-controls="receitas-content" aria-selected="false">
+                    <i class="fas fa-chart-line me-2"></i>Receitas
+                </button>
+            </li>
+        </ul>
 
-            <!-- Dashboard Area -->
-            <div class="col-lg-9">
-                <div class="stat-grid">
-                    <div class="stat-item border-start border-4 border-primary">
-                        <div class="stat-label">Montante Total</div>
-                        <div class="stat-value text-primary" id="statTotal">R$ 0,00</div>
-                    </div>
-                    <div class="stat-item border-start border-4 border-success">
-                        <div class="stat-label">Total de Registros</div>
-                        <div class="stat-value text-primary" id="statCount">0</div>
-                    </div>
-                    <div class="stat-item border-start border-4 border-info">
-                        <div class="stat-label">Diversidade de Categorias</div>
-                        <div class="stat-value text-primary" id="statCats">0</div>
-                    </div>
-                </div>
-
-                <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
-                    <button class="btn btn-success shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
-                    <button class="btn btn-outline-primary shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
-                    <button class="btn btn-primary shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
-                    <div class="vr mx-1 d-none d-md-block" style="opacity:0.25;"></div>
-                    <div class="smart-search-wrap">
-                        <i class="fas fa-search search-icon"></i>
-                        <input type="text" id="smartSearch" placeholder="Buscar em qualquer coluna..." oninput="onSearchInput()" autocomplete="off">
-                        <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" title="Limpar busca"><i class="fas fa-times"></i></button>
-                    </div>
-                    <span class="search-active-indicator" id="searchActiveIndicator"><i class="fas fa-filter"></i>&nbsp;<span id="searchResultCount">0</span>&nbsp;resultados</span>
-                    <button class="btn-clear-all shadow-sm" onclick="resetFilters()" title="Limpar todos os filtros selecionados"><i class="fas fa-times-circle"></i>Limpar Filtros</button>
-                </div>
-
-                <div class="row">
-                    <div class="col-md-12">
+        <div class="tab-content" id="mainTabContent">
+            <!-- DESPESAS TAB -->
+            <div class="tab-pane fade show active" id="despesas-content" role="tabpanel" aria-labelledby="despesas-tab">
+                <div class="row" id="mainContent" style="display: none;">
+                    <!-- Filters Sidebar -->
+                    <div class="col-lg-3">
                         <div class="card">
-                            <div class="card-header text-primary">Visão Geral por Categoria</div>
-                            <div class="card-body" style="height: 350px;">
-                                <canvas id="mainChart"></canvas>
+                            <div class="card-header" style="cursor:default;">
+                                <!-- Mobile toggle button -->
+                                <button class="filter-sidebar-toggle" id="filterToggleBtn" onclick="toggleFilterSidebar()" aria-expanded="false" aria-controls="filterSidebarBody">
+                                    <span class="toggle-label">
+                                        <i class="fas fa-sliders-h"></i>
+                                        Refinar Busca
+                                        <span class="toggle-badge" id="activeFiltersBadge" style="display:none">●</span>
+                                    </span>
+                                    <span class="toggle-icon"><i class="fas fa-chevron-down toggle-icon-i"></i></span>
+                                </button>
+                                <!-- Desktop label (always visible) -->
+                                <span class="text-primary d-none d-lg-inline fw-bold"><i class="fas fa-sliders-h me-2"></i>Refinar Busca</span>
+                            </div>
+                            <div class="filter-sidebar-body" id="filterSidebarBody">
+                            <div class="card-body">
+                                <div class="mb-4">
+                                    <label class="form-label d-flex justify-content-between align-items-center">
+                                        Categoria Principal
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input" type="checkbox" id="allCategories" checked onclick="toggleAll('category')">
+                                            <label class="form-check-label small" for="allCategories">Todas</label>
+                                        </div>
+                                    </label>
+                                    <div class="scroll-list" id="categoryList" style="max-height:130px;font-size:0.8rem;"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label d-flex justify-content-between align-items-center">
+                                        Meses de Quitação
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input" type="checkbox" id="allMonths" checked onclick="toggleAll('month')">
+                                            <label class="form-check-label small" for="allMonths">Todos</label>
+                                        </div>
+                                    </label>
+                                    <!-- Year selector pills -->
+                                    <div class="year-selector-wrap" id="yearSelector"></div>
+                                    <div class="scroll-list" id="monthList"></div>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="form-label d-flex justify-content-between align-items-center">
+                                        Empresas
+                                        <div class="form-check m-0">
+                                            <input class="form-check-input" type="checkbox" id="allCompanies" checked onclick="toggleAll('company')">
+                                            <label class="form-check-label small" for="allCompanies">Todas</label>
+                                        </div>
+                                    </label>
+                                    <div class="scroll-list" id="companyList"></div>
+                                    <div class="sidebar-search-block">
+                                        <label class="form-label">Busca Inteligente</label>
+                                        <div class="smart-search-wrap sidebar-smart-search">
+                                            <i class="fas fa-search search-icon"></i>
+                                            <input type="text" id="smartSearch" placeholder="Buscar em todos os campos..." oninput="onSearchInput()" autocomplete="off">
+                                            <button class="search-clear-btn" id="searchClearBtn" onclick="clearSearch()" title="Limpar busca"><i class="fas fa-times"></i></button>
+                                        </div>
+                                        <span class="search-active-indicator mt-2" id="searchActiveIndicator"><i class="fas fa-filter"></i>&nbsp;<span id="searchResultCount">0</span>&nbsp;resultados</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-outline-secondary btn-sm w-100 mt-3" onclick="resetFilters()">Limpar Filtros</button>
+                            </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                <div class="card mt-4 comparison-panel d-none" id="comparisonSection">
-                    <div class="card-header text-primary">
-                        <div>
-                            <span>Performance Comparativa das Categorias Selecionadas</span>
-                            <div class="comparison-header-meta" id="comparisonSubtitle">Selecione categorias específicas para visualizar os comparativos automáticos.</div>
+                    <!-- Dashboard Area -->
+                    <div class="col-lg-9">
+                        <div class="stat-grid">
+                            <div class="stat-item border-start border-4 border-primary">
+                                <div class="stat-label">Montante Total</div>
+                                <div class="stat-value text-primary" id="statTotal">R$ 0,00</div>
+                            </div>
+                            <div class="stat-item border-start border-4 border-success">
+                                <div class="stat-label">Total de Registros</div>
+                                <div class="stat-value text-primary" id="statCount">0</div>
+                            </div>
+                            <div class="stat-item border-start border-4 border-info">
+                                <div class="stat-label">Diversidade de Categorias</div>
+                                <div class="stat-value text-primary" id="statCats">0</div>
+                            </div>
                         </div>
-                        <div class="d-flex gap-2 align-items-center flex-wrap">
-                            <span class="badge bg-primary-soft" id="comparisonBadge">0 categorias</span>
-                            <button class="btn btn-outline-primary btn-sm" id="comparisonPdfBtn" onclick="openPdfPreview('comparison')">
-                                <i class="fas fa-chart-line"></i><span>PDF Comparativo</span>
-                            </button>
+
+                        <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
+                            <button class="btn btn-success shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
+                            <button class="btn btn-outline-primary shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
+                            <button class="btn btn-outline-secondary shadow-sm" onclick="openConstructionModal('inventarioModal')"><i class="fas fa-boxes-stacked"></i><span>Consultar Inventário</span></button>
+                            <button class="btn btn-primary shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
                         </div>
-                    </div>
-                    <div class="card-body">
-                        <div class="row g-3 mb-3" id="comparisonCards"></div>
-                        <div class="row g-4">
-                            <div class="col-xl-7">
-                                <div class="comparison-chart-wrap">
-                                    <div class="comparison-chart-title">Total acumulado e participação por categoria</div>
-                                    <div class="comparison-chart-stage">
-                                        <canvas id="categoryComparisonChart"></canvas>
+
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="card">
+                                    <div class="card-header text-primary">Visão Geral por Categoria</div>
+                                    <div class="card-body" style="height: 350px;">
+                                        <canvas id="mainChart"></canvas>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xl-5">
-                                <div class="comparison-chart-wrap">
-                                    <div class="comparison-chart-title">Ticket médio por categoria</div>
-                                    <div class="comparison-chart-stage">
-                                        <canvas id="categoryAverageChart"></canvas>
-                                    </div>
+                        </div>
+
+                        <div class="card mt-4 comparison-panel d-none" id="comparisonSection">
+                            <div class="card-header text-primary">
+                                <div>
+                                    <span>Performance Comparativa das Categorias Selecionadas</span>
+                                    <div class="comparison-header-meta" id="comparisonSubtitle">Selecione categorias específicas para visualizar os comparativos automáticos.</div>
+                                </div>
+                                <div class="d-flex gap-2 align-items-center flex-wrap">
+                                    <span class="badge bg-primary-soft" id="comparisonBadge">0 categorias</span>
+                                    <button class="btn btn-outline-primary btn-sm" id="comparisonPdfBtn" onclick="openPdfPreview('comparison')">
+                                        <i class="fas fa-chart-line"></i><span>PDF Comparativo</span>
+                                    </button>
                                 </div>
                             </div>
+                            <div class="card-body">
+                                <div class="row g-3 mb-3" id="comparisonCards"></div>
+                                <div class="row g-4">
+                                    <div class="col-xl-7">
+                                        <div class="comparison-chart-wrap">
+                                            <div class="comparison-chart-title">Total acumulado e participação por categoria</div>
+                                            <div class="comparison-chart-stage">
+                                                <canvas id="categoryComparisonChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-5">
+                                        <div class="comparison-chart-wrap">
+                                            <div class="comparison-chart-title">Ticket médio por categoria</div>
+                                            <div class="comparison-chart-stage">
+                                                <canvas id="categoryAverageChart"></canvas>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="comparison-empty-state mt-3" id="comparisonHint">O quadro comparativo é habilitado automaticamente quando o filtro de categorias estiver ativo.</div>
+                            </div>
                         </div>
-                        <div class="comparison-empty-state mt-3" id="comparisonHint">O quadro comparativo é habilitado automaticamente quando o filtro de categorias estiver ativo.</div>
-                    </div>
-                </div>
 
-                <div class="card mt-4">
-                    <div class="card-header text-primary">
-                        <span>Detalhamento dos Lançamentos</span>
-                        <span class="badge bg-primary-soft" id="tableCount">0 itens</span>
-                    </div>
-                    <div class="table-responsive">
-                        <table class="table table-hover mb-0">
-                            <thead>
-                                <tr>
-                                    <th>Empresa</th>
-                                    <th>Credor / Fornecedor</th>
-                                    <th>Quitação</th>
-                                    <th class="text-end">Valor</th>
-                                    <th>Natureza</th>
-                                </tr>
-                            </thead>
-                            <tbody id="tableBody"></tbody>
-                        </table>
+                        <div class="card mt-4">
+                            <div class="card-header text-primary">
+                                <span>Detalhamento dos Lançamentos</span>
+                                <span class="badge bg-primary-soft" id="tableCount">0 itens</span>
+                            </div>
+                            <div class="table-responsive">
+                                <table class="table table-hover mb-0">
+                                    <thead>
+                                        <tr>
+                                            <th>Empresa</th>
+                                            <th>Credor / Fornecedor</th>
+                                            <th>Quitação</th>
+                                            <th class="text-end">Valor</th>
+                                            <th>Natureza</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody id="tableBody"></tbody>
+                                </table>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            <!-- RECEITAS TAB -->
+            <div class="tab-pane fade" id="receitas-content" role="tabpanel" aria-labelledby="receitas-tab">
+                <div id="receitasContent" style="display: none;">
+                    <!-- Receitas Filters -->
+                    <div class="row">
+                        <div class="col-lg-3">
+                            <div class="receitas-filter-pane">
+                                <!-- Empresas Filter -->
+                                <div class="receitas-filter-section">
+                                    <div class="receitas-filter-label">
+                                        <span>Categoria Principal</span>
+                                        <div class="form-check form-check-inline m-0">
+                                            <input class="form-check-input" type="checkbox" id="allReceitasEmpresas" checked onchange="toggleAllReceitas('empresa')">
+                                            <label class="form-check-label small fw-bold" for="allReceitasEmpresas">Todas</label>
+                                        </div>
+                                    </div>
+                                    <div class="receitas-scroll-list" id="receitasEmpresasGroup"></div>
+                                </div>
+
+                                <!-- Meses de Quitação Filter -->
+                                <div class="receitas-filter-section">
+                                    <div class="receitas-filter-label">
+                                        <span>Meses de Quitação</span>
+                                        <div class="form-check form-check-inline m-0">
+                                            <input class="form-check-input" type="checkbox" id="allReceitasMeses" checked onchange="toggleAllReceitas('mes')">
+                                            <label class="form-check-label small fw-bold" for="allReceitasMeses">Todos</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Ano Selector (Pills) -->
+                                    <div class="year-selector-wrap mb-2" id="receitasAnosGroup"></div>
+
+                                    <div class="receitas-scroll-list" id="receitasMesesGroup"></div>
+                                </div>
+
+                                <!-- Busca e Filtros Adicionais -->
+                                <div class="receitas-filter-section mt-4 pt-3 border-top">
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-uppercase">Cliente</label>
+                                        <input type="text" id="receitasCliente" class="form-control form-control-sm" placeholder="Buscar cliente..." oninput="applyReceitasFilters()">
+                                    </div>
+                                    <div class="mb-3">
+                                        <label class="form-label small fw-bold text-uppercase">Busca Global</label>
+                                        <input type="text" id="receitasBusca" class="form-control form-control-sm" placeholder="Pesquisar..." oninput="applyReceitasFilters()">
+                                    </div>
+                                    <div class="row g-2 mb-3">
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold text-uppercase">Início</label>
+                                            <input type="date" id="receitasDataInicio" class="form-control form-control-sm" onchange="applyReceitasFilters()">
+                                        </div>
+                                        <div class="col-6">
+                                            <label class="form-label small fw-bold text-uppercase">Fim</label>
+                                            <input type="date" id="receitasDataFim" class="form-control form-control-sm" onchange="applyReceitasFilters()">
+                                        </div>
+                                    </div>
+                                    <button class="btn btn-sm btn-outline-danger w-100" onclick="resetReceitasFilters()">
+                                        <i class="fas fa-redo me-2"></i>Limpar Filtros
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-9">
+                            <!-- Receitas Metrics -->
+                            <div class="receitas-metric-grid">
+                                <div class="receitas-metric-card">
+                                    <div class="receitas-metric-label">Total de Receitas</div>
+                                    <div class="receitas-metric-value" id="receitasTotal">R$ 0,00</div>
+                                    <div class="receitas-metric-meta" id="receitasTotalMeta">0 registros</div>
+                                </div>
+                                <div class="receitas-metric-card">
+                                    <div class="receitas-metric-label">Quantidade de Registros</div>
+                                    <div class="receitas-metric-value" id="receitasQtd">0</div>
+                                    <div class="receitas-metric-meta" id="receitasQtdMeta">Itens processados</div>
+                                </div>
+                                <div class="receitas-metric-card">
+                                    <div class="receitas-metric-label">Ticket Médio</div>
+                                    <div class="receitas-metric-value" id="receitasTicket">R$ 0,00</div>
+                                    <div class="receitas-metric-meta" id="receitasTicketMeta">Por transação</div>
+                                </div>
+                            </div>
+
+                            <!-- Receitas Charts -->
+                            <div class="row">
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header text-primary">Receitas por Empresa</div>
+                                        <div class="card-body" style="height: 350px;">
+                                            <canvas id="receitasEmpresaChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-lg-6">
+                                    <div class="card">
+                                        <div class="card-header text-primary">Receitas por Mês</div>
+                                        <div class="card-body" style="height: 350px;">
+                                            <canvas id="receitasMesChart"></canvas>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Receitas Table -->
+                            <div class="card mt-4">
+                                <div class="card-header text-primary">
+                                    <span>Detalhamento de Receitas</span>
+                                    <span class="badge bg-primary-soft" id="receitasTableCount">0 itens</span>
+                                </div>
+                                <div class="table-responsive">
+                                    <table class="table table-hover mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th>Empresa</th>
+                                                <th>Cliente</th>
+                                                <th>Descrição</th>
+                                                <th>Vencimento</th>
+                                                <th>Valor</th>
+                                                <th>Vendedor</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="receitasTableBody"></tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                            <!-- Receitas Export -->
+                            <div class="mt-4 d-flex gap-2">
+                                <button class="btn btn-success" onclick="previewReceitasPDF()"><i class="fas fa-file-pdf me-2"></i>Exportar para PDF</button>
+                                <button class="btn btn-outline-primary" onclick="exportReceitasCSV()"><i class="fas fa-download me-2"></i>Exportar para CSV</button>
+                            </div>
+                    </div>
+                </div>
+            </div>
+        </div>
         </div>
     </div>
 
@@ -673,18 +982,38 @@
         </div>
     </div>
 
+    <div class="modal fade" id="inventarioModal" tabindex="-1" aria-labelledby="inventarioModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="inventarioModalLabel">Consultar Inventário</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">Módulo em construção.</div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         let rawData = [];
         let filteredData = [];
+        let receitasRawData = [];
+        let receitasFilteredData = [];
         let chart = null;
         let comparisonChart = null;
         let comparisonAverageChart = null;
+        let receitasEmpresaChart = null;
+        let receitasMesChart = null;
         let comparisonRenderFrame = null;
         let comparisonRenderKey = '';
         let currentPdfBlob = null;
         let searchTerm = '';
 
         const COLS = { CREDOR:0, VENCTO:1, DESC:2, VALOR:3, QUITACAO:4, BANCO:5, NATUREZA:6, EMPRESA:7 };
+        const RECEITAS_COLS = { CLIENTE:0, VENCIMENTO:1, DESCRICAO:2, VALOR:3, LIQUIDACAO:4, VENDEDOR:5, EMPRESA:6 };
 
         // ============== THEME & UI ==============
         function toggleTheme() {
@@ -692,6 +1021,7 @@
             document.documentElement.setAttribute('data-theme', theme);
             localStorage.setItem('theme', theme);
             if(chart) renderChart();
+            if(receitasEmpresaChart) renderReceitasCharts();
             scheduleComparisonPanelRender();
         }
 
@@ -710,16 +1040,13 @@
         function resetFilters() {
             document.getElementById('startDate').value = '';
             document.getElementById('endDate').value = '';
-            // Reset search
             if (document.getElementById('smartSearch')) {
                 document.getElementById('smartSearch').value = '';
                 searchTerm = '';
                 document.getElementById('searchClearBtn').style.display = 'none';
             }
-            // Reset categories
             document.getElementById('allCategories').checked = true;
             document.querySelectorAll('.category-check').forEach(i => i.checked = true);
-            // Reset years: select all
             const allMonths = new Set();
             rawData.forEach(r => {
                 if (r[9]) allMonths.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2,'0')}`);
@@ -732,6 +1059,37 @@
             document.getElementById('allCompanies').checked = true;
             toggleAll('company');
             applyFilters();
+        }
+
+        function resetReceitasFilters() {
+            document.querySelectorAll('.receitas-empresa-check, .receitas-ano-check, .receitas-mes-check').forEach(i => i.checked = true);
+            document.getElementById('allReceitasEmpresas').checked = true;
+            document.getElementById('allReceitasMeses').checked = true;
+            document.querySelectorAll('.receitas-ano-pill').forEach(p => p.classList.add('active'));
+            document.getElementById('receitasCliente').value = '';
+            document.getElementById('receitasDataInicio').value = '';
+            document.getElementById('receitasDataFim').value = '';
+            document.getElementById('receitasBusca').value = '';
+            applyReceitasFilters();
+        }
+
+        function toggleAllReceitas(type) {
+            const checked = type === 'empresa' ? document.getElementById('allReceitasEmpresas').checked : document.getElementById('allReceitasMeses').checked;
+            document.querySelectorAll(`.receitas-${type}-check`).forEach(i => i.checked = checked);
+            if (type === 'mes') {
+                document.querySelectorAll('.receitas-ano-pill').forEach(p => {
+                    if (checked) p.classList.add('active');
+                    else p.classList.remove('active');
+                });
+            }
+            applyReceitasFilters();
+        }
+
+        function toggleReceitasYear(year) {
+            const pill = document.querySelector(`.receitas-ano-pill[data-year="${year}"]`);
+            const isActive = pill.classList.toggle('active');
+            document.querySelectorAll(`.receitas-mes-check[data-year="${year}"]`).forEach(i => i.checked = isActive);
+            applyReceitasFilters();
         }
 
         // ===== MOBILE FILTER TOGGLE =====
@@ -759,11 +1117,68 @@
             applyFilters();
         }
 
+        function openConstructionModal(modalId) {
+            const modalEl = document.getElementById(modalId);
+            if (!modalEl) return;
+            const modal = new bootstrap.Modal(modalEl, {});
+            modal.show();
+        }
+
+        function normalizeSearchText(value) {
+            return (value || '')
+                .toString()
+                .normalize('NFD')
+                .replace(/[̀-ͯ]/g, '')
+                .toLowerCase()
+                .replace(/[^a-z0-9]+/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        function recordMatchesSearch(record, term) {
+            const normalizedQuery = normalizeSearchText(term);
+            if (!normalizedQuery) return true;
+
+            const compactQuery = normalizedQuery.replace(/\s+/g, '');
+            const queryTokens = normalizedQuery.split(' ').filter(Boolean);
+            const monetaryValue = Number(record[8] || 0);
+            const monetaryBRL = monetaryValue.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+            const monetaryPlain = monetaryValue.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+            const rawQuitacao = record[COLS.QUITACAO] || '';
+            const rawVencimento = record[COLS.VENCTO] || '';
+            const fields = [
+                record[COLS.EMPRESA],
+                record[COLS.CREDOR],
+                record[COLS.DESC],
+                record[COLS.NATUREZA],
+                record[COLS.BANCO],
+                rawQuitacao,
+                rawVencimento,
+                formatDateBR(record[9]),
+                formatDateBR(record[10]),
+                monetaryBRL,
+                monetaryPlain,
+                monetaryValue
+            ].map(value => normalizeSearchText(value)).filter(Boolean);
+
+            if (!fields.length) return false;
+
+            const combined = fields.join(' ');
+            const compactFields = fields.map(value => value.replace(/\s+/g, ''));
+
+            if (fields.some(value => value === normalizedQuery)) return true;
+            if (compactQuery && compactFields.some(value => value === compactQuery)) return true;
+            if (fields.some(value => value.includes(normalizedQuery))) return true;
+            if (compactQuery && compactFields.some(value => value.includes(compactQuery))) return true;
+            if (queryTokens.length && queryTokens.every(token => combined.includes(token))) return true;
+
+            return false;
+        }
+
         // ============== FORMATTERS ==============
         function parseCurrency(v) {
             if(v === null || v === undefined || v === '') return 0;
             if(typeof v === 'number') return v;
-            // Remove R$, espaços normais e não-separáveis (\xa0), depois formata separadores BR
             let cleaned = v.toString()
                 .replace(/R\$/g, '')
                 .replace(/[\s\u00A0]/g, '')
@@ -1020,24 +1435,24 @@
                         backgroundColor: metrics.map((_, index) => palette[index % palette.length]),
                         borderColor: metrics.map((_, index) => borderPalette[index % borderPalette.length]),
                         borderWidth: 1.5,
-                        borderRadius: 8
+                        borderRadius: 8,
+                        maxBarThickness: 42
                     }]
                 },
                 options: {
-                    indexAxis: 'y',
                     responsive: true,
                     maintainAspectRatio: false,
                     animation: false,
                     resizeDelay: 150,
                     scales: {
-                        x: {
+                        y: {
                             ticks: {
                                 color: isDark ? '#cbd5e1' : '#64748b',
                                 callback: value => formatCurrencyBR(value)
                             },
                             grid: { color: isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.10)' }
                         },
-                        y: {
+                        x: {
                             ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
                             grid: { display: false }
                         }
@@ -1046,8 +1461,7 @@
                         legend: { display: false },
                         tooltip: {
                             callbacks: {
-                                label: context => `Ticket médio: ${formatCurrencyBR(context.parsed.x)}`,
-                                afterLabel: context => `${metrics[context.dataIndex].count} itens | ${metrics[context.dataIndex].companies} empresas`
+                                label: context => `Ticket: ${formatCurrencyBR(context.parsed.y)}`
                             }
                         }
                     }
@@ -1057,74 +1471,6 @@
             comparisonRenderKey = renderKey;
         }
 
-        function ensurePdfSpace(doc, yPosition, requiredHeight, pageHeight) {
-            if (yPosition + requiredHeight > pageHeight - 15) {
-                doc.addPage();
-                return 20;
-            }
-            return yPosition;
-        }
-
-        function drawPdfMetricCards(doc, cards, yPosition, pageWidth, pageHeight) {
-            const marginX = 15;
-            const gap = 5;
-            const cardWidth = (pageWidth - (marginX * 2) - (gap * (cards.length - 1))) / cards.length;
-            const cardHeight = 24;
-            yPosition = ensurePdfSpace(doc, yPosition, cardHeight + 4, pageHeight);
-
-            cards.forEach((card, index) => {
-                const x = marginX + (cardWidth + gap) * index;
-                doc.setDrawColor(226, 232, 240);
-                doc.setFillColor(255, 255, 255);
-                doc.roundedRect(x, yPosition, cardWidth, cardHeight, 3, 3, 'FD');
-                doc.setFont('helvetica', 'bold');
-                doc.setFontSize(7.5);
-                doc.setTextColor(100, 116, 139);
-                doc.text(card.label.toUpperCase(), x + 3.5, yPosition + 6);
-                doc.setFontSize(11);
-                doc.setTextColor(30, 41, 59);
-                doc.text(card.value, x + 3.5, yPosition + 13);
-                doc.setFont('helvetica', 'normal');
-                doc.setFontSize(7);
-                doc.setTextColor(100, 116, 139);
-                doc.text(card.meta, x + 3.5, yPosition + 19);
-            });
-
-            return yPosition + cardHeight + 8;
-        }
-
-        // Conversão de serial Excel para Date LOCAL — sem nenhum envolvimento de UTC.
-        // Usa a base 30/12/1899 em tempo LOCAL, garantindo resultado idêntico
-        // independentemente do fuso horário do navegador.
-        function excelSerialToLocalDate(serial) {
-            const base = new Date(1899, 11, 30); // 30/12/1899 — hora local, sem UTC
-            base.setDate(base.getDate() + Math.trunc(serial));
-            return base;
-        }
-
-        function parseDate(v) {
-            if (v === null || v === undefined || v === '') return null;
-            // Date object vindo do SheetJS (cellDates:true): extrair componentes UTC
-            if (v instanceof Date) {
-                return new Date(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate());
-            }
-            // Serial numérico (caso mais comum com raw:true)
-            if (typeof v === 'number') return excelSerialToLocalDate(v);
-            // String no formato ISO: "2025-07-01" — new Date(str) é UTC; extrair componentes
-            const raw = v.toString().trim();
-            if (!raw) return null;
-            const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
-            if (iso) return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
-            // String no formato BR: "01/07/2025" ou "01-07-2025"
-            const br = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
-            if (br) {
-                let y = Number(br[3]);
-                if (y < 100) y += 2000;
-                return new Date(y, Number(br[2]) - 1, Number(br[1]));
-            }
-            return null;
-        }
-
         // ============== DATA HANDLING ==============
         document.getElementById('fileInput').addEventListener('change', function(e) {
             const reader = new FileReader();
@@ -1132,7 +1478,7 @@
                 try {
                     const wb = XLSX.read(evt.target.result, { type: 'binary' });
                     
-                    // Adequar ao nome da aba "Despesas"
+                    // Load Despesas sheet
                     let sheetName = wb.SheetNames.find(name => name.trim() === 'Despesas');
                     if (!sheetName) {
                         console.warn('Aba "Despesas" não encontrada. Usando a primeira aba disponível.');
@@ -1144,21 +1490,37 @@
                         r[8] = parseCurrency(r[COLS.VALOR]);
                         r[9] = parseDate(r[COLS.QUITACAO]);
                         r[10] = parseDate(r[COLS.VENCTO]);
-                        // Normaliza NATUREZA nula para categoria genérica
                         if (!r[COLS.NATUREZA] || String(r[COLS.NATUREZA]).trim() === '') {
                             r[COLS.NATUREZA] = 'SEM CATEGORIA';
                         }
                         return r;
                     }).filter(r => r[8] > 0);
+
+                    // Load Receitas sheet
+                    const receitasSheet = wb.SheetNames.find(name => name.trim() === 'Receitas');
+                    if (receitasSheet) {
+                        const receitasJson = XLSX.utils.sheet_to_json(wb.Sheets[receitasSheet], { header: 1, raw: true });
+                        receitasRawData = receitasJson.slice(1).map(r => {
+                            r[3] = parseCurrency(r[RECEITAS_COLS.VALOR]);
+                            r[1] = parseDate(r[RECEITAS_COLS.VENCIMENTO]);
+                            r[4] = parseDate(r[RECEITAS_COLS.LIQUIDACAO]);
+                            return r;
+                        }).filter(r => r[3] > 0);
+                        
+                        initReceitasFilters();
+                        document.getElementById('receitasContent').style.display = 'block';
+                        applyReceitasFilters();
+                    }
+
                     initFilters();
                     document.getElementById('mainContent').style.display = 'flex';
+                    document.getElementById('mainTabs').style.display = 'flex';
                     applyFilters();
                 } catch(err) { alert('Erro ao processar planilha: ' + err.message); }
             };
             reader.readAsBinaryString(e.target.files[0]);
         });
 
-        // Keeps track of which years are selected in the year-pill selector
         let selectedYears = new Set();
 
         function initFilters() {
@@ -1170,14 +1532,12 @@
                 if(r[9]) mos.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2, '0')}`);
             });
 
-            // Category checklist (multi-select, small font)
             const catEl = document.getElementById('categoryList');
             catEl.innerHTML = '';
             Array.from(cats).sort().forEach(c => {
                 catEl.innerHTML += `<div class="form-check"><input class="form-check-input category-check" type="checkbox" value="${c}" id="cat-${c}" checked onchange="syncAllCheckbox('category');applyFilters()"><label class="form-check-label small" for="cat-${c}" style="font-size:0.8rem">${c}</label></div>`;
             });
 
-            // Build year set from months — default: ALL years active
             const years = new Set(Array.from(mos).map(m => m.split('-')[0]));
             selectedYears = new Set(Array.from(years));
 
@@ -1194,6 +1554,73 @@
             renderChecklist('companyList', cos, 'company-check');
         }
 
+        function initReceitasFilters() {
+            const empresas = new Set();
+            const anos = new Set();
+            const meses = new Set();
+            
+            receitasRawData.forEach(r => {
+                if (r[RECEITAS_COLS.EMPRESA]) empresas.add(r[RECEITAS_COLS.EMPRESA]);
+                if (r[1]) {
+                    anos.add(r[1].getFullYear());
+                    meses.add(`${r[1].getFullYear()}-${String(r[1].getMonth()+1).padStart(2, '0')}`);
+                }
+            });
+
+            // Populate empresas checkboxes
+            const empresasGroup = document.getElementById('receitasEmpresasGroup');
+            if (empresasGroup) {
+                empresasGroup.innerHTML = '';
+                Array.from(empresas).sort().forEach(e => {
+                    const id = `receitas-empresa-${e.replace(/\s+/g, '-')}`;
+                    empresasGroup.innerHTML += `
+                        <div class="receitas-checkbox-wrapper">
+                            <input type="checkbox" id="${id}" class="receitas-empresa-check" value="${e}" onchange="applyReceitasFilters()" checked>
+                            <label for="${id}">${e}</label>
+                        </div>
+                    `;
+                });
+            }
+
+            // Populate anos pills
+            const anosGroup = document.getElementById('receitasAnosGroup');
+            if (anosGroup) {
+                anosGroup.innerHTML = `
+                    <div class="year-pill active receitas-ano-pill" onclick="toggleAllReceitas('mes')">
+                        <i class="fas fa-calendar-check"></i> Todos
+                    </div>
+                `;
+                Array.from(anos).sort().reverse().forEach(a => {
+                    anosGroup.innerHTML += `
+                        <div class="year-pill active receitas-ano-pill" data-year="${a}" onclick="toggleReceitasYear(${a})">
+                            <i class="fas fa-calendar"></i> ${a}
+                        </div>
+                    `;
+                });
+            }
+
+            // Populate meses checkboxes
+            const mesesGroup = document.getElementById('receitasMesesGroup');
+            if (mesesGroup) {
+                mesesGroup.innerHTML = '';
+                Array.from(meses).sort().reverse().forEach(m => {
+                    const [ano, mes] = m.split('-');
+                    const mesNome = new Date(ano, parseInt(mes)-1).toLocaleString('pt-BR', { month: '2-digit', year: 'numeric' });
+                    const id = `receitas-mes-${m}`;
+                    mesesGroup.innerHTML += `
+                        <div class="receitas-checkbox-wrapper">
+                            <input type="checkbox" id="${id}" class="receitas-mes-check" value="${m}" data-year="${ano}" onchange="applyReceitasFilters()" checked>
+                            <label for="${id}">${mesNome}</label>
+                        </div>
+                    `;
+                });
+            }
+            
+            // Garantir que os checkboxes "Todos" estejam marcados
+            if (document.getElementById('allReceitasEmpresas')) document.getElementById('allReceitasEmpresas').checked = true;
+            if (document.getElementById('allReceitasMeses')) document.getElementById('allReceitasMeses').checked = true;
+        }
+
         function syncAllCheckbox(type) {
             const idMap = { month: 'allMonths', company: 'allCompanies', category: 'allCategories' };
             const all = document.querySelectorAll(`.${type}-check`);
@@ -1205,7 +1632,6 @@
             const wrap = document.getElementById('yearSelector');
             wrap.innerHTML = '';
             const sortedYears = Array.from(years).sort();
-            // "Todos" pill
             const allPill = document.createElement('label');
             allPill.className = 'year-pill' + (selectedYears.size === sortedYears.length ? ' active' : '');
             allPill.id = 'year-pill-all';
@@ -1217,7 +1643,6 @@
                 rawData.forEach(r => {
                     if (r[9]) allMonths.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2,'0')}`);
                 });
-                // Update pill styles
                 document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('active'));
                 allPill.classList.add('active');
                 renderMonthList(allMonths, true);
@@ -1232,22 +1657,19 @@
                 pill.innerHTML = `<i class="fas fa-calendar-alt"></i>${y}`;
                 pill.addEventListener('click', function(e) {
                     e.preventDefault();
-                    // Exclusive selection: only this year active
                     selectedYears = new Set([y]);
-                    // Update pill styles
-                    document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('active'));
-                    pill.classList.add('active');
                     const allMonths = new Set();
                     rawData.forEach(r => {
                         if (r[9]) allMonths.add(`${r[9].getFullYear()}-${String(r[9].getMonth()+1).padStart(2,'0')}`);
                     });
+                    document.querySelectorAll('.year-pill').forEach(p => p.classList.remove('active'));
+                    pill.classList.add('active');
                     renderMonthList(allMonths, true);
                     applyFilters();
                 });
                 wrap.appendChild(pill);
             });
 
-            // Highlight "Todos" if all years selected
             if (selectedYears.size === sortedYears.length) {
                 allPill.classList.add('active');
             }
@@ -1288,16 +1710,7 @@
                 if(selMos.length && !selMos.includes(`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2, '0')}`)) return false;
                 const co = (r[COLS.EMPRESA] || 'Sem Empresa').toString().trim();
                 if(selCos.length && !selCos.includes(co)) return false;
-                // Smart search across all columns
-                if(searchTerm) {
-                    const haystack = [
-                        r[COLS.EMPRESA], r[COLS.CREDOR], r[COLS.DESC],
-                        r[COLS.NATUREZA], r[COLS.BANCO],
-                        formatDateBR(r[9]), formatDateBR(r[10]),
-                        r[8] ? r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'}) : ''
-                    ].map(v => (v || '').toString().toLowerCase()).join(' ');
-                    if (!haystack.includes(searchTerm)) return false;
-                }
+                if(searchTerm && !recordMatchesSearch(r, searchTerm)) return false;
                 return true;
             });
 
@@ -1312,6 +1725,42 @@
             updateUI();
         }
 
+        function applyReceitasFilters() {
+            const empresasSelecionadas = new Set(Array.from(document.querySelectorAll('.receitas-empresa-check:checked')).map(i => i.value));
+            const mesesSelecionados = new Set(Array.from(document.querySelectorAll('.receitas-mes-check:checked')).map(i => i.value));
+            const cliente = document.getElementById('receitasCliente').value.toLowerCase();
+            const dataInicio = document.getElementById('receitasDataInicio').value;
+            const dataFim = document.getElementById('receitasDataFim').value;
+            const busca = document.getElementById('receitasBusca').value.toLowerCase();
+
+            const start = dataInicio ? new Date(dataInicio + 'T00:00:00') : null;
+            const end = dataFim ? new Date(dataFim + 'T23:59:59') : null;
+
+            receitasFilteredData = receitasRawData.filter(r => {
+                if (empresasSelecionadas.size && !empresasSelecionadas.has(r[RECEITAS_COLS.EMPRESA])) return false;
+                if (mesesSelecionados.size && r[1]) {
+                    const mesChave = `${r[1].getFullYear()}-${String(r[1].getMonth()+1).padStart(2, '0')}`;
+                    if (!mesesSelecionados.has(mesChave)) return false;
+                }
+                if (cliente && r[RECEITAS_COLS.CLIENTE] && !r[RECEITAS_COLS.CLIENTE].toLowerCase().includes(cliente)) return false;
+                if (start && r[1] && r[1] < start) return false;
+                if (end && r[1] && r[1] > end) return false;
+                if (busca) {
+                    const searchFields = [
+                        r[RECEITAS_COLS.CLIENTE],
+                        r[RECEITAS_COLS.DESCRICAO],
+                        r[RECEITAS_COLS.EMPRESA],
+                        formatCurrencyBR(r[3])
+                    ].join(' ').toLowerCase();
+                    if (!searchFields.includes(busca)) return false;
+                }
+                return true;
+            });
+
+            receitasFilteredData.sort((a, b) => b[1] - a[1]);
+            updateReceitasUI();
+        }
+
         function updateUI() {
             const total = filteredData.reduce((s, r) => s + r[8], 0);
             document.getElementById('statTotal').innerText = total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
@@ -1319,7 +1768,6 @@
             document.getElementById('statCats').innerText = new Set(filteredData.map(r => r[COLS.NATUREZA])).size;
             document.getElementById('tableCount').innerText = `${filteredData.length} registros`;
 
-            // Update search indicator
             const indicator = document.getElementById('searchActiveIndicator');
             if (indicator) {
                 if (searchTerm) {
@@ -1347,6 +1795,37 @@
             scheduleComparisonPanelRender();
             const selCatsForDetail = Array.from(document.querySelectorAll('.category-check:checked')).map(i => i.value);
             document.getElementById('btnDetail').style.display = selCatsForDetail.length === 1 ? 'inline-flex' : 'none';
+        }
+
+        function updateReceitasUI() {
+            const total = receitasFilteredData.reduce((s, r) => s + r[3], 0);
+            const count = receitasFilteredData.length;
+
+            if (document.getElementById('receitasTotal')) document.getElementById('receitasTotal').innerText = formatCurrencyBR(total);
+            if (document.getElementById('receitasTotalMeta')) document.getElementById('receitasTotalMeta').innerText = `${count} registros`;
+            if (document.getElementById('receitasQtd')) document.getElementById('receitasQtd').innerText = count;
+            if (document.getElementById('receitasQtdMeta')) document.getElementById('receitasQtdMeta').innerText = 'Itens processados';
+            if (document.getElementById('receitasTicket')) document.getElementById('receitasTicket').innerText = formatCurrencyBR(count ? total / count : 0);
+            if (document.getElementById('receitasTicketMeta')) document.getElementById('receitasTicketMeta').innerText = 'Por transação';
+            if (document.getElementById('receitasTableCount')) document.getElementById('receitasTableCount').innerText = `${count} itens`;
+
+            const tbody = document.getElementById('receitasTableBody');
+            if (tbody) {
+                tbody.innerHTML = '';
+                receitasFilteredData.slice(0, 100).forEach(r => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td><small class="fw-bold">${r[RECEITAS_COLS.EMPRESA] || 'N/A'}</small></td>
+                            <td>${r[RECEITAS_COLS.CLIENTE] || '-'}</td>
+                            <td>${r[RECEITAS_COLS.DESCRICAO] || '-'}</td>
+                            <td>${formatDateBR(r[1])}</td>
+                            <td class="text-end fw-bold">${r[3].toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
+                            <td>${r[RECEITAS_COLS.VENDEDOR] || '-'}</td>
+                        </tr>`;
+                });
+            }
+
+            renderReceitasCharts();
         }
 
         function renderChart() {
@@ -1382,6 +1861,155 @@
             });
         }
 
+        function renderReceitasCharts() {
+            const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+
+            // Receitas por Empresa
+            const empresaMap = {};
+            receitasFilteredData.forEach(r => {
+                const empresa = r[RECEITAS_COLS.EMPRESA] || 'Sem Empresa';
+                empresaMap[empresa] = (empresaMap[empresa] || 0) + r[3];
+            });
+
+            const empresaCanvas = document.getElementById('receitasEmpresaChart');
+            if (!empresaCanvas) return;
+            const empresaCtx = empresaCanvas.getContext('2d');
+            if(receitasEmpresaChart) receitasEmpresaChart.destroy();
+            
+            receitasEmpresaChart = new Chart(empresaCtx, {
+                type: 'bar',
+                data: {
+                    labels: Object.keys(empresaMap),
+                    datasets: [{
+                        label: 'Total por Empresa',
+                        data: Object.values(empresaMap),
+                        backgroundColor: '#4f46e5',
+                        borderColor: '#4338ca',
+                        borderWidth: 1.5,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b',
+                                callback: value => formatCurrencyBR(value)
+                            },
+                            grid: { color: isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.10)' }
+                        },
+                        x: {
+                            ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+
+            // Receitas por Mês
+            const mesMap = {};
+            receitasFilteredData.forEach(r => {
+                if (r[1]) {
+                    const mesAno = r[1].toLocaleString('pt-BR', { month: 'short', year: '2-digit' });
+                    mesMap[mesAno] = (mesMap[mesAno] || 0) + r[3];
+                }
+            });
+
+            const mesCanvas = document.getElementById('receitasMesChart');
+            if (!mesCanvas) return;
+            const mesCtx = mesCanvas.getContext('2d');
+            if(receitasMesChart) receitasMesChart.destroy();
+            
+            receitasMesChart = new Chart(mesCtx, {
+                type: 'line',
+                data: {
+                    labels: Object.keys(mesMap),
+                    datasets: [{
+                        label: 'Receitas por Mês',
+                        data: Object.values(mesMap),
+                        borderColor: '#10b981',
+                        backgroundColor: 'rgba(16, 185, 129, 0.1)',
+                        borderWidth: 2,
+                        fill: true,
+                        tension: 0.4,
+                        pointBackgroundColor: '#10b981',
+                        pointBorderColor: '#fff',
+                        pointBorderWidth: 2,
+                        pointRadius: 5
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            ticks: {
+                                color: isDark ? '#cbd5e1' : '#64748b',
+                                callback: value => formatCurrencyBR(value)
+                            },
+                            grid: { color: isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.10)' }
+                        },
+                        x: {
+                            ticks: { color: isDark ? '#cbd5e1' : '#64748b' },
+                            grid: { display: false }
+                        }
+                    },
+                    plugins: {
+                        legend: { display: false }
+                    }
+                }
+            });
+        }
+
+        function parseDate(v) {
+            if (v === null || v === undefined || v === '') return null;
+            
+            // Se já for um objeto Date (comum em algumas versões do SheetJS)
+            if (v instanceof Date) {
+                // Criar uma nova data ignorando o fuso horário (usando os valores UTC como locais)
+                return new Date(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate());
+            }
+            
+            // Se for um número serial do Excel
+            if (typeof v === 'number') {
+                return excelSerialToLocalDate(v);
+            }
+            
+            const raw = v.toString().trim();
+            if (!raw) return null;
+            
+            // Formato ISO (YYYY-MM-DD)
+            const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
+            if (iso) {
+                return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+            }
+            
+            // Formato Brasileiro (DD/MM/YYYY)
+            const br = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
+            if (br) {
+                let y = Number(br[3]);
+                if (y < 100) y += 2000;
+                return new Date(y, Number(br[2]) - 1, Number(br[1]));
+            }
+            
+            return null;
+        }
+
+        function excelSerialToLocalDate(serial) {
+            // O Excel considera 1900 como bissexto (erro histórico), o SheetJS costuma corrigir
+            // Usamos a época correta e adicionamos os dias
+            const excelEpoch = new Date(1899, 11, 30, 0, 0, 0);
+            const date = new Date(excelEpoch.getTime() + Math.round(serial * 86400000));
+            
+            // Para garantir que não haja deslocamento de fuso, extraímos os componentes e criamos uma nova data local
+            return new Date(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+        }
+
         // ============== PDF GENERATION ==============
         function openPdfPreview(type) {
             try {
@@ -1405,7 +2033,6 @@
                 doc.setDrawColor(226, 232, 240);
                 doc.line(0, 35, pageWidth, 35);
 
-                // Melhor dimensionamento do nome da aplicação
                 doc.setFont('helvetica', 'bold');
                 doc.setFontSize(16);
                 doc.setTextColor(79, 70, 229);
@@ -1416,7 +2043,6 @@
                 const dataGeracao = new Date();
                 doc.text(`EMISSÃO: ${formatDateTimeBR(dataGeracao)}`, 15, 25);
                 
-                // Dados do Sistema / Filtros no Cabeçalho
                 doc.setFont('helvetica', 'bold');
                 doc.text('PARÂMETROS DO SISTEMA:', pageWidth - 100, 15);
                 doc.setFont('helvetica', 'normal');
@@ -1440,198 +2066,8 @@
                 doc.text(reportTitle, pageWidth / 2, yPosition, { align: 'center' });
                 yPosition += 12;
 
-                // ===== RESUMO POR EMPRESA =====
-                let detailTableTitle = '';
-                if(type === 'comparison') {
-                    if (!comparisonMetrics.length) {
-                        alert('Selecione categorias específicas para gerar o PDF comparativo.');
-                        return;
-                    }
-
-                    const comparisonTotal = comparisonMetrics.reduce((sum, item) => sum + item.total, 0);
-                    const comparisonCount = comparisonMetrics.reduce((sum, item) => sum + item.count, 0);
-                    const comparisonCompanies = new Set(filteredData.map(r => getCompanyName(r))).size;
-                    const topCategory = comparisonMetrics[0];
-
-                    yPosition = drawPdfMetricCards(doc, [
-                        { label: 'Categorias', value: String(comparisonMetrics.length), meta: 'Segmentos em comparação' },
-                        { label: 'Total comparado', value: formatCurrencyBR(comparisonTotal), meta: `${comparisonCount} itens filtrados` },
-                        { label: 'Categoria líder', value: topCategory.label.substring(0, 28), meta: `${topCategory.share.toFixed(1)}% do volume` },
-                        { label: 'Empresas', value: String(comparisonCompanies), meta: `Ticket médio ${formatCurrencyBR(comparisonCount ? comparisonTotal / comparisonCount : 0)}` }
-                    ], yPosition, pageWidth, pageHeight);
-
-                    const comparisonCanvas = document.getElementById('categoryComparisonChart');
-                    const averageCanvas = document.getElementById('categoryAverageChart');
-                    if (comparisonCanvas && averageCanvas) {
-                        yPosition = ensurePdfSpace(doc, yPosition, 76, pageHeight);
-                        doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(11);
-                        doc.setTextColor(79, 70, 229);
-                        doc.text('PAINEL VISUAL DE PERFORMANCE', 15, yPosition);
-                        yPosition += 5;
-
-                        doc.addImage(comparisonCanvas.toDataURL('image/png', 1.0), 'PNG', 15, yPosition, 165, 60);
-                        doc.addImage(averageCanvas.toDataURL('image/png', 1.0), 'PNG', 188, yPosition, 94, 60);
-                        yPosition += 68;
-                    }
-
-                    yPosition = ensurePdfSpace(doc, yPosition, 34, pageHeight);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(11);
-                    doc.setTextColor(79, 70, 229);
-                    doc.text('QUADRO COMPARATIVO POR CATEGORIA', 15, yPosition);
-                    yPosition += 6;
-
-                    doc.autoTable({
-                        startY: yPosition,
-                        head: [['Categoria', 'Empresas', 'Qtd. Itens', 'Total', '% do Total', 'Ticket Médio']],
-                        body: comparisonMetrics.map(item => [
-                            item.label,
-                            item.companies.toString(),
-                            item.count.toString(),
-                            formatCurrencyBR(item.total),
-                            `${item.share.toFixed(1)}%`,
-                            formatCurrencyBR(item.average)
-                        ]),
-                        theme: 'striped',
-                        styles: { fontSize: 8, textColor: [0, 0, 0] },
-                        headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
-                        columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' }, 3: { halign: 'right' }, 4: { halign: 'center' }, 5: { halign: 'right' } },
-                        bodyStyles: { textColor: [0, 0, 0] },
-                        margin: { left: 15, right: 15 }
-                    });
-                    yPosition = doc.lastAutoTable.finalY + 10;
-
-                    const companySummary = buildCompanySummary(filteredData).map(item => [
-                        item.company,
-                        item.categories.toString(),
-                        item.count.toString(),
-                        formatCurrencyBR(item.total),
-                        formatCurrencyBR(item.average)
-                    ]);
-
-                    yPosition = ensurePdfSpace(doc, yPosition, 30, pageHeight);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(11);
-                    doc.setTextColor(79, 70, 229);
-                    doc.text('CONSOLIDADO POR EMPRESA', 15, yPosition);
-                    yPosition += 6;
-
-                    doc.autoTable({
-                        startY: yPosition,
-                        head: [['Empresa', 'Categorias', 'Qtd. Itens', 'Total', 'Ticket Médio']],
-                        body: companySummary,
-                        theme: 'grid',
-                        styles: { fontSize: 8, textColor: [0, 0, 0] },
-                        headStyles: { fillColor: [30, 41, 59], textColor: [255, 255, 255], fontStyle: 'bold' },
-                        columnStyles: { 1: { halign: 'center' }, 2: { halign: 'center' }, 3: { halign: 'right' }, 4: { halign: 'right' } },
-                        bodyStyles: { textColor: [0, 0, 0] },
-                        margin: { left: 15, right: 15 }
-                    });
-                    yPosition = doc.lastAutoTable.finalY + 10;
-                    detailTableTitle = 'LISTAGEM DE ITENS POR EMPRESA';
-                } else if(type !== 'summary') {
-                    const companyData = {};
-                    let dataToProcess = type === 'category' 
-                        ? filteredData.filter(r => r[COLS.NATUREZA] === selectedCategory)
-                        : filteredData;
-
-                    dataToProcess.forEach(r => {
-                        const co = getCompanyName(r);
-                        if(!companyData[co]) companyData[co] = { total: 0, count: 0 };
-                        companyData[co].total += r[8];
-                        companyData[co].count += 1;
-                    });
-
-                    const companies = Object.entries(companyData).sort((a, b) => b[1].total - a[1].total);
-
-                    if (type === 'category') {
-                        doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(11);
-                        doc.setTextColor(79, 70, 229);
-                        doc.text('MÉTRICAS POR EMPRESA (CARDS RESUMO)', 15, yPosition);
-                        yPosition += 6;
-
-                        const cardWidth = 65;
-                        const cardHeight = 25;
-                        const gap = 5;
-                        let xPos = 15;
-
-                        companies.forEach(([co, data]) => {
-                            if (xPos + cardWidth > pageWidth - 15) {
-                                xPos = 15;
-                                yPosition += cardHeight + gap;
-                            }
-                            
-                            if(yPosition + cardHeight > pageHeight - 20) {
-                                doc.addPage();
-                                yPosition = 20;
-                                xPos = 15;
-                            }
-
-                            doc.setDrawColor(226, 232, 240);
-                            doc.setFillColor(255, 255, 255);
-                            doc.roundedRect(xPos, yPosition, cardWidth, cardHeight, 3, 3, 'FD');
-                            
-                            doc.setFontSize(8);
-                            doc.setTextColor(100, 116, 139);
-                            doc.setFont('helvetica', 'bold');
-                            doc.text(co.substring(0, 35), xPos + 4, yPosition + 6);
-                            
-                            doc.setFontSize(10);
-                            doc.setTextColor(79, 70, 229);
-                            doc.text(formatCurrencyBR(data.total), xPos + 4, yPosition + 14);
-                            
-                            doc.setFontSize(7);
-                            doc.setTextColor(100, 116, 139);
-                            doc.setFont('helvetica', 'normal');
-                            doc.text(`${data.count} itens | Avg: ${formatCurrencyBR(data.total / data.count)}`, xPos + 4, yPosition + 20);
-
-                            xPos += cardWidth + gap;
-                        });
-                        
-                        yPosition += cardHeight + 10;
-                    } else {
-                        const companySummary = companies.map(([co, data]) => [
-                            co,
-                            data.count.toString(),
-                            formatCurrencyBR(data.total),
-                            formatCurrencyBR(data.total / data.count)
-                        ]);
-
-                        doc.setFont('helvetica', 'bold');
-                        doc.setFontSize(11);
-                        doc.setTextColor(79, 70, 229);
-                        doc.text('RESUMO POR EMPRESA', 15, yPosition);
-                        yPosition += 6;
-
-                        doc.autoTable({
-                            startY: yPosition,
-                            head: [['Empresa', 'Qtd. Itens', 'Total', 'Ticket Médio']],
-                            body: companySummary,
-                            theme: 'striped',
-                            styles: { fontSize: 8, textColor: [0, 0, 0] },
-                            headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
-                            bodyStyles: { textColor: [0, 0, 0] },
-                            margin: { left: 15, right: 15 }
-                        });
-
-                        yPosition = doc.lastAutoTable.finalY + 10;
-                    }
-
-                    if(yPosition > pageHeight - 40) {
-                        doc.addPage();
-                        yPosition = 20;
-                    }
-                }
-
-                // ===== TABELA PRINCIPAL =====
-                let tableHead = [['Empresa', 'Credor', 'Descrição', 'Quitação', 'Valor', 'Natureza']];
-                let tableBody = [];
-
+                // ===== RESUMO POR CATEGORIA =====
                 if(type === 'summary') {
-
-                    // ── 1. RESUMO POR CATEGORIA ──────────────────────────────────
                     doc.setFont('helvetica', 'bold');
                     doc.setFontSize(11);
                     doc.setTextColor(79, 70, 229);
@@ -1653,7 +2089,6 @@
                             grandTotal > 0 ? ((val / grandTotal) * 100).toFixed(1) + '%' : '0%'
                         ]);
 
-                    // Linha de total geral
                     catSummaryRows.push([
                         { content: 'TOTAL GERAL', styles: { fontStyle: 'bold', fillColor: [237, 233, 254], textColor: [79, 70, 229] } },
                         { content: grandTotal.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), styles: { fontStyle: 'bold', halign: 'right', fillColor: [237, 233, 254], textColor: [79, 70, 229] } },
@@ -1672,323 +2107,282 @@
                         margin: { left: 15, right: 15 }
                     });
                     yPosition = doc.lastAutoTable.finalY + 14;
-
-                    // ── 2. TABELA PIVÔ: linhas = categoria, colunas = empresas ───────
-                    if (yPosition > pageHeight - 40) { doc.addPage(); yPosition = 20; }
-
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(11);
-                    doc.setTextColor(79, 70, 229);
-                    doc.text('VOLUME POR EMPRESA × CATEGORIA', 15, yPosition);
-                    yPosition += 5;
-
-                    doc.setFont('helvetica', 'italic');
-                    doc.setFontSize(7.5);
-                    doc.setTextColor(100, 116, 139);
-                    const selCatsLabel = Array.from(document.querySelectorAll('.category-check:checked')).map(i => i.value).join(', ') || 'Todas';
-                    const selMosLabel  = Array.from(document.querySelectorAll('.month-check:checked')).map(i => i.value).join(', ')  || 'Todos';
-                    const searchLabel  = searchTerm ? ` | Busca: "${searchTerm}"` : '';
-                    doc.text(
-                        `Filtros — Categorias: ${selCatsLabel.substring(0, 70)} | Meses: ${selMosLabel.substring(0, 50)}${searchLabel}`,
-                        15, yPosition + 4
-                    );
-                    yPosition += 11;
-
-                    // ── Monta estrutura pivô ──────────────────────────────────────────
-                    // pivot[categoria][empresa] = valor
-                    const pivot = {};
-                    const empTotals = {};   // total por empresa
-                    const catTotals = {};   // total por categoria
-
-                    filteredData.forEach(r => {
-                        const cat = (r[COLS.NATUREZA] || 'Sem Categoria').toString().trim();
-                        const emp = (r[COLS.EMPRESA]  || 'Sem Empresa'  ).toString().trim();
-                        const val = r[8];
-
-                        if (!pivot[cat]) pivot[cat] = {};
-                        pivot[cat][emp] = (pivot[cat][emp] || 0) + val;
-
-                        empTotals[emp] = (empTotals[emp] || 0) + val;
-                        catTotals[cat] = (catTotals[cat] || 0) + val;
-                    });
-
-                    // Empresas ordenadas por total desc
-                    const empresasCols = Object.entries(empTotals)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([e]) => e);
-
-                    // Categorias ordenadas por total desc
-                    const categoriaRows = Object.entries(catTotals)
-                        .sort((a, b) => b[1] - a[1])
-                        .map(([c]) => c);
-
-                    // ── Cabeçalho dinâmico ────────────────────────────────────────────
-                    const brl = v => v > 0
-                        ? v.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
-                        : '-';
-
-                    const pivotHead = [['Categoria', ...empresasCols, 'Total Geral']];
-
-                    // ── Linhas de dados ───────────────────────────────────────────────
-                    const pivotBody = categoriaRows.map((cat, rowIdx) => {
-                        const bg = rowIdx % 2 === 0 ? [248, 250, 252] : [255, 255, 255];
-                        const catRow = [
-                            { content: cat, styles: { fontStyle: 'bold', fillColor: bg, textColor: [30, 41, 59] } }
-                        ];
-                        empresasCols.forEach(emp => {
-                            const v = (pivot[cat] && pivot[cat][emp]) || 0;
-                            catRow.push({
-                                content: brl(v),
-                                styles: {
-                                    halign: 'right',
-                                    fillColor: bg,
-                                    textColor: v > 0 ? [30, 41, 59] : [180, 180, 180]
-                                }
-                            });
-                        });
-                        // Total da categoria
-                        catRow.push({
-                            content: brl(catTotals[cat]),
-                            styles: { halign: 'right', fontStyle: 'bold', fillColor: bg, textColor: [79, 70, 229] }
-                        });
-                        return catRow;
-                    });
-
-                    // ── Linha de totais por empresa ───────────────────────────────────
-                    const totalRow = [
-                        { content: 'TOTAL GERAL', styles: { fontStyle: 'bold', fillColor: [79, 70, 229], textColor: [255, 255, 255] } }
-                    ];
-                    empresasCols.forEach(emp => {
-                        totalRow.push({
-                            content: brl(empTotals[emp]),
-                            styles: { halign: 'right', fontStyle: 'bold', fillColor: [79, 70, 229], textColor: [255, 255, 255] }
-                        });
-                    });
-                    totalRow.push({
-                        content: brl(grandTotal),
-                        styles: { halign: 'right', fontStyle: 'bold', fillColor: [30, 41, 59], textColor: [255, 255, 255] }
-                    });
-                    pivotBody.push(totalRow);
-
-                    // ── Larguras de coluna ────────────────────────────────────────────
-                    // Página landscape A4: 297mm - 30mm margens = 267mm utilizáveis
-                    const usableWidth = pageWidth - 30;
-                    const catColW   = Math.min(60, usableWidth * 0.28);
-                    const totalColW = Math.min(32, usableWidth * 0.12);
-                    const remaining = usableWidth - catColW - totalColW;
-                    const empColW   = empresasCols.length > 0
-                        ? Math.max(22, remaining / empresasCols.length)
-                        : remaining;
-
-                    // Tamanho da fonte adaptável: reduz se muitas empresas
-                    const pivotFontSize = empresasCols.length <= 4 ? 8
-                        : empresasCols.length <= 7 ? 7
-                        : 6;
-
-                    const colStyles = { 0: { cellWidth: catColW, fontStyle: 'bold' } };
-                    empresasCols.forEach((_, i) => {
-                        colStyles[i + 1] = { cellWidth: empColW, halign: 'right' };
-                    });
-                    colStyles[empresasCols.length + 1] = { cellWidth: totalColW, halign: 'right', fontStyle: 'bold' };
-
-                    doc.autoTable({
-                        startY: yPosition,
-                        head: pivotHead,
-                        body: pivotBody,
-                        theme: 'plain',
-                        styles: { fontSize: pivotFontSize, cellPadding: 2.5, overflow: 'ellipsize' },
-                        headStyles: {
-                            fillColor: [30, 41, 59],
-                            textColor: [255, 255, 255],
-                            fontStyle: 'bold',
-                            halign: 'right',
-                            fontSize: pivotFontSize
-                        },
-                        columnStyles: colStyles,
-                        didParseCell: function(data) {
-                            // Cabeçalho coluna 0 (Categoria) alinhado à esquerda
-                            if (data.section === 'head' && data.column.index === 0) {
-                                data.cell.styles.halign = 'left';
-                            }
-                        },
-                        margin: { left: 15, right: 15 }
-                    });
-
-                    tableHead = null; // tabela principal não deve ser re-impressa no modo summary
-                } else if(type === 'category') {
-                    const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value)[0] || '';
-                    const dataToExport = filteredData.filter(r => r[COLS.NATUREZA] === cat);
-                    
-                    tableBody = dataToExport.map(r => [
-                        r[COLS.EMPRESA] || '-',
-                        r[COLS.CREDOR] || '-',
-                        r[COLS.DESC] || '-',
-                        formatDateBR(r[9]),
-                        formatCurrencyBR(r[8]),
-                        r[COLS.NATUREZA]
-                    ]);
-                } else if(type === 'comparison') {
-                    tableHead = [['Empresa', 'Categoria', 'Credor', 'Descrição', 'Quitação', 'Valor']];
-                    const dataToExport = [...filteredData].sort((a, b) => {
-                        const companyDiff = getCompanyName(a).localeCompare(getCompanyName(b));
-                        if (companyDiff !== 0) return companyDiff;
-                        const categoryDiff = (a[COLS.NATUREZA] || '').toString().localeCompare((b[COLS.NATUREZA] || '').toString());
-                        if (categoryDiff !== 0) return categoryDiff;
-                        return b[8] - a[8];
-                    });
-
-                    tableBody = dataToExport.map(r => [
-                        getCompanyName(r),
-                        r[COLS.NATUREZA] || '-',
-                        r[COLS.CREDOR] || '-',
-                        r[COLS.DESC] || '-',
-                        formatDateBR(r[9]),
-                        formatCurrencyBR(r[8])
-                    ]);
-                } else {
-                    tableBody = filteredData.map(r => [
-                        r[COLS.EMPRESA] || '-',
-                        r[COLS.CREDOR] || '-',
-                        r[COLS.DESC] || '-',
-                        formatDateBR(r[9]),
-                        formatCurrencyBR(r[8]),
-                        r[COLS.NATUREZA]
-                    ]);
                 }
 
-                if (tableHead !== null) {
-                if (detailTableTitle) {
-                    yPosition = ensurePdfSpace(doc, yPosition, 18, pageHeight);
-                    doc.setFont('helvetica', 'bold');
-                    doc.setFontSize(11);
-                    doc.setTextColor(79, 70, 229);
-                    doc.text(detailTableTitle, 15, yPosition);
-                    yPosition += 6;
+                // ===== TABELA PRINCIPAL =====
+                if(yPosition > pageHeight - 40) {
+                    doc.addPage();
+                    yPosition = 20;
                 }
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(79, 70, 229);
+                doc.text('DETALHAMENTO DOS LANÇAMENTOS', 15, yPosition);
+                yPosition += 6;
+
+                const tableHead = [['Empresa', 'Credor', 'Descrição', 'Quitação', 'Valor', 'Natureza']];
+                const tableBody = filteredData.slice(0, 500).map(r => [
+                    r[COLS.EMPRESA] || '-',
+                    r[COLS.CREDOR] || '-',
+                    (r[COLS.DESC] || '-').substring(0, 30),
+                    formatDateBR(r[9]),
+                    formatCurrencyBR(r[8]),
+                    r[COLS.NATUREZA]
+                ]);
+
                 doc.autoTable({
                     startY: yPosition,
                     head: tableHead,
                     body: tableBody,
-                    theme: 'grid',
-                    styles: { fontSize: 8, textColor: [0, 0, 0] },
+                    theme: 'striped',
+                    styles: { fontSize: 7, textColor: [0, 0, 0] },
                     headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+                    columnStyles: { 4: { halign: 'right' } },
                     bodyStyles: { textColor: [0, 0, 0] },
                     margin: { left: 15, right: 15 }
                 });
-                }
 
                 currentPdfBlob = doc.output('blob');
                 const pdfUrl = URL.createObjectURL(currentPdfBlob);
-                
                 document.getElementById('pdfPreviewFrame').src = pdfUrl;
                 
-                const nomeArquivo = gerarNomeArquivo(type, dataGeracao);
-                document.getElementById('downloadPdfBtn').onclick = function() {
+                const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
+                pdfModal.show();
+
+                document.getElementById('downloadPdfBtn').onclick = () => {
                     const link = document.createElement('a');
                     link.href = pdfUrl;
-                    link.download = nomeArquivo;
-                    document.body.appendChild(link);
+                    link.download = `relatorio_${type}_${new Date().getTime()}.pdf`;
                     link.click();
-                    document.body.removeChild(link);
                 };
-                
-                const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'), {});
-                pdfModal.show();
             } catch(err) {
-                console.error('Erro ao gerar PDF:', err);
                 alert('Erro ao gerar PDF: ' + err.message);
             }
         }
 
-        function openPdfPreviewFromDetail(type) {
-            // Fechar o modal de detalhes primeiro
-            const detailModal = bootstrap.Modal.getInstance(document.getElementById('detailModal'));
-            if (detailModal) {
-                detailModal.hide();
-            }
-            
-            // Aguardar um pouco para garantir que o modal foi fechado
-            setTimeout(() => {
-                // Exibir aviso ao usuário
-                alert('⚠️ Gerando PDF...\n\nO documento será exibido em uma nova janela de visualização.');
+        function generateReceitasPDF() {
+            try {
+                if(!receitasFilteredData || receitasFilteredData.length === 0) {
+                    alert('Nenhum dado de receitas para exportar.');
+                    return null;
+                }
+
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF('l', 'mm', 'a4');
+                const pageWidth = doc.internal.pageSize.getWidth();
+                const pageHeight = doc.internal.pageSize.getHeight();
+                let yPosition = 15;
+
+                // Header
+                doc.setFillColor(248, 250, 252);
+                doc.rect(0, 0, pageWidth, 35, 'F');
+                doc.setDrawColor(226, 232, 240);
+                doc.line(0, 35, pageWidth, 35);
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(16);
+                doc.setTextColor(79, 70, 229);
+                doc.text('GRUPO LABMEDIC - ANÁLISE DE RECEITAS', 15, 18);
                 
-                // Gerar o PDF
-                openPdfPreview(type);
-            }, 300);
+                doc.setFontSize(9);
+                doc.setTextColor(100, 116, 139);
+                const dataGeracao = new Date();
+                doc.text(`EMISSÃO: ${formatDateTimeBR(dataGeracao)}`, 15, 25);
+
+                yPosition = 45;
+
+                // Metrics
+                const total = receitasFilteredData.reduce((s, r) => s + r[3], 0);
+                const count = receitasFilteredData.length;
+                const clientes = new Set(receitasFilteredData.map(r => r[RECEITAS_COLS.CLIENTE])).size;
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(79, 70, 229);
+                doc.text('RESUMO EXECUTIVO', 15, yPosition);
+                yPosition += 6;
+
+                const metricsData = [
+                    ['Total de Receitas', formatCurrencyBR(total)],
+                    ['Quantidade de Registros', count.toString()],
+                    ['Clientes Únicos', clientes.toString()],
+                    ['Ticket Médio', formatCurrencyBR(count ? total / count : 0)]
+                ];
+
+                doc.autoTable({
+                    startY: yPosition,
+                    head: [['Métrica', 'Valor']],
+                    body: metricsData,
+                    theme: 'striped',
+                    styles: { fontSize: 9, textColor: [0, 0, 0] },
+                    headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+                    columnStyles: { 1: { halign: 'right' } },
+                    bodyStyles: { textColor: [0, 0, 0] },
+                    margin: { left: 15, right: 15 }
+                });
+
+                yPosition = doc.lastAutoTable.finalY + 14;
+
+                if(yPosition > pageHeight - 40) {
+                    doc.addPage();
+                    yPosition = 20;
+                }
+
+                doc.setFont('helvetica', 'bold');
+                doc.setFontSize(11);
+                doc.setTextColor(79, 70, 229);
+                doc.text('DETALHAMENTO DE RECEITAS', 15, yPosition);
+                yPosition += 6;
+
+                const tableHead = [['Empresa', 'Cliente', 'Descrição', 'Vencimento', 'Liquidação', 'Valor']];
+                const tableBody = receitasFilteredData.slice(0, 500).map(r => [
+                    r[RECEITAS_COLS.EMPRESA] || '-',
+                    r[RECEITAS_COLS.CLIENTE] || '-',
+                    (r[RECEITAS_COLS.DESCRICAO] || '-').substring(0, 20),
+                    formatDateBR(r[1]),
+                    formatDateBR(r[4]),
+                    formatCurrencyBR(r[3])
+                ]);
+
+                doc.autoTable({
+                    startY: yPosition,
+                    head: tableHead,
+                    body: tableBody,
+                    theme: 'striped',
+                    styles: { fontSize: 7, textColor: [0, 0, 0] },
+                    headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+                    columnStyles: { 5: { halign: 'right' } },
+                    bodyStyles: { textColor: [0, 0, 0] },
+                    margin: { left: 15, right: 15 }
+                });
+
+                return doc.output('blob');
+            } catch(err) {
+                alert('Erro ao gerar PDF: ' + err.message);
+                return null;
+            }
         }
 
-        function gerarNomeArquivo(type, data) {
-            const dia = String(data.getDate()).padStart(2, '0');
-            const mes = String(data.getMonth() + 1).padStart(2, '0');
-            const ano = data.getFullYear();
-            const dataFormatada = `${dia}_${mes}_${ano}`;
+        function previewReceitasPDF() {
+            const pdfBlob = generateReceitasPDF();
+            if (!pdfBlob) return;
+
+            const pdfUrl = URL.createObjectURL(pdfBlob);
+            document.getElementById('pdfPreviewFrame').src = pdfUrl;
             
-            let nomeRelatorio = 'Relatorio Geral de Despesas';
-            if(type === 'summary') nomeRelatorio = 'Resumo Executivo por Categoria';
-            else if(type === 'comparison') nomeRelatorio = 'Relatorio Comparativo de Performance';
-            else if(type === 'category') {
-                const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value).join(', ') || 'Categoria';
-                nomeRelatorio = `Analise Detalhada - ${cat}`;
+            const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
+            pdfModal.show();
+
+            document.getElementById('downloadPdfBtn').onclick = () => {
+                const link = document.createElement('a');
+                link.href = pdfUrl;
+                link.download = `receitas_${new Date().getTime()}.pdf`;
+                link.click();
+            };
+        }
+
+        function exportReceitasCSV() {
+            try {
+                if(!receitasFilteredData || receitasFilteredData.length === 0) {
+                    alert('Nenhum dado de receitas para exportar.');
+                    return;
+                }
+
+                let csv = 'Empresa,Cliente,Descrição,Vencimento,Liquidação,Valor\n';
+                receitasFilteredData.forEach(r => {
+                    csv += `"${r[RECEITAS_COLS.EMPRESA] || ''}","${r[RECEITAS_COLS.CLIENTE] || ''}","${r[RECEITAS_COLS.DESCRICAO] || ''}","${formatDateBR(r[1])}","${formatDateBR(r[4])}","${formatCurrencyBR(r[3])}"\n`;
+                });
+
+                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+                const link = document.createElement('a');
+                link.href = URL.createObjectURL(blob);
+                link.download = `receitas_${new Date().getTime()}.csv`;
+                link.click();
+
+                alert('CSV de receitas exportado com sucesso!');
+            } catch(err) {
+                alert('Erro ao exportar CSV: ' + err.message);
             }
-            
-            return `${nomeRelatorio} - ${dataFormatada}.pdf`;
         }
 
         function showCategoryDetail() {
-            const cat = Array.from(document.querySelectorAll('.category-check:checked')).map(i=>i.value)[0] || '';
-            const data = filteredData.filter(r => r[COLS.NATUREZA] === cat);
-            const total = data.reduce((s,r) => s + r[8], 0);
+            const selected = getSelectedCategories();
+            if (selected.length !== 1) {
+                alert('Selecione exatamente uma categoria para visualizar os detalhes.');
+                return;
+            }
             
-            // Ordenar por empresa (alfabeticamente) e depois por valor (decrescente)
-            const sortedData = [...data].sort((a, b) => {
-                const empresaA = (a[COLS.EMPRESA] || 'Sem Empresa').toString().trim();
-                const empresaB = (b[COLS.EMPRESA] || 'Sem Empresa').toString().trim();
-                
-                if (empresaA < empresaB) return -1;
-                if (empresaA > empresaB) return 1;
-                return b[8] - a[8]; // Dentro da mesma empresa, maior valor primeiro
-            });
-            
-            document.getElementById('detailModalLabel').innerText = `Estrutura de Gastos: ${cat}`;
-            document.getElementById('detailBody').innerHTML = `
-                <div class="row g-3 mb-4">
-                    <div class="col-md-4"><div class="stat-item"><div class="stat-label">Total do Grupo</div><div class="stat-value text-primary">${total.toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</div></div></div>
-                    <div class="col-md-4"><div class="stat-item"><div class="stat-label">Volume de Itens</div><div class="stat-value">${data.length}</div></div></div>
-                    <div class="col-md-4"><div class="stat-item"><div class="stat-label">Ticket Médio</div><div class="stat-value">${(total/data.length).toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</div></div></div>
+            const categoryData = filteredData.filter(r => r[COLS.NATUREZA] === selected[0]);
+            const categoryTotal = categoryData.reduce((s, r) => s + r[8], 0);
+            const companies = new Set(categoryData.map(r => r[COLS.EMPRESA])).size;
+
+            let html = `
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <div class="stat-label">Total da Categoria</div>
+                            <div class="stat-value text-primary">${formatCurrencyBR(categoryTotal)}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <div class="stat-label">Quantidade de Itens</div>
+                            <div class="stat-value text-primary">${categoryData.length}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <div class="stat-label">Ticket Médio</div>
+                            <div class="stat-value text-primary">${formatCurrencyBR(categoryData.length ? categoryTotal / categoryData.length : 0)}</div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="stat-item">
+                            <div class="stat-label">Empresas Envolvidas</div>
+                            <div class="stat-value text-primary">${companies}</div>
+                        </div>
+                    </div>
                 </div>
+
                 <div class="table-responsive">
-                    <table class="table table-sm table-hover">
+                    <table class="table table-hover">
                         <thead>
                             <tr>
                                 <th>Empresa</th>
                                 <th>Credor</th>
                                 <th>Descrição</th>
-                                <th>Data</th>
+                                <th>Quitação</th>
                                 <th class="text-end">Valor</th>
                             </tr>
                         </thead>
                         <tbody>
-                            ${sortedData.map(r => `
+                            ${categoryData.map(r => `
                                 <tr>
-                                    <td>${r[COLS.EMPRESA] || '-'}</td>
+                                    <td><small class="fw-bold">${r[COLS.EMPRESA] || 'N/A'}</small></td>
                                     <td>${r[COLS.CREDOR] || '-'}</td>
                                     <td>${r[COLS.DESC] || '-'}</td>
                                     <td>${formatDateBR(r[9])}</td>
-                                    <td class="text-end">${r[8].toLocaleString('pt-BR', {style:'currency', currency:'BRL'})}</td>
+                                    <td class="text-end fw-bold">${formatCurrencyBR(r[8])}</td>
                                 </tr>
                             `).join('')}
                         </tbody>
                     </table>
                 </div>
             `;
-            
-            const detailModal = new bootstrap.Modal(document.getElementById('detailModal'), {});
+
+            document.getElementById('detailBody').innerHTML = html;
+            document.getElementById('detailModalLabel').innerText = `Análise Detalhada: ${selected[0]}`;
+            const detailModal = new bootstrap.Modal(document.getElementById('detailModal'));
             detailModal.show();
         }
 
-        window.onload = initTheme;
+        function openPdfPreviewFromDetail(type) {
+            openPdfPreview(type);
+        }
+
+        // Initialize theme on page load
+        window.addEventListener('DOMContentLoaded', initTheme);
     </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
