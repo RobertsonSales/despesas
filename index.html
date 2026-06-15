@@ -275,6 +275,76 @@
             flex-shrink: 0;
         }
 
+        .receitas-filter-sidebar-toggle {
+            display: none;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+        .receitas-filter-sidebar-toggle .toggle-label {
+            font-weight: 700;
+            font-size: 1rem;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .receitas-filter-sidebar-toggle .toggle-badge {
+            font-size: 0.7rem;
+            font-weight: 700;
+            background: var(--primary);
+            color: white;
+            padding: 2px 10px;
+            border-radius: 20px;
+            letter-spacing: 0.04em;
+        }
+        .receitas-filter-sidebar-toggle .toggle-icon {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: var(--primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.85rem;
+            flex-shrink: 0;
+            transition: transform 0.3s ease;
+        }
+
+        @media (max-width: 991px) {
+            .receitas-filter-sidebar-toggle {
+                display: flex;
+            }
+            .receitas-filter-sidebar-body {
+                overflow: hidden;
+                max-height: 0;
+                transition: max-height 0.4s ease, opacity 0.3s ease;
+                opacity: 0;
+            }
+            .receitas-filter-sidebar-body.open {
+                max-height: 1400px;
+                opacity: 1;
+            }
+            .receitas-filter-sidebar-toggle.expanded .toggle-icon {
+                transform: rotate(180deg);
+            }
+        }
+
+        @media (min-width: 992px) {
+            .receitas-filter-sidebar-body {
+                max-height: none !important;
+                opacity: 1 !important;
+                overflow: visible !important;
+            }
+        }
+
         /* Desktop: sempre visível */
         @media (min-width: 992px) {
             .filter-sidebar-body {
@@ -583,6 +653,92 @@
             font-weight: 500;
         }
 
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.62);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            padding: 1rem;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-card {
+            width: min(460px, 100%);
+            background: var(--bg-card);
+            color: var(--text-main);
+            border-radius: 18px;
+            box-shadow: 0 24px 80px rgba(15, 23, 42, 0.28);
+            border: 1px solid var(--border-color);
+            padding: 1.4rem;
+        }
+
+        .loading-card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 1rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .loading-card-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+        }
+
+        .loading-card-message {
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 0.9rem;
+        }
+
+        .loading-card-counter {
+            font-size: 1.35rem;
+            font-weight: 800;
+            color: var(--primary);
+            min-width: 64px;
+            text-align: right;
+        }
+
+        .loading-progress-wrap {
+            height: 0.8rem;
+            background: rgba(99, 102, 241, 0.12);
+            border-radius: 999px;
+            overflow: hidden;
+        }
+
+        .loading-progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #4f46e5 0%, #10b981 100%);
+            border-radius: 999px;
+            transition: width 0.25s ease;
+        }
+
+        .loading-progress-footer {
+            margin-top: 0.75rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 0.75rem;
+            color: var(--text-muted);
+            font-size: 0.82rem;
+        }
+
         @media (max-width: 768px) {
             .brand-title span { display: none; }
             .btn span { display: none; }
@@ -607,6 +763,23 @@
             </div>
         </div>
     </nav>
+
+    <div class="loading-overlay" id="loadingOverlay" aria-live="polite" aria-hidden="true">
+        <div class="loading-card">
+            <div class="loading-card-header">
+                <div class="loading-card-title"><i class="fas fa-spinner fa-spin"></i><span id="loadingTitle">Processando painel</span></div>
+                <div class="loading-card-counter" id="loadingPercent">0%</div>
+            </div>
+            <div class="loading-card-message" id="loadingMessage">Aguarde enquanto os dados são preparados.</div>
+            <div class="loading-progress-wrap">
+                <div class="loading-progress-bar" id="loadingProgressBar"></div>
+            </div>
+            <div class="loading-progress-footer">
+                <span><i class="fas fa-chart-line me-1"></i>Atualizando visualizações do dashboard</span>
+                <span id="loadingStepLabel">Em andamento</span>
+            </div>
+        </div>
+    </div>
 
     <div class="container-fluid py-4 px-lg-5">
         
@@ -797,6 +970,7 @@
                                         <tr>
                                             <th>Empresa</th>
                                             <th>Credor / Fornecedor</th>
+                                            <th>Vencimento</th>
                                             <th>Quitação</th>
                                             <th class="text-end">Valor</th>
                                             <th>Natureza</th>
@@ -805,6 +979,12 @@
                                     <tbody id="tableBody"></tbody>
                                 </table>
                             </div>
+                        </div>
+
+                        <!-- Botões de Exportação ao final da lista -->
+                        <div class="mt-4 d-flex gap-2">
+                            <button class="btn btn-outline-success shadow-sm" onclick="exportDespesasExcel()"><i class="fas fa-file-excel"></i><span>Exportar Excel</span></button>
+                            <button class="btn btn-outline-danger shadow-sm" onclick="previewDespesasPDF()"><i class="fas fa-file-pdf"></i><span>Exportar PDF</span></button>
                         </div>
                     </div>
                 </div>
@@ -817,6 +997,14 @@
                     <div class="row">
                         <div class="col-lg-3">
                             <div class="receitas-filter-pane">
+                                <button class="receitas-filter-sidebar-toggle" id="receitasFilterToggleBtn" onclick="toggleReceitasFilterSidebar()" aria-expanded="false" aria-controls="receitasFilterSidebarBody">
+                                    <span class="toggle-label"><i class="fas fa-filter"></i>Filtros de Receitas</span>
+                                    <span class="d-flex align-items-center gap-2">
+                                        <span class="toggle-badge">MÓVEL</span>
+                                        <span class="toggle-icon"><i class="fas fa-chevron-down"></i></span>
+                                    </span>
+                                </button>
+                                <div class="receitas-filter-sidebar-body" id="receitasFilterSidebarBody">
                                 <!-- Empresas Filter -->
                                 <div class="receitas-filter-section">
                                     <div class="receitas-filter-label">
@@ -868,6 +1056,7 @@
                                     <button class="btn btn-sm btn-outline-danger w-100" onclick="resetReceitasFilters()">
                                         <i class="fas fa-redo me-2"></i>Limpar Filtros
                                     </button>
+                                </div>
                                 </div>
                             </div>
                         </div>
@@ -926,6 +1115,7 @@
                                                 <th>Cliente</th>
                                                 <th>Descrição</th>
                                                 <th>Vencimento</th>
+                                                <th>Quitação</th>
                                                 <th>Valor</th>
                                                 <th>Vendedor</th>
                                             </tr>
@@ -938,7 +1128,7 @@
                             <!-- Receitas Export -->
                             <div class="mt-4 d-flex gap-2">
                                 <button class="btn btn-success" onclick="previewReceitasPDF()"><i class="fas fa-file-pdf me-2"></i>Exportar para PDF</button>
-                                <button class="btn btn-outline-primary" onclick="exportReceitasCSV()"><i class="fas fa-download me-2"></i>Exportar para CSV</button>
+                                <button class="btn btn-outline-primary" onclick="exportReceitasExcel()"><i class="fas fa-file-excel me-2"></i>Exportar para Excel</button>
                             </div>
                     </div>
                 </div>
@@ -1010,10 +1200,128 @@
         let comparisonRenderFrame = null;
         let comparisonRenderKey = '';
         let currentPdfBlob = null;
+        let activePdfUrl = null;
+        let progressHideTimer = null;
         let searchTerm = '';
+        let receitasMonthOptions = [];
+        let receitasVisibleYear = 'all';
 
         const COLS = { CREDOR:0, VENCTO:1, DESC:2, VALOR:3, QUITACAO:4, BANCO:5, NATUREZA:6, EMPRESA:7 };
         const RECEITAS_COLS = { CLIENTE:0, VENCIMENTO:1, DESCRICAO:2, VALOR:3, LIQUIDACAO:4, VENDEDOR:5, EMPRESA:6 };
+
+        function waitForUI(delay = 40) {
+            return new Promise(resolve => setTimeout(resolve, delay));
+        }
+
+        function showProgressOverlay(title = 'Processando painel', message = 'Aguarde enquanto os dados são preparados.', percent = 0, stepLabel = 'Em andamento') {
+            const overlay = document.getElementById('loadingOverlay');
+            if (!overlay) return;
+            if (progressHideTimer) {
+                clearTimeout(progressHideTimer);
+                progressHideTimer = null;
+            }
+            overlay.classList.add('show');
+            overlay.setAttribute('aria-hidden', 'false');
+            updateProgressOverlay(percent, message, title, stepLabel);
+        }
+
+        function updateProgressOverlay(percent = 0, message = 'Processando...', title, stepLabel = 'Em andamento') {
+            const safePercent = Math.max(0, Math.min(100, Number(percent) || 0));
+            const titleEl = document.getElementById('loadingTitle');
+            const messageEl = document.getElementById('loadingMessage');
+            const percentEl = document.getElementById('loadingPercent');
+            const barEl = document.getElementById('loadingProgressBar');
+            const stepEl = document.getElementById('loadingStepLabel');
+            if (titleEl && title) titleEl.textContent = title;
+            if (messageEl) messageEl.textContent = message;
+            if (percentEl) percentEl.textContent = `${Math.round(safePercent)}%`;
+            if (barEl) barEl.style.width = `${safePercent}%`;
+            if (stepEl) {
+                stepEl.textContent = stepLabel || (safePercent >= 100 ? 'Concluído' : 'Em andamento');
+            }
+        }
+
+        function hideProgressOverlay(delay = 220) {
+            const overlay = document.getElementById('loadingOverlay');
+            if (!overlay) return;
+            const closeOverlay = () => {
+                overlay.classList.remove('show');
+                overlay.setAttribute('aria-hidden', 'true');
+            };
+            if (delay > 0) {
+                progressHideTimer = setTimeout(closeOverlay, delay);
+            } else {
+                closeOverlay();
+            }
+        }
+
+        function safeShortText(value, maxLength = 30) {
+            const normalized = String(value ?? '-').trim() || '-';
+            return normalized.length > maxLength ? normalized.substring(0, maxLength) : normalized;
+        }
+
+        function revokeActivePdfUrl() {
+            if (activePdfUrl) {
+                URL.revokeObjectURL(activePdfUrl);
+                activePdfUrl = null;
+            }
+        }
+
+        function openPdfBlobPreview(pdfBlob, downloadName) {
+            if (!pdfBlob) return;
+            revokeActivePdfUrl();
+            activePdfUrl = URL.createObjectURL(pdfBlob);
+
+            const frame = document.getElementById('pdfPreviewFrame');
+            if (frame) {
+                frame.removeAttribute('src');
+                frame.src = activePdfUrl;
+            }
+
+            const modalEl = document.getElementById('pdfModal');
+            if (!modalEl) return;
+            modalEl.addEventListener('hidden.bs.modal', () => {
+                if (frame) frame.removeAttribute('src');
+                revokeActivePdfUrl();
+            }, { once: true });
+
+            const pdfModal = bootstrap.Modal.getOrCreateInstance(modalEl);
+            pdfModal.show();
+
+            const downloadBtn = document.getElementById('downloadPdfBtn');
+            if (downloadBtn) {
+                downloadBtn.onclick = () => {
+                    const link = document.createElement('a');
+                    link.href = activePdfUrl;
+                    link.download = downloadName;
+                    link.click();
+                };
+            }
+        }
+
+        async function handleMainTabSwitch(tabKey) {
+            if (!rawData.length) return;
+
+            const isReceitas = tabKey === 'receitas';
+            showProgressOverlay(
+                isReceitas ? 'Carregando painel de Receitas' : 'Carregando painel de Despesas',
+                isReceitas ? 'Atualizando indicadores, tabela e gráficos de receitas.' : 'Atualizando indicadores, tabela e gráficos de despesas.',
+                18,
+                'Preparando visualização'
+            );
+            await waitForUI(60);
+
+            updateProgressOverlay(58, isReceitas ? 'Renderizando gráficos da aba Receitas.' : 'Renderizando gráficos e comparativos da aba Despesas.', undefined, 'Renderizando dashboard');
+            if (isReceitas) {
+                refreshReceitasDashboard(true);
+            } else {
+                refreshDespesasDashboard(true);
+            }
+
+            await waitForUI(160);
+            updateProgressOverlay(100, 'Painel carregado com sucesso.', undefined, 'Concluído');
+            hideProgressOverlay(260);
+        }
 
         // ============== THEME & UI ==============
         function toggleTheme() {
@@ -1062,10 +1370,13 @@
         }
 
         function resetReceitasFilters() {
-            document.querySelectorAll('.receitas-empresa-check, .receitas-ano-check, .receitas-mes-check').forEach(i => i.checked = true);
+            receitasMonthOptions = receitasMonthOptions.map(option => ({ ...option, checked: true }));
+            document.querySelectorAll('.receitas-empresa-check, .receitas-mes-check').forEach(i => i.checked = true);
             document.getElementById('allReceitasEmpresas').checked = true;
             document.getElementById('allReceitasMeses').checked = true;
-            document.querySelectorAll('.receitas-ano-pill').forEach(p => p.classList.add('active'));
+            receitasVisibleYear = 'all';
+            updateReceitasYearPills();
+            renderReceitasMonthList();
             document.getElementById('receitasCliente').value = '';
             document.getElementById('receitasDataInicio').value = '';
             document.getElementById('receitasDataFim').value = '';
@@ -1073,22 +1384,91 @@
             applyReceitasFilters();
         }
 
-        function toggleAllReceitas(type) {
-            const checked = type === 'empresa' ? document.getElementById('allReceitasEmpresas').checked : document.getElementById('allReceitasMeses').checked;
-            document.querySelectorAll(`.receitas-${type}-check`).forEach(i => i.checked = checked);
-            if (type === 'mes') {
-                document.querySelectorAll('.receitas-ano-pill').forEach(p => {
-                    if (checked) p.classList.add('active');
-                    else p.classList.remove('active');
-                });
+        function syncReceitasAllMonthsCheckbox() {
+            const visibleMonthChecks = document.querySelectorAll('#receitasMesesGroup .receitas-mes-check');
+            const visibleChecked = document.querySelectorAll('#receitasMesesGroup .receitas-mes-check:checked');
+            const allCheckbox = document.getElementById('allReceitasMeses');
+            if (allCheckbox) {
+                allCheckbox.checked = visibleMonthChecks.length > 0 && visibleMonthChecks.length === visibleChecked.length;
             }
+        }
+
+        function updateReceitasYearPills() {
+            const allPill = document.getElementById('receitas-year-pill-all');
+            if (allPill) {
+                allPill.classList.toggle('active', receitasVisibleYear === 'all');
+            }
+            document.querySelectorAll('.receitas-ano-pill[data-year]').forEach(pill => {
+                const year = pill.getAttribute('data-year');
+                pill.classList.toggle('active', String(receitasVisibleYear) === String(year));
+            });
+        }
+
+        function renderReceitasMonthList() {
+            const mesesGroup = document.getElementById('receitasMesesGroup');
+            if (!mesesGroup) return;
+
+            const visibleMonths = receitasMonthOptions
+                .filter(option => receitasVisibleYear === 'all' || String(option.year) === String(receitasVisibleYear))
+                .sort((a, b) => b.value.localeCompare(a.value));
+
+            mesesGroup.innerHTML = '';
+            visibleMonths.forEach(option => {
+                const id = `receitas-mes-${option.value}`;
+                mesesGroup.innerHTML += `
+                    <div class="receitas-checkbox-wrapper">
+                        <input type="checkbox" id="${id}" class="receitas-mes-check" value="${option.value}" data-year="${option.year}" onchange="syncReceitasAllMonthsCheckbox(); applyReceitasFilters()" ${option.checked ? 'checked' : ''}>
+                        <label for="${id}">${option.label}</label>
+                    </div>
+                `;
+            });
+
+            syncReceitasAllMonthsCheckbox();
+        }
+
+        function toggleAllReceitas(type) {
+            const idMap = { empresa: 'allReceitasEmpresas', categoria: 'allReceitasCategorias', mes: 'allReceitasMeses' };
+            const checked = document.getElementById(idMap[type]).checked;
+
+            if (type === 'empresa') {
+                document.querySelectorAll('.receitas-empresa-check').forEach(i => i.checked = checked);
+            } else if (type === 'categoria') {
+                document.querySelectorAll('.receitas-categoria-check').forEach(i => i.checked = checked);
+            } else {
+                const visibleChecks = document.querySelectorAll('#receitasMesesGroup .receitas-mes-check');
+                const visibleValues = new Set(Array.from(visibleChecks).map(i => i.value));
+
+                receitasMonthOptions = receitasMonthOptions.map(option => (
+                    visibleValues.has(option.value) ? { ...option, checked } : option
+                ));
+
+                visibleChecks.forEach(i => i.checked = checked);
+                syncReceitasAllMonthsCheckbox();
+            }
+
+            applyReceitasFilters();
+        }
+
+        function syncReceitasAllCheckbox(type) {
+            const idMap = { empresa: 'allReceitasEmpresas', categoria: 'allReceitasCategorias' };
+            const all = document.querySelectorAll(`.receitas-${type}-check`);
+            const checked = document.querySelectorAll(`.receitas-${type}-check:checked`);
+            if (document.getElementById(idMap[type])) {
+                document.getElementById(idMap[type]).checked = all.length > 0 && all.length === checked.length;
+            }
+        }
+
+        function showAllReceitasYears() {
+            receitasVisibleYear = 'all';
+            updateReceitasYearPills();
+            renderReceitasMonthList();
             applyReceitasFilters();
         }
 
         function toggleReceitasYear(year) {
-            const pill = document.querySelector(`.receitas-ano-pill[data-year="${year}"]`);
-            const isActive = pill.classList.toggle('active');
-            document.querySelectorAll(`.receitas-mes-check[data-year="${year}"]`).forEach(i => i.checked = isActive);
+            receitasVisibleYear = year;
+            updateReceitasYearPills();
+            renderReceitasMonthList();
             applyReceitasFilters();
         }
 
@@ -1100,6 +1480,43 @@
             body.classList.toggle('open', !isOpen);
             btn.classList.toggle('expanded', !isOpen);
             btn.setAttribute('aria-expanded', String(!isOpen));
+        }
+
+        function toggleReceitasFilterSidebar() {
+            const body = document.getElementById('receitasFilterSidebarBody');
+            const btn = document.getElementById('receitasFilterToggleBtn');
+            if (!body || !btn) return;
+            const isOpen = body.classList.contains('open');
+            body.classList.toggle('open', !isOpen);
+            btn.classList.toggle('expanded', !isOpen);
+            btn.setAttribute('aria-expanded', String(!isOpen));
+        }
+
+        function refreshReceitasDashboard(force = false) {
+            const receitasPane = document.getElementById('receitas-content');
+            const receitasContent = document.getElementById('receitasContent');
+            if (!receitasPane || !receitasContent || receitasContent.style.display === 'none' || !receitasRawData.length) return;
+
+            const tabAtiva = receitasPane.classList.contains('show') && receitasPane.classList.contains('active');
+            if (!force && !tabAtiva) return;
+
+            requestAnimationFrame(() => {
+                renderReceitasCharts();
+            });
+        }
+
+        function refreshDespesasDashboard(force = false) {
+            const despesasPane = document.getElementById('despesas-content');
+            const mainContent = document.getElementById('mainContent');
+            if (!despesasPane || !mainContent || mainContent.style.display === 'none' || !rawData.length) return;
+
+            const tabAtiva = despesasPane.classList.contains('show') && despesasPane.classList.contains('active');
+            if (!force && !tabAtiva) return;
+
+            requestAnimationFrame(() => {
+                renderChart();
+                scheduleComparisonPanelRender();
+            });
         }
 
         // ===== SMART SEARCH =====
@@ -1473,18 +1890,33 @@
 
         // ============== DATA HANDLING ==============
         document.getElementById('fileInput').addEventListener('change', function(e) {
+            const file = e.target.files && e.target.files[0];
+            if (!file) return;
+
+            showProgressOverlay('Importando planilha', `Lendo arquivo ${file.name}...`, 5, 'Arquivo selecionado');
             const reader = new FileReader();
-            reader.onload = (evt) => {
+
+            reader.onerror = () => {
+                hideProgressOverlay(0);
+                alert('Erro ao ler o arquivo selecionado.');
+            };
+
+            reader.onload = async (evt) => {
                 try {
+                    await waitForUI(40);
+                    updateProgressOverlay(18, 'Interpretando a estrutura do arquivo Excel.', undefined, 'Lendo workbook');
+                    await waitForUI(50);
                     const wb = XLSX.read(evt.target.result, { type: 'binary' });
-                    
-                    // Load Despesas sheet
+
+                    updateProgressOverlay(42, 'Processando a aba de despesas.', undefined, 'Carregando despesas');
+                    await waitForUI(40);
+
                     let sheetName = wb.SheetNames.find(name => name.trim() === 'Despesas');
                     if (!sheetName) {
                         console.warn('Aba "Despesas" não encontrada. Usando a primeira aba disponível.');
                         sheetName = wb.SheetNames[0];
                     }
-                    
+
                     const json = XLSX.utils.sheet_to_json(wb.Sheets[sheetName], { header: 1, raw: true });
                     rawData = json.slice(1).map(r => {
                         r[8] = parseCurrency(r[COLS.VALOR]);
@@ -1496,29 +1928,51 @@
                         return r;
                     }).filter(r => r[8] > 0);
 
-                    // Load Receitas sheet
                     const receitasSheet = wb.SheetNames.find(name => name.trim() === 'Receitas');
                     if (receitasSheet) {
+                        updateProgressOverlay(64, 'Processando a aba de receitas.', undefined, 'Carregando receitas');
+                        await waitForUI(40);
+
                         const receitasJson = XLSX.utils.sheet_to_json(wb.Sheets[receitasSheet], { header: 1, raw: true });
                         receitasRawData = receitasJson.slice(1).map(r => {
                             r[3] = parseCurrency(r[RECEITAS_COLS.VALOR]);
                             r[1] = parseDate(r[RECEITAS_COLS.VENCIMENTO]);
                             r[4] = parseDate(r[RECEITAS_COLS.LIQUIDACAO]);
+                            // Coluna de Categoria (Natureza) - índice 7 (H)
+                            if (!r[RECEITAS_COLS.NATUREZA] || String(r[RECEITAS_COLS.NATUREZA]).trim() === '') {
+                                r[RECEITAS_COLS.NATUREZA] = 'SEM CATEGORIA';
+                            }
                             return r;
                         }).filter(r => r[3] > 0);
-                        
+
                         initReceitasFilters();
                         document.getElementById('receitasContent').style.display = 'block';
                         applyReceitasFilters();
+                    } else {
+                        receitasRawData = [];
+                        receitasFilteredData = [];
+                        document.getElementById('receitasContent').style.display = 'none';
                     }
 
+                    updateProgressOverlay(82, 'Montando filtros e índices do dashboard.', undefined, 'Preparando filtros');
+                    await waitForUI(40);
                     initFilters();
                     document.getElementById('mainContent').style.display = 'flex';
                     document.getElementById('mainTabs').style.display = 'flex';
+
+                    updateProgressOverlay(96, 'Renderizando o dashboard principal.', undefined, 'Renderizando painel');
+                    await waitForUI(50);
                     applyFilters();
-                } catch(err) { alert('Erro ao processar planilha: ' + err.message); }
+
+                    updateProgressOverlay(100, 'Importação concluída com sucesso.', undefined, 'Concluído');
+                    hideProgressOverlay(320);
+                } catch(err) {
+                    hideProgressOverlay(0);
+                    alert('Erro ao processar planilha: ' + err.message);
+                }
             };
-            reader.readAsBinaryString(e.target.files[0]);
+
+            reader.readAsBinaryString(file);
         });
 
         let selectedYears = new Set();
@@ -1557,15 +2011,28 @@
         function initReceitasFilters() {
             const empresas = new Set();
             const anos = new Set();
-            const meses = new Set();
+            const mesesMap = new Map();
             
             receitasRawData.forEach(r => {
                 if (r[RECEITAS_COLS.EMPRESA]) empresas.add(r[RECEITAS_COLS.EMPRESA]);
-                if (r[1]) {
-                    anos.add(r[1].getFullYear());
-                    meses.add(`${r[1].getFullYear()}-${String(r[1].getMonth()+1).padStart(2, '0')}`);
+                const dataRef = r[4]; // Usa Liquidação (Quitação) como referência de data
+                if (dataRef) {
+                    const ano = dataRef.getFullYear();
+                    const mesChave = `${ano}-${String(dataRef.getMonth()+1).padStart(2, '0')}`;
+                    anos.add(ano);
+                    if (!mesesMap.has(mesChave)) {
+                        mesesMap.set(mesChave, {
+                            value: mesChave,
+                            year: String(ano),
+                            label: new Date(ano, dataRef.getMonth(), 1).toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' }),
+                            checked: true
+                        });
+                    }
                 }
             });
+
+            receitasMonthOptions = Array.from(mesesMap.values()).sort((a, b) => b.value.localeCompare(a.value));
+            receitasVisibleYear = 'all';
 
             // Populate empresas checkboxes
             const empresasGroup = document.getElementById('receitasEmpresasGroup');
@@ -1586,39 +2053,25 @@
             const anosGroup = document.getElementById('receitasAnosGroup');
             if (anosGroup) {
                 anosGroup.innerHTML = `
-                    <div class="year-pill active receitas-ano-pill" onclick="toggleAllReceitas('mes')">
+                    <div class="year-pill active receitas-ano-pill" id="receitas-year-pill-all" onclick="showAllReceitasYears()">
                         <i class="fas fa-calendar-check"></i> Todos
                     </div>
                 `;
                 Array.from(anos).sort().reverse().forEach(a => {
                     anosGroup.innerHTML += `
-                        <div class="year-pill active receitas-ano-pill" data-year="${a}" onclick="toggleReceitasYear(${a})">
+                        <div class="year-pill receitas-ano-pill" data-year="${a}" onclick="toggleReceitasYear(${a})">
                             <i class="fas fa-calendar"></i> ${a}
                         </div>
                     `;
                 });
             }
 
-            // Populate meses checkboxes
-            const mesesGroup = document.getElementById('receitasMesesGroup');
-            if (mesesGroup) {
-                mesesGroup.innerHTML = '';
-                Array.from(meses).sort().reverse().forEach(m => {
-                    const [ano, mes] = m.split('-');
-                    const mesNome = new Date(ano, parseInt(mes)-1).toLocaleString('pt-BR', { month: '2-digit', year: 'numeric' });
-                    const id = `receitas-mes-${m}`;
-                    mesesGroup.innerHTML += `
-                        <div class="receitas-checkbox-wrapper">
-                            <input type="checkbox" id="${id}" class="receitas-mes-check" value="${m}" data-year="${ano}" onchange="applyReceitasFilters()" checked>
-                            <label for="${id}">${mesNome}</label>
-                        </div>
-                    `;
-                });
-            }
+            updateReceitasYearPills();
+            renderReceitasMonthList();
             
             // Garantir que os checkboxes "Todos" estejam marcados
             if (document.getElementById('allReceitasEmpresas')) document.getElementById('allReceitasEmpresas').checked = true;
-            if (document.getElementById('allReceitasMeses')) document.getElementById('allReceitasMeses').checked = true;
+            syncReceitasAllMonthsCheckbox();
         }
 
         function syncAllCheckbox(type) {
@@ -1726,8 +2179,13 @@
         }
 
         function applyReceitasFilters() {
+            receitasMonthOptions = receitasMonthOptions.map(option => {
+                const checkbox = document.querySelector(`.receitas-mes-check[value="${option.value}"]`);
+                return checkbox ? { ...option, checked: checkbox.checked } : option;
+            });
+
             const empresasSelecionadas = new Set(Array.from(document.querySelectorAll('.receitas-empresa-check:checked')).map(i => i.value));
-            const mesesSelecionados = new Set(Array.from(document.querySelectorAll('.receitas-mes-check:checked')).map(i => i.value));
+            const mesesSelecionados = new Set(receitasMonthOptions.filter(option => option.checked).map(option => option.value));
             const cliente = document.getElementById('receitasCliente').value.toLowerCase();
             const dataInicio = document.getElementById('receitasDataInicio').value;
             const dataFim = document.getElementById('receitasDataFim').value;
@@ -1737,14 +2195,15 @@
             const end = dataFim ? new Date(dataFim + 'T23:59:59') : null;
 
             receitasFilteredData = receitasRawData.filter(r => {
+                const dataRef = r[4]; // Usa Liquidação (Quitação) como referência de data
                 if (empresasSelecionadas.size && !empresasSelecionadas.has(r[RECEITAS_COLS.EMPRESA])) return false;
-                if (mesesSelecionados.size && r[1]) {
-                    const mesChave = `${r[1].getFullYear()}-${String(r[1].getMonth()+1).padStart(2, '0')}`;
+                if (mesesSelecionados.size && dataRef) {
+                    const mesChave = `${dataRef.getFullYear()}-${String(dataRef.getMonth()+1).padStart(2, '0')}`;
                     if (!mesesSelecionados.has(mesChave)) return false;
                 }
                 if (cliente && r[RECEITAS_COLS.CLIENTE] && !r[RECEITAS_COLS.CLIENTE].toLowerCase().includes(cliente)) return false;
-                if (start && r[1] && r[1] < start) return false;
-                if (end && r[1] && r[1] > end) return false;
+                if (start && dataRef && dataRef < start) return false;
+                if (end && dataRef && dataRef > end) return false;
                 if (busca) {
                     const searchFields = [
                         r[RECEITAS_COLS.CLIENTE],
@@ -1757,7 +2216,7 @@
                 return true;
             });
 
-            receitasFilteredData.sort((a, b) => b[1] - a[1]);
+            receitasFilteredData.sort((a, b) => (b[4] || 0) - (a[4] || 0)); // Ordena por Liquidação
             updateReceitasUI();
         }
 
@@ -1785,6 +2244,7 @@
                     <tr>
                         <td><small class="fw-bold">${r[COLS.EMPRESA] || 'N/A'}</small></td>
                         <td>${r[COLS.CREDOR] || '-'}</td>
+                        <td>${formatDateBR(r[10])}</td>
                         <td>${formatDateBR(r[9])}</td>
                         <td class="text-end fw-bold">${r[8].toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                         <td><span class="badge bg-primary-soft">${r[COLS.NATUREZA]}</span></td>
@@ -1819,6 +2279,7 @@
                             <td>${r[RECEITAS_COLS.CLIENTE] || '-'}</td>
                             <td>${r[RECEITAS_COLS.DESCRICAO] || '-'}</td>
                             <td>${formatDateBR(r[1])}</td>
+                            <td>${formatDateBR(r[4])}</td>
                             <td class="text-end fw-bold">${r[3].toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</td>
                             <td>${r[RECEITAS_COLS.VENDEDOR] || '-'}</td>
                         </tr>`;
@@ -1914,8 +2375,9 @@
             // Receitas por Mês
             const mesMap = {};
             receitasFilteredData.forEach(r => {
-                if (r[1]) {
-                    const mesAno = r[1].toLocaleString('pt-BR', { month: 'short', year: '2-digit' });
+                const dataRefChart = r[4]; // Usa Liquidação (Quitação) como referência de data
+                if (dataRefChart) {
+                    const mesAno = dataRefChart.toLocaleString('pt-BR', { month: 'short', year: '2-digit' });
                     mesMap[mesAno] = (mesMap[mesAno] || 0) + r[3];
                 }
             });
@@ -2121,14 +2583,13 @@
                 doc.text('DETALHAMENTO DOS LANÇAMENTOS', 15, yPosition);
                 yPosition += 6;
 
-                const tableHead = [['Empresa', 'Credor', 'Descrição', 'Quitação', 'Valor', 'Natureza']];
-                const tableBody = filteredData.slice(0, 500).map(r => [
+                const tableHead = [['Empresa', 'Descrição', 'Vencimento', 'Quitação', 'Valor']];
+                const tableBody = filteredData.map(r => [
                     r[COLS.EMPRESA] || '-',
-                    r[COLS.CREDOR] || '-',
-                    (r[COLS.DESC] || '-').substring(0, 30),
+                    safeShortText(r[COLS.DESC], 40),
+                    formatDateBR(r[10]),
                     formatDateBR(r[9]),
-                    formatCurrencyBR(r[8]),
-                    r[COLS.NATUREZA]
+                    formatCurrencyBR(r[8])
                 ]);
 
                 doc.autoTable({
@@ -2138,24 +2599,13 @@
                     theme: 'striped',
                     styles: { fontSize: 7, textColor: [0, 0, 0] },
                     headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
-                    columnStyles: { 4: { halign: 'right' } },
+                    columnStyles: { 5: { halign: 'right' } },
                     bodyStyles: { textColor: [0, 0, 0] },
                     margin: { left: 15, right: 15 }
                 });
 
                 currentPdfBlob = doc.output('blob');
-                const pdfUrl = URL.createObjectURL(currentPdfBlob);
-                document.getElementById('pdfPreviewFrame').src = pdfUrl;
-                
-                const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
-                pdfModal.show();
-
-                document.getElementById('downloadPdfBtn').onclick = () => {
-                    const link = document.createElement('a');
-                    link.href = pdfUrl;
-                    link.download = `relatorio_${type}_${new Date().getTime()}.pdf`;
-                    link.click();
-                };
+                openPdfBlobPreview(currentPdfBlob, `relatorio_${type}_${new Date().getTime()}.pdf`);
             } catch(err) {
                 alert('Erro ao gerar PDF: ' + err.message);
             }
@@ -2236,10 +2686,10 @@
                 yPosition += 6;
 
                 const tableHead = [['Empresa', 'Cliente', 'Descrição', 'Vencimento', 'Liquidação', 'Valor']];
-                const tableBody = receitasFilteredData.slice(0, 500).map(r => [
+                const tableBody = receitasFilteredData.map(r => [
                     r[RECEITAS_COLS.EMPRESA] || '-',
-                    r[RECEITAS_COLS.CLIENTE] || '-',
-                    (r[RECEITAS_COLS.DESCRICAO] || '-').substring(0, 20),
+                    r[0] || '-', // Conteúdo da coluna A (índice 0) na coluna Cliente
+                    r[2] || '-', // Conteúdo da coluna C (índice 2) na coluna Descrição
                     formatDateBR(r[1]),
                     formatDateBR(r[4]),
                     formatCurrencyBR(r[3])
@@ -2267,42 +2717,59 @@
         function previewReceitasPDF() {
             const pdfBlob = generateReceitasPDF();
             if (!pdfBlob) return;
-
-            const pdfUrl = URL.createObjectURL(pdfBlob);
-            document.getElementById('pdfPreviewFrame').src = pdfUrl;
-            
-            const pdfModal = new bootstrap.Modal(document.getElementById('pdfModal'));
-            pdfModal.show();
-
-            document.getElementById('downloadPdfBtn').onclick = () => {
-                const link = document.createElement('a');
-                link.href = pdfUrl;
-                link.download = `receitas_${new Date().getTime()}.pdf`;
-                link.click();
-            };
+            openPdfBlobPreview(pdfBlob, `receitas_${new Date().getTime()}.pdf`);
         }
 
-        function exportReceitasCSV() {
+        function exportReceitasExcel() {
             try {
                 if(!receitasFilteredData || receitasFilteredData.length === 0) {
                     alert('Nenhum dado de receitas para exportar.');
                     return;
                 }
 
-                let csv = 'Empresa,Cliente,Descrição,Vencimento,Liquidação,Valor\n';
+                const rows = [
+                    ['Empresa', 'Cliente', 'Descrição', 'Vencimento', 'Liquidação', 'Valor', 'Vendedor']
+                ];
+
                 receitasFilteredData.forEach(r => {
-                    csv += `"${r[RECEITAS_COLS.EMPRESA] || ''}","${r[RECEITAS_COLS.CLIENTE] || ''}","${r[RECEITAS_COLS.DESCRICAO] || ''}","${formatDateBR(r[1])}","${formatDateBR(r[4])}","${formatCurrencyBR(r[3])}"\n`;
+                    rows.push([
+                        r[RECEITAS_COLS.EMPRESA] || '',
+                        r[0] || '', // Conteúdo da coluna A (índice 0) na coluna Cliente
+                        r[2] || '', // Conteúdo da coluna C (índice 2) na coluna Descrição
+                        formatDateBR(r[1]),
+                        formatDateBR(r[4]),
+                        Number(r[3] || 0),
+                        r[RECEITAS_COLS.VENDEDOR] || ''
+                    ]);
                 });
 
-                const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
-                const link = document.createElement('a');
-                link.href = URL.createObjectURL(blob);
-                link.download = `receitas_${new Date().getTime()}.csv`;
-                link.click();
+                const worksheet = XLSX.utils.aoa_to_sheet(rows);
+                worksheet['!cols'] = [
+                    { wch: 24 },
+                    { wch: 24 },
+                    { wch: 40 },
+                    { wch: 14 },
+                    { wch: 14 },
+                    { wch: 16 },
+                    { wch: 22 }
+                ];
 
-                alert('CSV de receitas exportado com sucesso!');
+                for (let rowIndex = 2; rowIndex <= rows.length; rowIndex += 1) {
+                    const cellRef = `F${rowIndex}`;
+                    if (worksheet[cellRef]) {
+                        worksheet[cellRef].z = 'R$ #,##0.00';
+                    }
+                }
+
+                worksheet['!autofilter'] = { ref: `A1:G${rows.length}` };
+
+                const workbook = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(workbook, worksheet, 'Receitas');
+                XLSX.writeFile(workbook, `receitas_${new Date().getTime()}.xlsx`);
+
+                alert('Planilha de receitas exportada com sucesso em Excel!');
             } catch(err) {
-                alert('Erro ao exportar CSV: ' + err.message);
+                alert('Erro ao exportar Excel: ' + err.message);
             }
         }
 
@@ -2381,8 +2848,265 @@
             openPdfPreview(type);
         }
 
-        // Initialize theme on page load
-        window.addEventListener('DOMContentLoaded', initTheme);
+        
+function generateDespesasPDF() {
+    try {
+        if(!filteredData || filteredData.length === 0) {
+            alert('Nenhum dado de despesas para exportar.');
+            return null;
+        }
+
+        const { jsPDF } = window.jspdf;
+        const doc = new jsPDF('l', 'mm', 'a4');
+        const pageWidth = doc.internal.pageSize.getWidth();
+        let yPosition = 15;
+
+        // Header
+        doc.setFillColor(248, 250, 252);
+        doc.rect(0, 0, pageWidth, 35, 'F');
+        doc.setDrawColor(226, 232, 240);
+        doc.line(0, 35, pageWidth, 35);
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(16);
+        doc.setTextColor(79, 70, 229);
+        doc.text('GRUPO LABMEDIC - ANÁLISE DE DESPESAS', 15, 18);
+
+        doc.setFontSize(9);
+        doc.setTextColor(100, 116, 139);
+        const dataGeracao = new Date();
+        doc.text(`EMISSÃO: ${formatDateTimeBR(dataGeracao)}`, 15, 25);
+
+        // Parâmetros
+        doc.setFont('helvetica', 'bold');
+        doc.text('PARÂMETROS DO SISTEMA:', pageWidth - 100, 15);
+        doc.setFont('helvetica', 'normal');
+        const start = document.getElementById('startDate').value || 'Início';
+        const end = document.getElementById('endDate').value || 'Fim';
+        doc.text(`Período: ${start} até ${end}`, pageWidth - 100, 20);
+        doc.text(`Registros Processados: ${filteredData.length}`, pageWidth - 100, 25);
+        doc.text(`Status: Documento Oficial Interno`, pageWidth - 100, 30);
+
+        yPosition = 45;
+
+        // Metrics
+        const total = filteredData.reduce((s, r) => s + r[8], 0);
+        const count = filteredData.length;
+        const categories = new Set(filteredData.map(r => r[COLS.NATUREZA])).size;
+        const companies = new Set(filteredData.map(r => getCompanyName(r))).size;
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(79, 70, 229);
+        doc.text('RESUMO EXECUTIVO', 15, yPosition);
+        yPosition += 6;
+
+        const metricsData = [
+            ['Total de Despesas', formatCurrencyBR(total)],
+            ['Quantidade de Registros', count.toString()],
+            ['Categorias Únicas', categories.toString()],
+            ['Empresas Envolvidas', companies.toString()],
+            ['Ticket Médio', formatCurrencyBR(count ? total / count : 0)]
+        ];
+
+        doc.autoTable({
+            startY: yPosition,
+            head: [['Métrica', 'Valor']],
+            body: metricsData,
+            theme: 'striped',
+            styles: { fontSize: 9, textColor: [0, 0, 0] },
+            headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+            columnStyles: { 1: { halign: 'right' } },
+            bodyStyles: { textColor: [0, 0, 0] },
+            margin: { left: 15, right: 15 }
+        });
+
+        yPosition = doc.lastAutoTable.finalY + 14;
+
+        // Resumo por Categoria
+        const catMap = {};
+        filteredData.forEach(r => {
+            const cat = r[COLS.NATUREZA] || 'Sem Categoria';
+            catMap[cat] = (catMap[cat] || 0) + r[8];
+        });
+
+        if (yPosition > 170) {
+            doc.addPage();
+            yPosition = 20;
+        }
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(79, 70, 229);
+        doc.text('RESUMO POR CATEGORIA', 15, yPosition);
+        yPosition += 6;
+
+        const catSummaryRows = Object.entries(catMap)
+            .sort((a, b) => b[1] - a[1])
+            .map(([cat, val]) => [
+                cat,
+                val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }),
+                total > 0 ? ((val / total) * 100).toFixed(1) + '%' : '0%'
+            ]);
+
+        catSummaryRows.push([
+            { content: 'TOTAL GERAL', styles: { fontStyle: 'bold', fillColor: [237, 233, 254], textColor: [79, 70, 229] } },
+            { content: total.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }), styles: { fontStyle: 'bold', halign: 'right', fillColor: [237, 233, 254], textColor: [79, 70, 229] } },
+            { content: '100%', styles: { fontStyle: 'bold', halign: 'center', fillColor: [237, 233, 254], textColor: [79, 70, 229] } }
+        ]);
+
+        doc.autoTable({
+            startY: yPosition,
+            head: [['Categoria', 'Total Acumulado', '% do Total']],
+            body: catSummaryRows,
+            theme: 'striped',
+            styles: { fontSize: 8, textColor: [0, 0, 0] },
+            headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+            columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' } },
+            bodyStyles: { textColor: [0, 0, 0] },
+            margin: { left: 15, right: 15 }
+        });
+
+        yPosition = doc.lastAutoTable.finalY + 14;
+
+        // Detalhamento
+        if (yPosition > 170) {
+            doc.addPage();
+            yPosition = 20;
+        }
+
+        doc.setFont('helvetica', 'bold');
+        doc.setFontSize(11);
+        doc.setTextColor(79, 70, 229);
+        doc.text('DETALHAMENTO DE DESPESAS', 15, yPosition);
+        yPosition += 6;
+
+        const tableHead = [['Empresa', 'Credor', 'Descrição', 'Vencimento', 'Quitação', 'Valor', 'Natureza']];
+        const tableBody = filteredData.map(r => [
+            r[COLS.EMPRESA] || '-',
+            r[COLS.CREDOR] || '-',
+            safeShortText(r[COLS.DESC], 25),
+            formatDateBR(r[10]),
+            formatDateBR(r[9]),
+            formatCurrencyBR(r[8]),
+            r[COLS.NATUREZA]
+        ]);
+
+        doc.autoTable({
+            startY: yPosition,
+            head: tableHead,
+            body: tableBody,
+            theme: 'striped',
+            styles: { fontSize: 7, textColor: [0, 0, 0] },
+            headStyles: { fillColor: [79, 70, 229], textColor: [255, 255, 255], fontStyle: 'bold' },
+            columnStyles: { 5: { halign: 'right' } },
+            bodyStyles: { textColor: [0, 0, 0] },
+            margin: { left: 15, right: 15 }
+        });
+
+        return doc.output('blob');
+    } catch(err) {
+        alert('Erro ao gerar PDF: ' + err.message);
+        return null;
+    }
+}
+
+function previewDespesasPDF() {
+    const pdfBlob = generateDespesasPDF();
+    if (!pdfBlob) return;
+    openPdfBlobPreview(pdfBlob, `despesas_${new Date().getTime()}.pdf`);
+}
+
+function exportDespesasExcel() {
+    try {
+        if(!filteredData || filteredData.length === 0) {
+            alert('Nenhum dado de despesas para exportar.');
+            return;
+        }
+
+        const rows = [
+            ['Empresa', 'Credor', 'Descrição', 'Vencimento', 'Quitação', 'Valor', 'Natureza', 'Banco']
+        ];
+
+        filteredData.forEach(r => {
+            rows.push([
+                r[COLS.EMPRESA] || '',
+                r[COLS.CREDOR] || '',
+                String(r[COLS.DESC] ?? ''),
+                formatDateBR(r[10]),
+                formatDateBR(r[9]),
+                Number(r[8] || 0),
+                r[COLS.NATUREZA] || '',
+                r[COLS.BANCO] || ''
+            ]);
+        });
+
+        const worksheet = XLSX.utils.aoa_to_sheet(rows);
+        worksheet['!cols'] = [
+            { wch: 24 },
+            { wch: 28 },
+            { wch: 40 },
+            { wch: 14 },
+            { wch: 14 },
+            { wch: 16 },
+            { wch: 22 },
+            { wch: 18 }
+        ];
+
+        for (let rowIndex = 2; rowIndex <= rows.length; rowIndex += 1) {
+            const cellRef = `F${rowIndex}`;
+            if (worksheet[cellRef]) {
+                worksheet[cellRef].z = 'R$ #,##0.00';
+            }
+        }
+
+        worksheet['!autofilter'] = { ref: `A1:H${rows.length}` };
+
+        const workbook = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(workbook, worksheet, 'Despesas');
+        XLSX.writeFile(workbook, `despesas_${new Date().getTime()}.xlsx`);
+
+        alert('Planilha de despesas exportada com sucesso em Excel!');
+    } catch(err) {
+        alert('Erro ao exportar Excel: ' + err.message);
+    }
+}
+
+// Initialize theme on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            initTheme();
+
+            const receitasTab = document.getElementById('receitas-tab');
+            if (receitasTab) {
+                receitasTab.addEventListener('shown.bs.tab', () => handleMainTabSwitch('receitas'));
+            }
+
+            const despesasTab = document.getElementById('despesas-tab');
+            if (despesasTab) {
+                despesasTab.addEventListener('shown.bs.tab', () => handleMainTabSwitch('despesas'));
+            }
+
+            const pdfModalEl = document.getElementById('pdfModal');
+            if (pdfModalEl) {
+                pdfModalEl.addEventListener('hidden.bs.modal', revokeActivePdfUrl);
+            }
+
+            window.addEventListener('resize', () => {
+                const receitasPane = document.getElementById('receitas-content');
+                if (receitasPane && receitasPane.classList.contains('show') && receitasPane.classList.contains('active')) {
+                    refreshReceitasDashboard(true);
+                } else {
+                    refreshDespesasDashboard(true);
+                }
+            });
+        });
+    </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
+
     </script>
 </body>
 </html>
