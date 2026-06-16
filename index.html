@@ -178,6 +178,22 @@
             color: #e0f2fe;
         }
 
+        /* Modal Dark Mode Contrast */
+        [data-theme="dark"] .modal-content {
+            background-color: var(--bg-card);
+            color: var(--text-main);
+            border-color: var(--border-color);
+        }
+        [data-theme="dark"] .modal-header {
+            border-bottom-color: var(--border-color);
+        }
+        [data-theme="dark"] .modal-footer {
+            border-top-color: var(--border-color);
+        }
+        [data-theme="dark"] .btn-close {
+            filter: invert(1) grayscale(100%) brightness(200%);
+        }
+
         /* ===== YEAR SELECTOR ===== */
         .year-selector-wrap {
             display: flex;
@@ -907,7 +923,7 @@
                         <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
                             <button class="btn btn-success shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
                             <button class="btn btn-outline-primary shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
-                            <button class="btn btn-outline-secondary shadow-sm" onclick="openConstructionModal('inventarioModal')"><i class="fas fa-boxes-stacked"></i><span>Consultar Inventário</span></button>
+                            <button class="btn btn-outline-secondary shadow-sm" onclick="openInventarioModal()"><i class="fas fa-boxes-stacked"></i><span>Consultar Inventário</span></button>
                             <button class="btn btn-primary shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
                         </div>
 
@@ -1179,9 +1195,18 @@
                     <h5 class="modal-title fw-bold" id="inventarioModalLabel">Consultar Inventário</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">Módulo em construção.</div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3 text-main">Aviso Importante</h5>
+                    <p class="mb-4 text-main">Você será direcionado para uma nova aba do navegador para consultar o inventário. <br><br><span class="badge bg-warning text-dark p-2 w-100" style="white-space: normal; font-size: 0.9rem;"><strong>Lembre-se:</strong> Você precisará importar a planilha correspondente ao inventário na nova aplicação.</span></p>
+                    <div class="d-grid gap-2">
+                        <a href="https://patrimonio-ten.vercel.app/" target="_blank" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('inventarioModal')).hide()">
+                            <i class="fas fa-external-link-alt"></i> Prosseguir para Inventário
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -1536,6 +1561,13 @@
 
         function openConstructionModal(modalId) {
             const modalEl = document.getElementById(modalId);
+            if (!modalEl) return;
+            const modal = new bootstrap.Modal(modalEl, {});
+            modal.show();
+        }
+
+        function openInventarioModal() {
+            const modalEl = document.getElementById('inventarioModal');
             if (!modalEl) return;
             const modal = new bootstrap.Modal(modalEl, {});
             modal.show();
