@@ -924,6 +924,7 @@
                             <button class="btn btn-success shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
                             <button class="btn btn-outline-primary shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
                             <button class="btn btn-outline-secondary shadow-sm" onclick="openInventarioModal()"><i class="fas fa-boxes-stacked"></i><span>Consultar Inventário</span></button>
+                            <button class="btn btn-outline-secondary shadow-sm" onclick="openInsumosModal()"><i class="fas fa-flask"></i><span>Faturamento por Linha</span></button>
                             <button class="btn btn-primary shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
                         </div>
 
@@ -1204,6 +1205,31 @@
                     <div class="d-grid gap-2">
                         <a href="https://patrimonio-ten.vercel.app/" target="_blank" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('inventarioModal')).hide()">
                             <i class="fas fa-external-link-alt"></i> Prosseguir para Inventário
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Novo Modal para Análise de Insumos -->
+    <div class="modal fade" id="insumosModal" tabindex="-1" aria-labelledby="insumosModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="insumosModalLabel">Faturamento por Linha</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3 text-main">Aviso Importante</h5>
+                    <p class="mb-4 text-main">Você será direcionado para uma nova aba do navegador para executar a análise do Faturamento por Linha. <br><br><span class="badge bg-warning text-dark p-2 w-100" style="white-space: normal; font-size: 0.9rem;"><strong>Lembre-se:</strong> Você precisará importar a planilha correspondente aos insumos na nova aplicação.</span></p>
+                    <div class="d-grid gap-2">
+                        <a href="https://analise-insumos-labmedic.vercel.app/" target="_blank" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('insumosModal')).hide()">
+                            <i class="fas fa-external-link-alt"></i> Prosseguir para Insumos
                         </a>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
@@ -1568,6 +1594,13 @@
 
         function openInventarioModal() {
             const modalEl = document.getElementById('inventarioModal');
+            if (!modalEl) return;
+            const modal = new bootstrap.Modal(modalEl, {});
+            modal.show();
+        }
+
+        function openInsumosModal() {
+            const modalEl = document.getElementById('insumosModal');
             if (!modalEl) return;
             const modal = new bootstrap.Modal(modalEl, {});
             modal.show();
@@ -2228,6 +2261,7 @@
 
             receitasFilteredData = receitasRawData.filter(r => {
                 const dataRef = r[4]; // Usa Liquidação (Quitação) como referência de data
+                if (receitasVisibleYear !== 'all' && (!dataRef || String(dataRef.getFullYear()) !== String(receitasVisibleYear))) return false;
                 if (empresasSelecionadas.size && !empresasSelecionadas.has(r[RECEITAS_COLS.EMPRESA])) return false;
                 if (mesesSelecionados.size && dataRef) {
                     const mesChave = `${dataRef.getFullYear()}-${String(dataRef.getMonth()+1).padStart(2, '0')}`;
