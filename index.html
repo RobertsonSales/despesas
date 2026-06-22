@@ -152,6 +152,11 @@
 
         .btn { border-radius: 8px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; padding: 0.6rem 1.25rem; transition: var(--transition); }
         .btn:hover { transform: translateY(-1px); }
+
+        /* Harmoniza os botões da barra de ações (Despesas) - tamanho compacto e uniforme */
+        .action-buttons-bar .btn { padding: 0.45rem 0.85rem; font-size: 0.82rem; font-weight: 600; gap: 6px; border-radius: 7px; }
+        .action-buttons-bar .btn i { font-size: 0.85rem; }
+        .action-buttons-bar .btn span { white-space: nowrap; }
         
         .btn-primary { background-color: var(--primary); border: none; color: white; }
         .btn-primary:hover { background-color: var(--primary-hover); }
@@ -920,12 +925,13 @@
                             </div>
                         </div>
 
-                        <div class="d-flex flex-wrap gap-2 mb-4 align-items-center">
-                            <button class="btn btn-success shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
-                            <button class="btn btn-outline-primary shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
-                            <button class="btn btn-outline-secondary shadow-sm" onclick="openInventarioModal()"><i class="fas fa-boxes-stacked"></i><span>Consultar Inventário</span></button>
-                            <button class="btn btn-outline-secondary shadow-sm" onclick="openInsumosModal()"><i class="fas fa-flask"></i><span>Faturamento por Linha</span></button>
-                            <button class="btn btn-primary shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
+                        <div class="d-flex flex-wrap gap-2 mb-4 align-items-center action-buttons-bar">
+                            <button class="btn btn-success btn-sm shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
+                            <button class="btn btn-outline-primary btn-sm shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
+                            <button class="btn btn-outline-secondary btn-sm shadow-sm" onclick="openInventarioModal()"><i class="fas fa-boxes-stacked"></i><span>Consultar Inventário</span></button>
+                            <button class="btn btn-outline-secondary btn-sm shadow-sm" onclick="openInsumosModal()"><i class="fas fa-flask"></i><span>Faturamento por Linha</span></button>
+                            <button class="btn btn-outline-secondary btn-sm shadow-sm" onclick="openFluxoCaixaModal()"><i class="fas fa-money-bill-trend-up"></i><span>Fluxo de Caixa</span></button>
+                            <button class="btn btn-primary btn-sm shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
                         </div>
 
                         <div class="row">
@@ -1205,6 +1211,31 @@
                     <div class="d-grid gap-2">
                         <a href="https://patrimonio-ten.vercel.app/" target="_blank" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('inventarioModal')).hide()">
                             <i class="fas fa-external-link-alt"></i> Prosseguir para Inventário
+                        </a>
+                        <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Novo Modal para Fluxo de Caixa -->
+    <div class="modal fade" id="fluxoCaixaModal" tabindex="-1" aria-labelledby="fluxoCaixaModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title fw-bold" id="fluxoCaixaModalLabel">Fluxo de Caixa</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body text-center py-4">
+                    <div class="mb-3 text-warning">
+                        <i class="fas fa-exclamation-triangle fa-3x"></i>
+                    </div>
+                    <h5 class="fw-bold mb-3 text-main">Aviso Importante</h5>
+                    <p class="mb-4 text-main">Você será direcionado para uma nova aba do navegador para acessar a aplicação de Fluxo de Caixa. <br><br><span class="badge bg-warning text-dark p-2 w-100" style="white-space: normal; font-size: 0.9rem;"><strong>Lembre-se:</strong> Você precisará importar a planilha correspondente ao fluxo de caixa na nova aplicação.</span></p>
+                    <div class="d-grid gap-2">
+                        <a href="https://fluxo-de-caixa-2pux.vercel.app/" target="_blank" class="btn btn-primary" onclick="bootstrap.Modal.getInstance(document.getElementById('fluxoCaixaModal')).hide()">
+                            <i class="fas fa-external-link-alt"></i> Prosseguir para Fluxo de Caixa
                         </a>
                         <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
                     </div>
@@ -1601,6 +1632,13 @@
 
         function openInsumosModal() {
             const modalEl = document.getElementById('insumosModal');
+            if (!modalEl) return;
+            const modal = new bootstrap.Modal(modalEl, {});
+            modal.show();
+        }
+
+        function openFluxoCaixaModal() {
+            const modalEl = document.getElementById('fluxoCaixaModal');
             if (!modalEl) return;
             const modal = new bootstrap.Modal(modalEl, {});
             modal.show();
@@ -3167,6 +3205,7 @@ function exportDespesasExcel() {
             });
         });
     </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
