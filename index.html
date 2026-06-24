@@ -783,6 +783,245 @@ grid-template-columns: 1fr;
 grid-template-columns: 1fr;
 }
 }
+/* ===== INADIMPLÊNCIA MODAL ===== */
+.inadimplencia-metric-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+gap: 1rem;
+margin-bottom: 1.5rem;
+}
+.inadimplencia-metric-card {
+padding: 1.25rem 1rem;
+border-radius: var(--radius);
+background: linear-gradient(135deg, rgba(239,68,68,0.09) 0%, rgba(239,68,68,0.02) 100%);
+border: 2px solid rgba(239,68,68,0.20);
+box-shadow: 0 4px 14px rgba(239,68,68,0.08);
+transition: var(--transition);
+position: relative;
+overflow: hidden;
+}
+.inadimplencia-metric-card::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: linear-gradient(90deg, #ef4444, #f59e0b);
+}
+.inadimplencia-metric-card:hover {
+transform: translateY(-3px);
+box-shadow: 0 8px 22px rgba(239,68,68,0.16);
+border-color: rgba(239,68,68,0.36);
+}
+.inadimplencia-metric-card.card-green {
+background: linear-gradient(135deg, rgba(16,185,129,0.09) 0%, rgba(16,185,129,0.02) 100%);
+border-color: rgba(16,185,129,0.20);
+}
+.inadimplencia-metric-card.card-green::before {
+background: linear-gradient(90deg, #10b981, #06b6d4);
+}
+.inadimplencia-metric-card.card-blue {
+background: linear-gradient(135deg, rgba(79,70,229,0.09) 0%, rgba(79,70,229,0.02) 100%);
+border-color: rgba(79,70,229,0.20);
+}
+.inadimplencia-metric-card.card-blue::before {
+background: linear-gradient(90deg, #4f46e5, #6366f1);
+}
+.inadimplencia-metric-card.card-amber {
+background: linear-gradient(135deg, rgba(245,158,11,0.09) 0%, rgba(245,158,11,0.02) 100%);
+border-color: rgba(245,158,11,0.20);
+}
+.inadimplencia-metric-card.card-amber::before {
+background: linear-gradient(90deg, #f59e0b, #fbbf24);
+}
+.inadimplencia-metric-label {
+font-size: 0.68rem;
+text-transform: uppercase;
+letter-spacing: 0.06em;
+color: var(--text-muted);
+font-weight: 700;
+margin-bottom: 5px;
+}
+.inadimplencia-metric-value {
+font-size: 1.3rem;
+font-weight: 800;
+color: #ef4444;
+line-height: 1.1;
+}
+.inadimplencia-metric-card.card-green .inadimplencia-metric-value { color: #10b981; }
+.inadimplencia-metric-card.card-blue .inadimplencia-metric-value { color: var(--primary); }
+.inadimplencia-metric-card.card-amber .inadimplencia-metric-value { color: #d97706; }
+[data-theme="dark"] .inadimplencia-metric-card.card-amber .inadimplencia-metric-value { color: #fbbf24; }
+[data-theme="dark"] .inadimplencia-metric-value { color: #f87171; }
+[data-theme="dark"] .inadimplencia-metric-card.card-green .inadimplencia-metric-value { color: #34d399; }
+[data-theme="dark"] .inadimplencia-metric-card.card-blue .inadimplencia-metric-value { color: #818cf8; }
+.inadimplencia-metric-meta {
+font-size: 0.75rem;
+color: var(--text-muted);
+margin-top: 3px;
+font-weight: 500;
+}
+.inadimplencia-filter-pane {
+background: var(--bg-card);
+border: 1px solid var(--border-color);
+border-radius: var(--radius);
+padding: 1.25rem;
+}
+.inadimplencia-filter-label {
+font-size: 0.84rem;
+font-weight: 700;
+color: var(--text-main);
+margin-bottom: 0.6rem;
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+[data-theme="dark"] .inadimplencia-filter-label { color: #fff; }
+.inadimplencia-scroll-list {
+max-height: 110px;
+overflow-y: auto;
+border: 1px solid var(--border-color);
+border-radius: 8px;
+padding: 8px;
+background: var(--bg-body);
+}
+.inadimplencia-checkbox-wrapper {
+display: flex;
+align-items: center;
+gap: 8px;
+padding: 2px 0;
+cursor: pointer;
+}
+.inadimplencia-checkbox-wrapper input[type="checkbox"] {
+cursor: pointer;
+width: 14px;
+height: 14px;
+accent-color: #ef4444;
+flex-shrink: 0;
+}
+.inadimplencia-checkbox-wrapper label {
+cursor: pointer;
+margin: 0;
+font-size: 0.8rem;
+font-weight: 600;
+color: var(--text-main);
+}
+[data-theme="dark"] .inadimplencia-checkbox-wrapper label { color: #fff !important; }
+.inadimplencia-filter-section {
+margin-bottom: 1rem;
+padding-bottom: 1rem;
+border-bottom: 1px solid var(--border-color);
+}
+.inadimplencia-filter-section:last-child {
+border-bottom: none;
+margin-bottom: 0;
+padding-bottom: 0;
+}
+#inadimplenciaModal .modal-header {
+background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+color: #fff;
+border-bottom: 1px solid rgba(239,68,68,0.3);
+}
+#inadimplenciaModal .modal-title { color: #fff; }
+#inadimplenciaModal .btn-close { filter: invert(1) brightness(2); }
+.inadimplencia-chart-wrap {
+position: relative;
+min-height: 260px;
+height: 260px;
+padding: 0.75rem;
+border: 1px solid var(--border-color);
+border-radius: 14px;
+background: linear-gradient(180deg, rgba(255,255,255,0.02) 0%, rgba(239,68,68,0.02) 100%);
+overflow: hidden;
+margin-bottom: 1rem;
+}
+.inadimplencia-chart-wrap-tall {
+min-height: 300px;
+height: 300px;
+}
+.inadimplencia-chart-stage {
+position: relative;
+height: 200px;
+}
+.inadimplencia-chart-stage-tall {
+height: 240px;
+}
+.inadimplencia-chart-title {
+font-size: 0.78rem;
+font-weight: 700;
+color: var(--text-muted);
+margin-bottom: 8px;
+text-transform: uppercase;
+letter-spacing: 0.04em;
+}
+.inadi-badge {
+display: inline-flex;
+align-items: center;
+padding: 3px 10px;
+border-radius: 20px;
+font-size: 0.72rem;
+font-weight: 700;
+background: rgba(239,68,68,0.12);
+color: #ef4444;
+border: 1px solid rgba(239,68,68,0.25);
+}
+[data-theme="dark"] .inadi-badge { background: rgba(248,113,113,0.12); color: #f87171; }
+.inadimplencia-alert-banner {
+background: linear-gradient(90deg, rgba(239,68,68,0.10) 0%, rgba(245,158,11,0.06) 100%);
+border: 1px solid rgba(239,68,68,0.25);
+border-left: 4px solid #ef4444;
+border-radius: 10px;
+padding: 0.75rem 1rem;
+margin-bottom: 1rem;
+font-size: 0.82rem;
+color: var(--text-main);
+display: flex;
+align-items: center;
+gap: 10px;
+}
+.inadimplencia-alert-banner i { color: #ef4444; font-size: 1rem; }
+#inadimplenciaModal .modal-body {
+max-height: 85vh;
+overflow-y: auto;
+background: var(--bg-body);
+}
+.inadi-year-selector-wrap {
+display: flex;
+flex-wrap: wrap;
+gap: 5px;
+margin-bottom: 8px;
+}
+.inadi-year-pill {
+display: inline-flex;
+align-items: center;
+gap: 4px;
+padding: 2px 9px;
+border-radius: 20px;
+border: 1.5px solid var(--border-color);
+font-size: 0.72rem;
+font-weight: 700;
+cursor: pointer;
+background: var(--bg-body);
+color: var(--text-muted);
+transition: var(--transition);
+white-space: nowrap;
+}
+.inadi-year-pill.active {
+background: #ef4444;
+border-color: #ef4444;
+color: #fff;
+}
+.inadi-year-pill:not(.active):hover {
+border-color: #ef4444;
+color: #ef4444;
+}
+.inadimplencia-table-wrap {
+max-height: 320px;
+overflow-y: auto;
+}
+/* Suporte a modais empilhados: backdrop do PDF de inadimplência fica acima do modal pai */
+#inadimplenciaPdfModal.modal { z-index: 1060; }
+#inadimplenciaPdfModal + .modal-backdrop { z-index: 1055; }
+body.inadi-pdf-open .modal-backdrop:last-of-type { z-index: 1055; }
 </style>
 </head>
 <body>
@@ -981,6 +1220,11 @@ Empresas
     </ul>
 </div>
 
+<!-- BOTÃO INADIMPLÊNCIA -->
+<button class="btn btn-outline-danger btn-sm shadow-sm" onclick="openInadimplenciaModal()" id="btnInadimplencia" style="display:none">
+    <i class="fas fa-exclamation-circle"></i><span>Inadimplência</span>
+</button>
+
 <button class="btn btn-primary btn-sm shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
 </div>
 <div class="row">
@@ -1143,6 +1387,61 @@ Empresas
 <div class="receitas-metric-meta" id="receitasTicketMeta">Por transação</div>
 </div>
 </div>
+<!-- Action Buttons Bar (Receitas) -->
+<div class="d-flex flex-wrap gap-2 mb-4 align-items-center action-buttons-bar">
+<button class="btn btn-success btn-sm shadow-sm" onclick="openPdfPreview('complete')"><i class="fas fa-file-pdf"></i><span>Relatório Completo</span></button>
+<button class="btn btn-outline-primary btn-sm shadow-sm" onclick="openPdfPreview('summary')"><i class="fas fa-file-invoice"></i><span>Resumo Executivo</span></button>
+<button class="btn btn-outline-secondary btn-sm shadow-sm" onclick="openInventarioModal()"><i class="fas fa-boxes-stacked"></i><span>Consultar Inventário</span></button>
+<button class="btn btn-outline-secondary btn-sm shadow-sm" onclick="openInsumosModal()"><i class="fas fa-flask"></i><span>Faturamento por Linha</span></button>
+
+<!-- DROPDOWN FLUXO DE CAIXA -->
+<div class="btn-group dropdown-fluxo-caixa" role="group">
+    <button type="button" class="btn btn-outline-secondary btn-sm shadow-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+        <i class="fas fa-money-bill-trend-up"></i><span>Fluxo de Caixa</span>
+    </button>
+    <ul class="dropdown-menu dropdown-menu-end">
+        <li>
+            <div class="dropdown-header-custom">
+                <i class="fas fa-chart-line"></i>
+                <h6>Análise de Fluxo de Caixa</h6>
+            </div>
+        </li>
+        <li>
+            <div class="dropdown-aviso">
+                <p><i class="fas fa-info-circle"></i> Você precisará importar novamente a planilha para ver os resultados.</p>
+            </div>
+        </li>
+        <li>
+            <a class="dropdown-item-custom" href="https://fluxo-de-caixa-2pux.vercel.app/" target="_blank">
+                <div class="item-icon icon-completa"><i class="fas fa-chart-bar"></i></div>
+                <div class="item-text">
+                    <strong>Análise de Fluxo Completa</strong>
+                    <small>Dashboard com todos os registros de Despesas e Receitas, além do Fluxo de Caixa</small>
+                </div>
+                <i class="fas fa-arrow-right item-arrow"></i>
+            </a>
+        </li>
+        <li><hr class="dropdown-divider-custom"></li>
+        <li>
+            <a class="dropdown-item-custom" href="https://fluxo-de-caixa-ii.vercel.app/" target="_blank">
+                <div class="item-icon icon-simples"><i class="fas fa-wallet"></i></div>
+                <div class="item-text">
+                    <strong>Somente Fluxo de Caixa</strong>
+                    <small>Visualização simplificada do Fluxo de Caixa</small>
+                </div>
+                <i class="fas fa-arrow-right item-arrow"></i>
+            </a>
+        </li>
+    </ul>
+</div>
+
+<!-- BOTÃO INADIMPLÊNCIA -->
+<button class="btn btn-outline-danger btn-sm shadow-sm" onclick="openInadimplenciaModal()" id="btnInadimplenciaReceitas" style="display:none">
+    <i class="fas fa-exclamation-circle"></i><span>Inadimplência</span>
+</button>
+
+<button class="btn btn-primary btn-sm shadow-sm" id="btnDetailReceitas" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
+</div>
 <!-- Receitas Charts -->
 <div class="row">
 <div class="col-lg-6">
@@ -1215,6 +1514,24 @@ Empresas
 </div>
 </div>
 </div>
+<!-- Modal PDF Preview — Inadimplência (sobrepõe o modal de inadimplência sem fechá-lo) -->
+<div class="modal fade" id="inadimplenciaPdfModal" tabindex="-1" aria-labelledby="inadimplenciaPdfModalLabel" aria-hidden="true" style="z-index: 1060;">
+<div class="modal-dialog modal-xl">
+<div class="modal-content">
+<div class="modal-header" style="background:linear-gradient(135deg,#1e293b 0%,#0f172a 100%);border-bottom:1px solid rgba(239,68,68,0.3);">
+<h5 class="modal-title fw-bold" id="inadimplenciaPdfModalLabel" style="color:#fff;"><i class="fas fa-eye me-2"></i>Pré-visualização — Relatório de Inadimplência</h5>
+<button type="button" class="btn-close" id="inadimplenciaPdfClose" aria-label="Close" style="filter:invert(1) brightness(2);"></button>
+</div>
+<div class="modal-body p-0">
+<iframe id="inadimplenciaPdfFrame" style="width:100%;height:75vh;border:none;border-radius:0 0 8px 8px;"></iframe>
+</div>
+<div class="modal-footer" style="background:var(--bg-card);border-top:1px solid var(--border-color);">
+<button type="button" class="btn btn-secondary" id="inadimplenciaPdfCloseBtn">Fechar</button>
+<button type="button" class="btn btn-success" id="inadimplenciaPdfDownloadBtn"><i class="fas fa-download me-1"></i>Confirmar Download</button>
+</div>
+</div>
+</div>
+</div>
 <!-- Modal Detalhe Categoria -->
 <div class="modal fade" id="detailModal" tabindex="-1" aria-labelledby="detailModalLabel" aria-hidden="true">
 <div class="modal-dialog modal-xl">
@@ -1277,6 +1594,203 @@ Empresas
 </div>
 </div>
 </div>
+<!-- ===== MODAL INADIMPLÊNCIA ===== -->
+<div class="modal fade" id="inadimplenciaModal" tabindex="-1" aria-labelledby="inadimplenciaModalLabel" aria-hidden="true">
+<div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+<div class="modal-content">
+<div class="modal-header">
+<div class="d-flex align-items-center gap-3">
+<div style="width:38px;height:38px;border-radius:10px;background:rgba(239,68,68,0.18);display:flex;align-items:center;justify-content:center;">
+<i class="fas fa-exclamation-circle" style="color:#f87171;font-size:1.1rem;"></i>
+</div>
+<div>
+<h5 class="modal-title fw-bold mb-0" id="inadimplenciaModalLabel">Análise de Inadimplência</h5>
+<div style="font-size:0.72rem;color:#94a3b8;font-weight:500;margin-top:1px;">GRUPO LABMEDIC · Painel de Crédito e Cobrança</div>
+</div>
+</div>
+<div class="d-flex align-items-center gap-2 ms-auto me-3">
+<span class="inadi-badge" id="inadiRegistrosBadge">0 registros</span>
+<button class="btn btn-sm" style="background:rgba(239,68,68,0.18);color:#f87171;border:1px solid rgba(239,68,68,0.3);font-weight:700;font-size:0.78rem;padding:5px 12px;" onclick="previewInadimplenciaPDF()">
+<i class="fas fa-file-pdf me-1"></i>Exportar PDF
+</button>
+</div>
+<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body p-0">
+<div class="row g-0" style="min-height:80vh;">
+<!-- SIDEBAR DE FILTROS -->
+<div class="col-lg-3 border-end" style="background:var(--bg-card);">
+<div class="p-3" style="position:sticky;top:0;max-height:85vh;overflow-y:auto;">
+<div class="d-flex align-items-center gap-2 mb-3">
+<i class="fas fa-sliders-h" style="color:#ef4444;"></i>
+<span style="font-weight:700;font-size:0.9rem;color:var(--text-main);">Filtros</span>
+</div>
+<!-- Filtro Empresa -->
+<div class="inadimplencia-filter-section">
+<div class="inadimplencia-filter-label">
+<span>Empresa</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allInadiEmpresas" checked onchange="toggleAllInadi('empresa')">
+<label class="form-check-label small fw-bold" for="allInadiEmpresas">Todas</label>
+</div>
+</div>
+<div class="inadimplencia-scroll-list" id="inadiEmpresasGroup"></div>
+</div>
+<!-- Filtro Vendedor -->
+<div class="inadimplencia-filter-section">
+<div class="inadimplencia-filter-label">
+<span>Vendedor</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allInadiVendedores" checked onchange="toggleAllInadi('vendedor')">
+<label class="form-check-label small fw-bold" for="allInadiVendedores">Todos</label>
+</div>
+</div>
+<div class="inadimplencia-scroll-list" id="inadiVendedoresGroup"></div>
+</div>
+<!-- Filtro Período -->
+<div class="inadimplencia-filter-section">
+<div class="inadimplencia-filter-label">
+<span>Mês de Vencimento</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allInadiMeses" checked onchange="toggleAllInadiMeses()">
+<label class="form-check-label small fw-bold" for="allInadiMeses">Todos</label>
+</div>
+</div>
+<div class="inadi-year-selector-wrap" id="inadiAnosGroup"></div>
+<div class="inadimplencia-scroll-list" id="inadiMesesGroup"></div>
+</div>
+<!-- Data Range -->
+<div class="inadimplencia-filter-section">
+<div class="inadimplencia-filter-label">Intervalo de Datas</div>
+<div class="row g-2 mb-2">
+<div class="col-6">
+<label class="form-label" style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);">Início</label>
+<input type="date" id="inadiDataInicio" class="form-control form-control-sm" onchange="applyInadimplenciaFilters()">
+</div>
+<div class="col-6">
+<label class="form-label" style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);">Fim</label>
+<input type="date" id="inadiDataFim" class="form-control form-control-sm" onchange="applyInadimplenciaFilters()">
+</div>
+</div>
+</div>
+<!-- Busca Global -->
+<div class="inadimplencia-filter-section">
+<div class="inadimplencia-filter-label">Busca Global</div>
+<div class="smart-search-wrap">
+<i class="fas fa-search search-icon"></i>
+<input type="text" id="inadiSearch" class="form-control form-control-sm" style="padding-left:30px;border:2px solid var(--border-color);border-radius:8px;" placeholder="Cliente, vendedor..." oninput="applyInadimplenciaFilters()">
+</div>
+</div>
+<!-- Limpar -->
+<button class="btn btn-sm w-100 mt-1" style="border:2px solid var(--danger);color:var(--danger);background:transparent;font-weight:700;border-radius:8px;" onclick="resetInadimplenciaFilters()">
+<i class="fas fa-redo me-1"></i>Limpar Filtros
+</button>
+</div>
+</div>
+<!-- ÁREA PRINCIPAL DO DASHBOARD -->
+<div class="col-lg-9">
+<div class="p-3">
+<!-- Alert Banner -->
+<div class="inadimplencia-alert-banner">
+<i class="fas fa-info-circle"></i>
+<span>Registros de créditos inadimplentes e operações em aberto. Utilize os filtros para segmentar por empresa, vendedor ou período de vencimento.</span>
+</div>
+<!-- KPI Grid -->
+<div class="inadimplencia-metric-grid">
+<div class="inadimplencia-metric-card">
+<div class="inadimplencia-metric-label">Total Inadimplente</div>
+<div class="inadimplencia-metric-value" id="inadiTotal">R$ 0,00</div>
+<div class="inadimplencia-metric-meta" id="inadiTotalMeta">0 registros</div>
+</div>
+<div class="inadimplencia-metric-card card-amber">
+<div class="inadimplencia-metric-label">Ticket Médio</div>
+<div class="inadimplencia-metric-value" id="inadiTicket">R$ 0,00</div>
+<div class="inadimplencia-metric-meta">Por operação</div>
+</div>
+<div class="inadimplencia-metric-card card-blue">
+<div class="inadimplencia-metric-label">Clientes Envolvidos</div>
+<div class="inadimplencia-metric-value" id="inadiClientes">0</div>
+<div class="inadimplencia-metric-meta" id="inadiClientesMeta">Clientes únicos</div>
+</div>
+<div class="inadimplencia-metric-card card-green">
+<div class="inadimplencia-metric-label">Empresas</div>
+<div class="inadimplencia-metric-value" id="inadiEmpresas">0</div>
+<div class="inadimplencia-metric-meta">Unidades afetadas</div>
+</div>
+<div class="inadimplencia-metric-card">
+<div class="inadimplencia-metric-label">Maior Exposição</div>
+<div class="inadimplencia-metric-value" id="inadiMaior">R$ 0,00</div>
+<div class="inadimplencia-metric-meta" id="inadiMaiorCliente">—</div>
+</div>
+</div>
+<!-- Charts Row -->
+<div class="row g-3 mb-3">
+<div class="col-md-5">
+<div class="inadimplencia-chart-wrap">
+<div class="inadimplencia-chart-title"><i class="fas fa-building me-1" style="color:#ef4444;"></i>Por Empresa</div>
+<div class="inadimplencia-chart-stage">
+<canvas id="inadiEmpresaChart"></canvas>
+</div>
+</div>
+</div>
+<div class="col-md-7">
+<div class="inadimplencia-chart-wrap">
+<div class="inadimplencia-chart-title"><i class="fas fa-user-tie me-1" style="color:#f59e0b;"></i>Inadimplência por Vendedor</div>
+<div class="inadimplencia-chart-stage">
+<canvas id="inadiVendedorChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+<div class="inadimplencia-chart-wrap inadimplencia-chart-wrap-tall">
+<div class="inadimplencia-chart-title"><i class="fas fa-chart-line me-1" style="color:#4f46e5;"></i>Evolução Mensal por Vencimento</div>
+<div class="inadimplencia-chart-stage inadimplencia-chart-stage-tall">
+<canvas id="inadiMesChart"></canvas>
+</div>
+</div>
+<!-- Gráfico: Percentual Mensal de Inadimplência -->
+<div class="inadimplencia-chart-wrap inadimplencia-chart-wrap-tall mt-3" id="inadiPercWrap" style="display:none;">
+<div class="d-flex align-items-center justify-content-between mb-1">
+<div class="inadimplencia-chart-title mb-0"><i class="fas fa-percent me-1" style="color:#ef4444;"></i>Percentual Mensal de Inadimplência</div>
+<span class="badge" id="inadiPercTotalBadge" style="background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.25);font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;"></span>
+</div>
+<div class="inadimplencia-chart-stage inadimplencia-chart-stage-tall">
+<canvas id="inadiPercChart"></canvas>
+</div>
+</div>
+<!-- Records Table -->
+<div class="card mt-2">
+<div class="card-header text-primary d-flex align-items-center justify-content-between" style="padding:0.85rem 1rem;">
+<span style="font-weight:700;"><i class="fas fa-list me-2"></i>Registros de Inadimplência</span>
+<div class="d-flex align-items-center gap-2">
+<span class="badge bg-primary-soft" id="inadiTableCount">0 itens</span>
+</div>
+</div>
+<div class="inadimplencia-table-wrap">
+<table class="table table-hover mb-0" style="font-size:0.8rem;">
+<thead>
+<tr>
+<th style="white-space:nowrap;">Empresa</th>
+<th>Cliente</th>
+<th>Nº Doc.</th>
+<th style="white-space:nowrap;">Vencimento</th>
+<th style="white-space:nowrap;">Liquidação</th>
+<th>Vendedor</th>
+<th class="text-end">Valor</th>
+</tr>
+</thead>
+<tbody id="inadiTableBody"></tbody>
+</table>
+</div>
+<div class="px-3 py-2 border-top" id="inadiTableFooter" style="font-size:0.75rem;color:var(--text-muted);"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <script>
 let rawData = [];
 let filteredData = [];
@@ -1295,8 +1809,17 @@ let progressHideTimer = null;
 let searchTerm = '';
 let receitasMonthOptions = [];
 let receitasVisibleYear = 'all';
+let inadimplenciaRawData = [];
+let inadimplenciaFilteredData = [];
+let inadiEmpresaChart = null;
+let inadiVendedorChart = null;
+let inadiMesChart = null;
+let inadiPercChart = null;
+let inadiVisibleYear = 'all';
+let inadiMonthOptions = [];
 const COLS = { CREDOR:0, VENCTO:1, DESC:2, VALOR:3, QUITACAO:4, BANCO:5, NATUREZA:6, EMPRESA:7 };
 const RECEITAS_COLS = { CLIENTE:0, VENCIMENTO:1, DESCRICAO:2, VALOR:3, LIQUIDACAO:4, VENDEDOR:5, EMPRESA:6 };
+const INADIMPLENCIA_COLS = { CLIENTE:0, VENCIMENTO:1, DESCRICAO:2, VALOR:3, LIQUIDACAO:4, VENDEDOR:5, EMPRESA:6 };
 function waitForUI(delay = 40) {
 return new Promise(resolve => setTimeout(resolve, delay));
 }
@@ -1960,6 +2483,27 @@ applyReceitasFilters();
 receitasRawData = [];
 receitasFilteredData = [];
 document.getElementById('receitasContent').style.display = 'none';
+}
+const inadimplenciaSheet = wb.SheetNames.find(name => name.trim() === 'Inadimplência' || name.trim() === 'Inadimplencia');
+if (inadimplenciaSheet) {
+updateProgressOverlay(80, 'Processando a aba de inadimplência.', undefined, 'Carregando inadimplência');
+await waitForUI(40);
+const inadimplenciaJson = XLSX.utils.sheet_to_json(wb.Sheets[inadimplenciaSheet], { header: 1, raw: true });
+inadimplenciaRawData = inadimplenciaJson.slice(1).map(r => {
+const rr = [...r];
+rr[3] = parseCurrency(rr[INADIMPLENCIA_COLS.VALOR]);
+rr[1] = parseDate(rr[INADIMPLENCIA_COLS.VENCIMENTO]);
+rr[4] = parseDate(rr[INADIMPLENCIA_COLS.LIQUIDACAO]);
+return rr;
+}).filter(r => r[3] > 0 && r[0]);
+inadimplenciaFilteredData = [...inadimplenciaRawData];
+document.getElementById('btnInadimplencia').style.display = 'inline-flex';
+document.getElementById('btnInadimplenciaReceitas').style.display = 'inline-flex';
+} else {
+inadimplenciaRawData = [];
+inadimplenciaFilteredData = [];
+document.getElementById('btnInadimplencia').style.display = 'none';
+document.getElementById('btnInadimplenciaReceitas').style.display = 'none';
 }
 updateProgressOverlay(82, 'Montando filtros e índices do dashboard.', undefined, 'Preparando filtros');
 await waitForUI(40);
@@ -2937,6 +3481,797 @@ XLSX.writeFile(workbook, `despesas_${new Date().getTime()}.xlsx`);
 alert('Planilha de despesas exportada com sucesso em Excel!');
 } catch(err) {
 alert('Erro ao exportar Excel: ' + err.message);
+}
+}
+// ============== INADIMPLÊNCIA ==============
+function openInadimplenciaModal() {
+if (!inadimplenciaRawData || inadimplenciaRawData.length === 0) {
+alert('Nenhum dado de inadimplência encontrado. Importe a planilha com a aba "Inadimplência".');
+return;
+}
+initInadimplenciaFilters();
+applyInadimplenciaFilters();
+const modalEl = document.getElementById('inadimplenciaModal');
+if (!modalEl) return;
+modalEl.addEventListener('hidden.bs.modal', () => {
+destroyInadiCharts();
+}, { once: true });
+bootstrap.Modal.getOrCreateInstance(modalEl).show();
+}
+function initInadimplenciaFilters() {
+const empresas = new Set();
+const vendedores = new Set();
+const anosSet = new Set();
+const mesesMap = new Map();
+inadimplenciaRawData.forEach(r => {
+if (r[INADIMPLENCIA_COLS.EMPRESA]) empresas.add(String(r[INADIMPLENCIA_COLS.EMPRESA]).trim());
+const vend = r[INADIMPLENCIA_COLS.VENDEDOR];
+if (vend && String(vend).trim()) vendedores.add(String(vend).trim());
+const dataRef = r[1]; // VENCIMENTO parsed
+if (dataRef instanceof Date && !isNaN(dataRef)) {
+const ano = dataRef.getFullYear();
+const mesChave = `${ano}-${String(dataRef.getMonth()+1).padStart(2,'0')}`;
+anosSet.add(ano);
+if (!mesesMap.has(mesChave)) {
+mesesMap.set(mesChave, {
+value: mesChave, year: String(ano), checked: true,
+label: new Date(ano, dataRef.getMonth(), 1).toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
+});
+}
+}
+});
+inadiMonthOptions = Array.from(mesesMap.values()).sort((a, b) => b.value.localeCompare(a.value));
+inadiVisibleYear = 'all';
+// Empresas
+const empGroup = document.getElementById('inadiEmpresasGroup');
+if (empGroup) {
+empGroup.innerHTML = '';
+Array.from(empresas).sort().forEach(e => {
+const id = `inadi-emp-${e.replace(/\s+/g,'-')}`;
+empGroup.innerHTML += `<div class="inadimplencia-checkbox-wrapper"><input type="checkbox" id="${id}" class="inadi-empresa-check" value="${e}" checked onchange="syncInadiAllCheckbox('empresa'); applyInadimplenciaFilters()"><label for="${id}">${e}</label></div>`;
+});
+}
+document.getElementById('allInadiEmpresas').checked = true;
+// Vendedores
+const vendGroup = document.getElementById('inadiVendedoresGroup');
+if (vendGroup) {
+vendGroup.innerHTML = '';
+Array.from(vendedores).sort().forEach(v => {
+const id = `inadi-vend-${v.replace(/[\s\/]+/g,'-')}`;
+vendGroup.innerHTML += `<div class="inadimplencia-checkbox-wrapper"><input type="checkbox" id="${id}" class="inadi-vendedor-check" value="${v}" checked onchange="syncInadiAllCheckbox('vendedor'); applyInadimplenciaFilters()"><label for="${id}">${v}</label></div>`;
+});
+}
+document.getElementById('allInadiVendedores').checked = true;
+// Ano pills
+const anosGroup = document.getElementById('inadiAnosGroup');
+if (anosGroup) {
+anosGroup.innerHTML = `<span class="inadi-year-pill active" id="inadi-year-all" onclick="setInadiYear('all')"><i class="fas fa-calendar-check"></i>Todos</span>`;
+Array.from(anosSet).sort().reverse().forEach(a => {
+anosGroup.innerHTML += `<span class="inadi-year-pill" data-inadi-year="${a}" onclick="setInadiYear(${a})"><i class="fas fa-calendar"></i>${a}</span>`;
+});
+}
+renderInadiMonthList();
+document.getElementById('allInadiMeses').checked = true;
+document.getElementById('inadiDataInicio').value = '';
+document.getElementById('inadiDataFim').value = '';
+document.getElementById('inadiSearch').value = '';
+}
+function setInadiYear(year) {
+inadiVisibleYear = year;
+document.querySelectorAll('#inadiAnosGroup .inadi-year-pill').forEach(p => p.classList.remove('active'));
+if (year === 'all') {
+const allPill = document.getElementById('inadi-year-all');
+if (allPill) allPill.classList.add('active');
+} else {
+const pill = document.querySelector(`#inadiAnosGroup [data-inadi-year="${year}"]`);
+if (pill) pill.classList.add('active');
+}
+renderInadiMonthList();
+applyInadimplenciaFilters();
+}
+function renderInadiMonthList() {
+const el = document.getElementById('inadiMesesGroup');
+if (!el) return;
+const visible = inadiMonthOptions.filter(o => inadiVisibleYear === 'all' || String(o.year) === String(inadiVisibleYear));
+el.innerHTML = '';
+visible.forEach(o => {
+const id = `inadi-mes-${o.value}`;
+el.innerHTML += `<div class="inadimplencia-checkbox-wrapper"><input type="checkbox" id="${id}" class="inadi-mes-check" value="${o.value}" ${o.checked ? 'checked' : ''} onchange="syncInadiAllMesCheckbox(); applyInadimplenciaFilters()"><label for="${id}">${o.label}</label></div>`;
+});
+syncInadiAllMesCheckbox();
+}
+function syncInadiAllMesCheckbox() {
+const all = document.querySelectorAll('#inadiMesesGroup .inadi-mes-check');
+const checked = document.querySelectorAll('#inadiMesesGroup .inadi-mes-check:checked');
+const allCk = document.getElementById('allInadiMeses');
+if (allCk) allCk.checked = all.length > 0 && all.length === checked.length;
+const visibleValues = new Set(Array.from(all).map(i => i.value));
+inadiMonthOptions = inadiMonthOptions.map(o => visibleValues.has(o.value) ? { ...o, checked: !!document.querySelector(`#inadi-mes-${o.value}:checked`) } : o);
+}
+function toggleAllInadi(type) {
+if (type === 'empresa') {
+const checked = document.getElementById('allInadiEmpresas').checked;
+document.querySelectorAll('.inadi-empresa-check').forEach(i => i.checked = checked);
+} else if (type === 'vendedor') {
+const checked = document.getElementById('allInadiVendedores').checked;
+document.querySelectorAll('.inadi-vendedor-check').forEach(i => i.checked = checked);
+}
+applyInadimplenciaFilters();
+}
+function toggleAllInadiMeses() {
+const checked = document.getElementById('allInadiMeses').checked;
+document.querySelectorAll('#inadiMesesGroup .inadi-mes-check').forEach(i => i.checked = checked);
+inadiMonthOptions = inadiMonthOptions.map(o => ({ ...o, checked }));
+applyInadimplenciaFilters();
+}
+function syncInadiAllCheckbox(type) {
+if (type === 'empresa') {
+const all = document.querySelectorAll('.inadi-empresa-check');
+const chk = document.querySelectorAll('.inadi-empresa-check:checked');
+const el = document.getElementById('allInadiEmpresas');
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+} else if (type === 'vendedor') {
+const all = document.querySelectorAll('.inadi-vendedor-check');
+const chk = document.querySelectorAll('.inadi-vendedor-check:checked');
+const el = document.getElementById('allInadiVendedores');
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+}
+}
+function resetInadimplenciaFilters() {
+document.querySelectorAll('.inadi-empresa-check, .inadi-vendedor-check').forEach(i => i.checked = true);
+document.getElementById('allInadiEmpresas').checked = true;
+document.getElementById('allInadiVendedores').checked = true;
+inadiVisibleYear = 'all';
+inadiMonthOptions = inadiMonthOptions.map(o => ({ ...o, checked: true }));
+document.querySelectorAll('#inadiAnosGroup .inadi-year-pill').forEach(p => p.classList.remove('active'));
+const allPill = document.getElementById('inadi-year-all');
+if (allPill) allPill.classList.add('active');
+renderInadiMonthList();
+document.getElementById('inadiDataInicio').value = '';
+document.getElementById('inadiDataFim').value = '';
+document.getElementById('inadiSearch').value = '';
+applyInadimplenciaFilters();
+}
+function applyInadimplenciaFilters() {
+syncInadiAllMesCheckbox();
+const empSel = new Set(Array.from(document.querySelectorAll('.inadi-empresa-check:checked')).map(i => i.value));
+const vendSel = new Set(Array.from(document.querySelectorAll('.inadi-vendedor-check:checked')).map(i => i.value));
+const mesSel = new Set(inadiMonthOptions.filter(o => o.checked).map(o => o.value));
+const searchVal = (document.getElementById('inadiSearch').value || '').toLowerCase().trim();
+const dataInicio = document.getElementById('inadiDataInicio').value;
+const dataFim = document.getElementById('inadiDataFim').value;
+const start = dataInicio ? new Date(dataInicio + 'T00:00:00') : null;
+const end = dataFim ? new Date(dataFim + 'T23:59:59') : null;
+inadimplenciaFilteredData = inadimplenciaRawData.filter(r => {
+const emp = String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim();
+if (empSel.size && !empSel.has(emp)) return false;
+const vend = String(r[INADIMPLENCIA_COLS.VENDEDOR] || '').trim();
+if (vendSel.size && vend && !vendSel.has(vend)) return false;
+const dataRef = r[1]; // VENCIMENTO
+if (dataRef instanceof Date) {
+if (inadiVisibleYear !== 'all' && String(dataRef.getFullYear()) !== String(inadiVisibleYear)) return false;
+if (mesSel.size) {
+const mk = `${dataRef.getFullYear()}-${String(dataRef.getMonth()+1).padStart(2,'0')}`;
+if (!mesSel.has(mk)) return false;
+}
+if (start && dataRef < start) return false;
+if (end && dataRef > end) return false;
+}
+if (searchVal) {
+const haystack = [
+r[INADIMPLENCIA_COLS.CLIENTE],
+r[INADIMPLENCIA_COLS.EMPRESA],
+r[INADIMPLENCIA_COLS.VENDEDOR],
+String(r[INADIMPLENCIA_COLS.DESCRICAO] || ''),
+formatCurrencyBR(r[3])
+].join(' ').toLowerCase();
+if (!haystack.includes(searchVal)) return false;
+}
+return true;
+});
+inadimplenciaFilteredData.sort((a, b) => b[3] - a[3]);
+updateInadimplenciaUI();
+}
+function updateInadimplenciaUI() {
+const data = inadimplenciaFilteredData;
+const total = data.reduce((s, r) => s + r[3], 0);
+const count = data.length;
+const clientes = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.CLIENTE] || '').trim())).size;
+const empresas = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim())).size;
+const maxRecord = data.reduce((max, r) => r[3] > max[3] ? r : max, data[0] || {3:0, 0:'-'});
+const el = id => document.getElementById(id);
+if (el('inadiTotal')) el('inadiTotal').textContent = formatCurrencyBR(total);
+if (el('inadiTotalMeta')) el('inadiTotalMeta').textContent = `${count} registros`;
+if (el('inadiTicket')) el('inadiTicket').textContent = formatCurrencyBR(count ? total / count : 0);
+if (el('inadiClientes')) el('inadiClientes').textContent = clientes;
+if (el('inadiClientesMeta')) el('inadiClientesMeta').textContent = `Clientes únicos`;
+if (el('inadiEmpresas')) el('inadiEmpresas').textContent = empresas;
+if (el('inadiMaior')) el('inadiMaior').textContent = formatCurrencyBR(maxRecord[3] || 0);
+if (el('inadiMaiorCliente')) el('inadiMaiorCliente').textContent = safeShortText(maxRecord[INADIMPLENCIA_COLS.CLIENTE] || '-', 22);
+if (el('inadiTableCount')) el('inadiTableCount').textContent = `${count} itens`;
+if (el('inadiRegistrosBadge')) el('inadiRegistrosBadge').textContent = `${count} registros`;
+// Table
+const tbody = el('inadiTableBody');
+if (tbody) {
+const MAX_ROWS = 150;
+tbody.innerHTML = data.slice(0, MAX_ROWS).map(r => `
+<tr>
+<td><small class="fw-bold">${r[INADIMPLENCIA_COLS.EMPRESA] || 'N/A'}</small></td>
+<td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r[INADIMPLENCIA_COLS.CLIENTE] || ''}">${safeShortText(r[INADIMPLENCIA_COLS.CLIENTE] || '-', 28)}</td>
+<td><span class="badge bg-primary-soft" style="font-size:0.65rem;">${r[INADIMPLENCIA_COLS.DESCRICAO] || '-'}</span></td>
+<td style="white-space:nowrap;">${formatDateBR(r[1])}</td>
+<td style="white-space:nowrap;">${formatDateBR(r[4])}</td>
+<td>${r[INADIMPLENCIA_COLS.VENDEDOR] || '-'}</td>
+<td class="text-end fw-bold" style="white-space:nowrap;color:#ef4444;">${formatCurrencyBR(r[3])}</td>
+</tr>`).join('');
+const footer = el('inadiTableFooter');
+if (footer) {
+if (data.length > MAX_ROWS) {
+footer.textContent = `Exibindo ${MAX_ROWS} de ${data.length} registros. Utilize os filtros para refinar.`;
+} else {
+footer.textContent = `${data.length} registro(s) exibido(s). Total: ${formatCurrencyBR(total)}.`;
+}
+}
+}
+renderInadimplenciaCharts();
+}
+function destroyInadiCharts() {
+if (inadiEmpresaChart) { inadiEmpresaChart.destroy(); inadiEmpresaChart = null; }
+if (inadiVendedorChart) { inadiVendedorChart.destroy(); inadiVendedorChart = null; }
+if (inadiMesChart) { inadiMesChart.destroy(); inadiMesChart = null; }
+if (inadiPercChart) { inadiPercChart.destroy(); inadiPercChart = null; }
+}
+function renderInadimplenciaCharts() {
+destroyInadiCharts();
+const data = inadimplenciaFilteredData;
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+const gridColor = isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.10)';
+const tickColor = isDark ? '#cbd5e1' : '#64748b';
+// Chart 1: Por Empresa (Doughnut)
+const empMap = {};
+data.forEach(r => { const e = String(r[INADIMPLENCIA_COLS.EMPRESA] || 'Sem Empresa').trim(); empMap[e] = (empMap[e] || 0) + r[3]; });
+const empCanvas = document.getElementById('inadiEmpresaChart');
+if (empCanvas) {
+const empCtx = empCanvas.getContext('2d');
+inadiEmpresaChart = new Chart(empCtx, {
+type: 'doughnut',
+data: {
+labels: Object.keys(empMap),
+datasets: [{
+data: Object.values(empMap),
+backgroundColor: ['#ef4444','#f59e0b','#4f46e5','#10b981','#8b5cf6','#06b6d4'],
+borderColor: isDark ? '#0f172a' : '#ffffff',
+borderWidth: 2,
+hoverOffset: 6
+}]
+},
+options: {
+responsive: true, maintainAspectRatio: false,
+plugins: {
+legend: { position: 'bottom', labels: { color: tickColor, font: { family: 'Inter', weight: '600', size: 11 }, padding: 12 } },
+tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${formatCurrencyBR(ctx.parsed)}` } }
+}
+}
+});
+}
+// Chart 2: Por Vendedor (horizontal bar)
+const vendMap = {};
+data.forEach(r => { const v = String(r[INADIMPLENCIA_COLS.VENDEDOR] || 'Sem Vendedor').trim(); vendMap[v] = (vendMap[v] || 0) + r[3]; });
+const vendSorted = Object.entries(vendMap).sort((a,b) => b[1]-a[1]).slice(0, 10);
+const vendCanvas = document.getElementById('inadiVendedorChart');
+if (vendCanvas) {
+const vendCtx = vendCanvas.getContext('2d');
+inadiVendedorChart = new Chart(vendCtx, {
+type: 'bar',
+data: {
+labels: vendSorted.map(e => e[0]),
+datasets: [{
+label: 'Total',
+data: vendSorted.map(e => e[1]),
+backgroundColor: 'rgba(245,158,11,0.80)',
+borderColor: '#f59e0b',
+borderWidth: 1.5,
+borderRadius: 6,
+maxBarThickness: 32
+}]
+},
+options: {
+indexAxis: 'y',
+responsive: true, maintainAspectRatio: false,
+scales: {
+x: { ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } }, grid: { color: gridColor } },
+y: { ticks: { color: tickColor, font: { size: 10 } }, grid: { display: false } }
+},
+plugins: {
+legend: { display: false },
+tooltip: { callbacks: { label: ctx => ` ${formatCurrencyBR(ctx.parsed.x)}` } }
+}
+}
+});
+}
+// Chart 3: Evolução Mensal por Vencimento (line)
+const mesMap = {};
+data.forEach(r => {
+const d = r[1]; // VENCIMENTO
+if (d instanceof Date && !isNaN(d)) {
+const mk = `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
+mesMap[mk] = (mesMap[mk] || { key: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`, total: 0 });
+mesMap[mk].total += r[3];
+}
+});
+const mesSorted = Object.entries(mesMap).sort((a,b) => a[1].key.localeCompare(b[1].key));
+const mesCanvas = document.getElementById('inadiMesChart');
+if (mesCanvas) {
+const mesCtx = mesCanvas.getContext('2d');
+inadiMesChart = new Chart(mesCtx, {
+type: 'line',
+data: {
+labels: mesSorted.map(e => e[0]),
+datasets: [{
+label: 'Inadimplência Mensal',
+data: mesSorted.map(e => e[1].total),
+borderColor: '#4f46e5',
+backgroundColor: 'rgba(79,70,229,0.08)',
+borderWidth: 2.5,
+fill: true,
+tension: 0.4,
+pointBackgroundColor: '#ef4444',
+pointBorderColor: '#fff',
+pointBorderWidth: 2,
+pointRadius: 5,
+pointHoverRadius: 7
+}]
+},
+options: {
+responsive: true, maintainAspectRatio: false,
+scales: {
+y: { ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } }, grid: { color: gridColor } },
+x: { ticks: { color: tickColor, font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+},
+plugins: {
+legend: { display: false },
+tooltip: { callbacks: { label: ctx => ` ${formatCurrencyBR(ctx.parsed.y)}` } }
+}
+}
+});
+}
+// ── Chart 4: Percentual Mensal de Inadimplência ──────────────────────────
+// Para cada mês presente nos dados filtrados, calcula o peso percentual
+// daquele mês em relação ao total inadimplente do período selecionado.
+// A linha de tendência é calculada por regressão linear (mínimos quadrados).
+const percWrap   = document.getElementById('inadiPercWrap');
+const percCanvas = document.getElementById('inadiPercChart');
+const percBadge  = document.getElementById('inadiPercTotalBadge');
+const totalPeriodo = Object.values(mesMap).reduce((s, v) => s + v.total, 0);
+if (mesSorted.length >= 2 && totalPeriodo > 0 && percCanvas) {
+if (percWrap) percWrap.style.display = '';
+const percLabels = mesSorted.map(e => e[0]);
+const percVals   = mesSorted.map(e => parseFloat(((e[1].total / totalPeriodo) * 100).toFixed(2)));
+const maxPerc    = Math.max(...percVals);
+const maxIdx     = percVals.indexOf(maxPerc);
+const barColors  = percVals.map((v, i) => i === maxIdx ? 'rgba(239,68,68,0.90)' : 'rgba(239,68,68,0.42)');
+const barBorders = percVals.map((v, i) => i === maxIdx ? '#ef4444' : 'rgba(239,68,68,0.65)');
+// Regressão linear (mínimos quadrados): y = a + b·x
+// x = índice do mês (0, 1, 2 …), y = percentual
+const n = percVals.length;
+const sumX  = percVals.reduce((s, _, i) => s + i, 0);
+const sumY  = percVals.reduce((s, v) => s + v, 0);
+const sumXY = percVals.reduce((s, v, i) => s + i * v, 0);
+const sumX2 = percVals.reduce((s, _, i) => s + i * i, 0);
+const b = (n * sumXY - sumX * sumY) / (n * sumX2 - sumX * sumX);
+const a = (sumY - b * sumX) / n;
+const trendVals = percVals.map((_, i) => parseFloat((a + b * i).toFixed(2)));
+const trendDir  = b > 0.05 ? '↑ Alta' : b < -0.05 ? '↓ Baixa' : '→ Estável';
+if (percBadge) percBadge.textContent = `Pico: ${percLabels[maxIdx]} · ${maxPerc.toFixed(1)}%  |  Tendência: ${trendDir}`;
+inadiPercChart = new Chart(percCanvas.getContext('2d'), {
+type: 'bar',
+data: {
+labels: percLabels,
+datasets: [
+{
+type: 'bar',
+label: '% do período',
+data: percVals,
+backgroundColor: barColors,
+borderColor: barBorders,
+borderWidth: 1.5,
+borderRadius: 5,
+maxBarThickness: 40,
+order: 2
+},
+{
+type: 'line',
+label: `Tendência linear (${trendDir})`,
+data: trendVals,
+borderColor: '#4f46e5',
+backgroundColor: 'transparent',
+borderWidth: 2,
+pointRadius: 0,
+borderDash: [5, 4],
+tension: 0,
+order: 1
+}
+]
+},
+options: {
+responsive: true,
+maintainAspectRatio: false,
+interaction: { mode: 'index', intersect: false },
+scales: {
+y: {
+beginAtZero: true,
+ticks: { color: tickColor, font: { size: 9 }, callback: v => v.toFixed(1) + '%' },
+grid: { color: gridColor }
+},
+x: {
+ticks: { color: tickColor, font: { size: 9 }, maxRotation: 45 },
+grid: { display: false }
+}
+},
+plugins: {
+legend: {
+display: true,
+position: 'top',
+labels: { color: tickColor, font: { size: 10, weight: '600' }, padding: 14, usePointStyle: true }
+},
+tooltip: {
+callbacks: {
+label: ctx => ctx.dataset.type === 'line'
+? ` Tendência: ${ctx.parsed.y.toFixed(2)}%`
+: ` Participação: ${ctx.parsed.y.toFixed(2)}%`
+}
+}
+}
+}
+});
+} else {
+if (percWrap) percWrap.style.display = 'none';
+}
+}
+// ============== INADIMPLÊNCIA PDF ==============
+let inadimplenciaPdfUrl = null;
+function previewInadimplenciaPDF() {
+const pdfBlob = generateInadimplenciaPDF();
+if (!pdfBlob) return;
+// Revoga URL anterior se existir
+if (inadimplenciaPdfUrl) {
+URL.revokeObjectURL(inadimplenciaPdfUrl);
+inadimplenciaPdfUrl = null;
+}
+inadimplenciaPdfUrl = URL.createObjectURL(pdfBlob);
+const frame = document.getElementById('inadimplenciaPdfFrame');
+if (frame) {
+frame.removeAttribute('src');
+frame.src = inadimplenciaPdfUrl;
+}
+// Configura o botão de download
+const downloadBtn = document.getElementById('inadimplenciaPdfDownloadBtn');
+if (downloadBtn) {
+downloadBtn.onclick = () => {
+const link = document.createElement('a');
+link.href = inadimplenciaPdfUrl;
+link.download = `inadimplencia_${new Date().getTime()}.pdf`;
+link.click();
+};
+}
+// Função para fechar o overlay sem fechar o modal de inadimplência
+function closeInadimplenciaPdfOverlay() {
+const overlayEl = document.getElementById('inadimplenciaPdfModal');
+const bsModal = bootstrap.Modal.getInstance(overlayEl);
+if (bsModal) bsModal.hide();
+}
+const closeBtn = document.getElementById('inadimplenciaPdfClose');
+const closeBtnFooter = document.getElementById('inadimplenciaPdfCloseBtn');
+if (closeBtn) closeBtn.onclick = closeInadimplenciaPdfOverlay;
+if (closeBtnFooter) closeBtnFooter.onclick = closeInadimplenciaPdfOverlay;
+// Abre o modal de PDF como sobreposição
+const overlayEl = document.getElementById('inadimplenciaPdfModal');
+// Garante que ao fechar, o backdrop extra seja removido e inadimplenciaModal permaneça visível
+overlayEl.addEventListener('hidden.bs.modal', () => {
+if (inadimplenciaPdfUrl) {
+URL.revokeObjectURL(inadimplenciaPdfUrl);
+inadimplenciaPdfUrl = null;
+}
+if (frame) frame.removeAttribute('src');
+// Reativa o scroll e estado do modal de inadimplência se necessário
+const inadEl = document.getElementById('inadimplenciaModal');
+if (inadEl && inadEl.classList.contains('show')) {
+document.body.classList.add('modal-open');
+}
+}, { once: true });
+const pdfOverlayModal = bootstrap.Modal.getOrCreateInstance(overlayEl, { backdrop: true, keyboard: false });
+pdfOverlayModal.show();
+}
+function generateInadimplenciaPDF() {
+try {
+const data = inadimplenciaFilteredData;
+if (!data || data.length === 0) {
+alert('Nenhum dado de inadimplência para exportar.');
+return null;
+}
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF('l', 'mm', 'a4');
+const pageWidth = doc.internal.pageSize.getWidth();
+let y = 15;
+// ===== CABEÇALHO =====
+doc.setFillColor(15, 23, 42);
+doc.rect(0, 0, pageWidth, 38, 'F');
+doc.setFillColor(239, 68, 68);
+doc.rect(0, 35, pageWidth, 3, 'F');
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(16);
+doc.setTextColor(255, 255, 255);
+doc.text('GRUPO LABMEDIC', 15, 16);
+doc.setFontSize(10);
+doc.setFont('helvetica', 'normal');
+doc.setTextColor(148, 163, 184);
+doc.text('RELATÓRIO DE INADIMPLÊNCIA · Painel de Crédito e Cobrança', 15, 23);
+doc.setFontSize(8);
+doc.text(`Emissão: ${formatDateTimeBR(new Date())}`, 15, 30);
+// Parâmetros (canto direito)
+const inadiInicio = document.getElementById('inadiDataInicio').value || 'Início';
+const inadiFim = document.getElementById('inadiDataFim').value || 'Fim';
+doc.setFont('helvetica', 'bold');
+doc.setTextColor(255, 255, 255);
+doc.text(`Período: ${inadiInicio} — ${inadiFim}`, pageWidth - 15, 19, { align: 'right' });
+doc.setFont('helvetica', 'normal');
+doc.setTextColor(148, 163, 184);
+doc.text(`Registros: ${data.length}  |  Versão: Confidencial`, pageWidth - 15, 26, { align: 'right' });
+y = 48;
+// ===== TÍTULO =====
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(14);
+doc.setTextColor(30, 41, 59);
+doc.text('ANÁLISE DE INADIMPLÊNCIA', pageWidth / 2, y, { align: 'center' });
+y += 5;
+doc.setFillColor(239, 68, 68);
+doc.rect(pageWidth/2 - 30, y, 60, 0.8, 'F');
+y += 10;
+// ===== RESUMO EXECUTIVO =====
+const total = data.reduce((s,r) => s+r[3], 0);
+const count = data.length;
+const clientes = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.CLIENTE]||'').trim())).size;
+const empresas = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.EMPRESA]||'').trim())).size;
+const vendedores = new Set(data.filter(r => r[INADIMPLENCIA_COLS.VENDEDOR]).map(r => String(r[INADIMPLENCIA_COLS.VENDEDOR]).trim())).size;
+const ticketMedio = count ? total / count : 0;
+const maxRec = data.reduce((m,r) => r[3] > m[3] ? r : m, data[0]);
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(11);
+doc.setTextColor(79, 70, 229);
+doc.text('RESUMO EXECUTIVO', 15, y);
+y += 6;
+doc.autoTable({
+startY: y,
+head: [['Indicador', 'Valor']],
+body: [
+['Total Inadimplente', formatCurrencyBR(total)],
+['Total de Registros', count.toString()],
+['Clientes Envolvidos', clientes.toString()],
+['Empresas Afetadas', empresas.toString()],
+['Vendedores Envolvidos', vendedores.toString()],
+['Ticket Médio', formatCurrencyBR(ticketMedio)],
+['Maior Exposição', `${formatCurrencyBR(maxRec[3])} — ${safeShortText(maxRec[INADIMPLENCIA_COLS.CLIENTE]||'-', 35)}`]
+],
+theme: 'striped',
+styles: { fontSize: 9, textColor: [0,0,0] },
+headStyles: { fillColor: [239,68,68], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 1: { halign: 'right' } },
+bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [254, 242, 242] },
+margin: { left: 15, right: pageWidth/2 + 5 }
+});
+const resumoFinalY = doc.lastAutoTable.finalY;
+// Coluna direita: Resumo por Empresa (mesma altura)
+const empMap = {};
+data.forEach(r => { const e = String(r[INADIMPLENCIA_COLS.EMPRESA]||'Sem Empresa').trim(); empMap[e] = (empMap[e]||0) + r[3]; });
+const empRows = Object.entries(empMap).sort((a,b)=>b[1]-a[1]).map(([e,v]) => [e, formatCurrencyBR(v), total > 0 ? ((v/total)*100).toFixed(1)+'%' : '0%']);
+doc.autoTable({
+startY: y,
+head: [['Empresa', 'Total', '% Share']],
+body: empRows,
+theme: 'striped',
+styles: { fontSize: 9, textColor: [0,0,0] },
+headStyles: { fillColor: [30,41,59], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' } },
+bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [240, 244, 255] },
+margin: { left: pageWidth/2 + 5, right: 15 }
+});
+const empresaFinalY = doc.lastAutoTable.finalY;
+y = Math.max(resumoFinalY, empresaFinalY) + 14;
+// ===== RESUMO POR VENDEDOR =====
+if (y > 160) { doc.addPage(); y = 20; }
+const vendMap = {};
+data.forEach(r => { const v = String(r[INADIMPLENCIA_COLS.VENDEDOR]||'Sem Vendedor').trim(); vendMap[v] = (vendMap[v]||0) + r[3]; });
+const vendRows = Object.entries(vendMap).sort((a,b)=>b[1]-a[1]).map(([v,val]) => [
+v,
+formatCurrencyBR(val),
+total > 0 ? ((val/total)*100).toFixed(1)+'%' : '0%',
+String(data.filter(r => String(r[INADIMPLENCIA_COLS.VENDEDOR]||'').trim() === v).length)
+]);
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(11);
+doc.setTextColor(79, 70, 229);
+doc.text('INADIMPLÊNCIA POR VENDEDOR', 15, y);
+y += 8;
+doc.autoTable({
+startY: y,
+head: [['Vendedor', 'Total Inadimplente', '% do Total', 'Qtd. Registros']],
+body: vendRows,
+theme: 'striped',
+styles: { fontSize: 9, textColor: [0,0,0] },
+headStyles: { fillColor: [245,158,11], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' }, 3: { halign: 'center' } },
+bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [255, 251, 235] },
+margin: { left: 15, right: 15 }
+});
+y = doc.lastAutoTable.finalY + 14;
+// ===== PERCENTUAL MENSAL DE INADIMPLÊNCIA =====
+if (y > 160) { doc.addPage(); y = 20; }
+// Monta mapa mês → total, ordenado cronologicamente
+const percMesMap = {};
+data.forEach(r => {
+const d = r[INADIMPLENCIA_COLS.VENCIMENTO] !== undefined ? r[1] : null;
+if (d instanceof Date && !isNaN(d)) {
+const mk = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`;
+const label = `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
+if (!percMesMap[mk]) percMesMap[mk] = { label, total: 0, count: 0 };
+percMesMap[mk].total += r[3];
+percMesMap[mk].count++;
+}
+});
+const percMesSorted = Object.entries(percMesMap).sort((a,b) => a[0].localeCompare(b[0]));
+const totalPerc = percMesSorted.reduce((s,[,v]) => s + v.total, 0);
+if (percMesSorted.length > 0 && totalPerc > 0) {
+// Encontra o mês com maior e menor participação
+let maxPercVal = -Infinity, minPercVal = Infinity, maxPercLabel = '', minPercLabel = '';
+const percRows = percMesSorted.map(([, v]) => {
+const perc = (v.total / totalPerc) * 100;
+if (perc > maxPercVal) { maxPercVal = perc; maxPercLabel = v.label; }
+if (perc < minPercVal) { minPercVal = perc; minPercLabel = v.label; }
+return [
+v.label,
+formatCurrencyBR(v.total),
+String(v.count),
+perc.toFixed(2) + '%'
+];
+});
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(11);
+doc.setTextColor(79, 70, 229);
+doc.text('PERCENTUAL MENSAL DE INADIMPLÊNCIA', 15, y);
+y += 3;
+// Linha decorativa
+doc.setFillColor(239, 68, 68);
+doc.rect(15, y, 80, 0.5, 'F');
+y += 7;
+// Mini KPIs inline antes da tabela
+doc.setFontSize(8);
+doc.setFont('helvetica', 'normal');
+doc.setTextColor(100, 116, 139);
+doc.text(`Período: ${percMesSorted[0][1].label} — ${percMesSorted[percMesSorted.length-1][1].label}`, 15, y);
+doc.text(`Meses analisados: ${percMesSorted.length}`, pageWidth/2, y, { align: 'center' });
+doc.text(`Pico: ${maxPercLabel} (${maxPercVal.toFixed(1)}%)  |  Vale: ${minPercLabel} (${minPercVal.toFixed(1)}%)`, pageWidth - 15, y, { align: 'right' });
+y += 6;
+doc.autoTable({
+startY: y,
+head: [['Mês/Ano', 'Total Inadimplente', 'Qtd. Registros', '% do Período']],
+body: percRows,
+theme: 'striped',
+styles: { fontSize: 9, textColor: [0,0,0] },
+headStyles: { fillColor: [239,68,68], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: {
+0: { halign: 'center', cellWidth: 28 },
+1: { halign: 'right' },
+2: { halign: 'center' },
+3: { halign: 'center', fontStyle: 'bold' }
+},
+bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [254, 242, 242] },
+margin: { left: 15, right: 15 },
+// Destaca visualmente o mês de pico
+didParseCell: (hookData) => {
+if (hookData.section === 'body') {
+const rowLabel = hookData.row.raw[0];
+if (rowLabel === maxPercLabel) {
+hookData.cell.styles.fillColor = [254, 226, 226];
+hookData.cell.styles.textColor = [185, 28, 28];
+hookData.cell.styles.fontStyle = 'bold';
+}
+}
+}
+});
+y = doc.lastAutoTable.finalY + 14;
+}
+// ===== RESUMO POR CLIENTE (TOP 20) =====
+if (y > 170) { doc.addPage(); y = 20; }
+const clientMap = {};
+data.forEach(r => {
+const c = String(r[INADIMPLENCIA_COLS.CLIENTE]||'Sem Cliente').trim();
+const e = String(r[INADIMPLENCIA_COLS.EMPRESA]||'-').trim();
+if (!clientMap[c]) clientMap[c] = { total: 0, count: 0, empresa: e };
+clientMap[c].total += r[3];
+clientMap[c].count++;
+});
+const clientRows = Object.entries(clientMap)
+.sort((a,b)=>b[1].total-a[1].total)
+.slice(0,20)
+.map(([c,info]) => [
+safeShortText(c, 38),
+info.empresa,
+formatCurrencyBR(info.total),
+String(info.count),
+total > 0 ? ((info.total/total)*100).toFixed(1)+'%' : '0%'
+]);
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(11);
+doc.setTextColor(79, 70, 229);
+doc.text('MAIORES DEVEDORES (TOP 20)', 15, y);
+y += 6;
+doc.autoTable({
+startY: y,
+head: [['Cliente', 'Empresa', 'Total Inadimplente', 'Registros', '% Total']],
+body: clientRows,
+theme: 'striped',
+styles: { fontSize: 8, textColor: [0,0,0] },
+headStyles: { fillColor: [79,70,229], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 2: { halign: 'right' }, 3: { halign: 'center' }, 4: { halign: 'center' } },
+bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [237, 233, 254] },
+margin: { left: 15, right: 15 }
+});
+y = doc.lastAutoTable.finalY + 14;
+// ===== DETALHAMENTO COMPLETO =====
+if (y > 170) { doc.addPage(); y = 20; }
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(11);
+doc.setTextColor(79, 70, 229);
+doc.text('LISTAGEM COMPLETA DE REGISTROS', 15, y);
+y += 6;
+const detailRows = data.map(r => [
+String(r[INADIMPLENCIA_COLS.EMPRESA]||'-'),
+safeShortText(r[INADIMPLENCIA_COLS.CLIENTE]||'-', 30),
+String(r[INADIMPLENCIA_COLS.DESCRICAO]||'-'),
+formatDateBR(r[1]),
+formatDateBR(r[4]),
+String(r[INADIMPLENCIA_COLS.VENDEDOR]||'-'),
+formatCurrencyBR(r[3])
+]);
+doc.autoTable({
+startY: y,
+head: [['Empresa', 'Cliente', 'Nº Doc.', 'Vencimento', 'Liquidação', 'Vendedor', 'Valor']],
+body: detailRows,
+theme: 'striped',
+styles: { fontSize: 7, textColor: [0,0,0] },
+headStyles: { fillColor: [15,23,42], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 6: { halign: 'right', textColor: [180,10,10] } },
+bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [254, 242, 242] },
+margin: { left: 15, right: 15 },
+didDrawPage: (hookData) => {
+// Rodapé em cada página
+const pW = doc.internal.pageSize.getWidth();
+const pH = doc.internal.pageSize.getHeight();
+doc.setFont('helvetica', 'normal');
+doc.setFontSize(7);
+doc.setTextColor(148, 163, 184);
+doc.text(`GRUPO LABMEDIC — Relatório Confidencial de Inadimplência — Gerado em ${formatDateTimeBR(new Date())}`, pW/2, pH - 6, { align: 'center' });
+doc.text(`Página ${hookData.pageNumber}`, pW - 15, pH - 6, { align: 'right' });
+}
+});
+// Rodapé da última página
+const pW = doc.internal.pageSize.getWidth();
+const pH = doc.internal.pageSize.getHeight();
+doc.setFont('helvetica', 'normal');
+doc.setFontSize(7);
+doc.setTextColor(148, 163, 184);
+doc.text(`GRUPO LABMEDIC — Relatório Confidencial de Inadimplência — Gerado em ${formatDateTimeBR(new Date())}`, pW/2, pH - 6, { align: 'center' });
+doc.text(`Página ${doc.internal.getNumberOfPages()}`, pW - 15, pH - 6, { align: 'right' });
+return doc.output('blob');
+} catch(err) {
+alert('Erro ao gerar PDF de Inadimplência: ' + err.message);
+return null;
 }
 }
 // Initialize theme on page load
