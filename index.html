@@ -916,6 +916,244 @@ border-bottom: none;
 margin-bottom: 0;
 padding-bottom: 0;
 }
+/* ===== MODAL DÍVIDAS ATUAIS (DebAtual) ===== */
+#debAtualModal .modal-header {
+background: linear-gradient(135deg, #92400e 0%, #b45309 50%, #d97706 100%);
+border-radius: var(--radius) var(--radius) 0 0;
+}
+#debAtualModal .modal-title { color: #fff; }
+#debAtualModal .btn-close { filter: invert(1) brightness(2); }
+.debatual-metric-grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+gap: 0.75rem;
+margin-bottom: 1rem;
+}
+.debatual-metric-card {
+background: var(--bg-card);
+border: 1px solid var(--border-color);
+border-radius: 10px;
+padding: 1rem 1.1rem 0.85rem;
+position: relative;
+overflow: hidden;
+transition: var(--transition);
+}
+.debatual-metric-card::before {
+content: '';
+position: absolute;
+top: 0; left: 0; right: 0;
+height: 3px;
+background: #ef4444;
+}
+.debatual-metric-card:hover { box-shadow: 0 4px 18px rgba(217,119,6,0.13); transform: translateY(-1px); }
+.debatual-metric-card.card-green::before { background: #10b981; }
+.debatual-metric-card.card-blue::before { background: var(--primary); }
+.debatual-metric-card.card-amber::before { background: #d97706; }
+.debatual-metric-label {
+font-size: 0.68rem;
+color: var(--text-muted);
+text-transform: uppercase;
+letter-spacing: 0.06em;
+font-weight: 700;
+margin-bottom: 4px;
+}
+.debatual-metric-value {
+font-size: 1.35rem;
+font-weight: 800;
+color: #ef4444;
+line-height: 1.1;
+}
+.debatual-metric-card.card-green .debatual-metric-value { color: #10b981; }
+.debatual-metric-card.card-blue .debatual-metric-value { color: var(--primary); }
+.debatual-metric-card.card-amber .debatual-metric-value { color: #d97706; }
+[data-theme="dark"] .debatual-metric-card.card-amber .debatual-metric-value { color: #fbbf24; }
+[data-theme="dark"] .debatual-metric-value { color: #f87171; }
+[data-theme="dark"] .debatual-metric-card.card-green .debatual-metric-value { color: #34d399; }
+[data-theme="dark"] .debatual-metric-card.card-blue .debatual-metric-value { color: #818cf8; }
+.debatual-metric-meta { font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; font-weight: 500; }
+.debatual-filter-label {
+display: flex;
+align-items: center;
+justify-content: space-between;
+font-size: 0.72rem;
+font-weight: 700;
+text-transform: uppercase;
+letter-spacing: 0.05em;
+color: var(--text-muted);
+margin-bottom: 6px;
+}
+[data-theme="dark"] .debatual-filter-label { color: #fff; }
+.debatual-scroll-list {
+max-height: 110px;
+overflow-y: auto;
+border: 1px solid var(--border-color);
+border-radius: 8px;
+padding: 8px 10px;
+background: var(--bg-body);
+}
+.debatual-checkbox-wrapper { display: flex; align-items: center; gap: 6px; padding: 2px 0; }
+.debatual-checkbox-wrapper input[type="checkbox"] { width: 13px; height: 13px; accent-color: #d97706; flex-shrink: 0; cursor: pointer; }
+.debatual-checkbox-wrapper label { font-size: 0.78rem; color: var(--text-main); font-weight: 500; cursor: pointer; }
+[data-theme="dark"] .debatual-checkbox-wrapper label { color: #fff !important; }
+.debatual-filter-section { margin-bottom: 1rem; padding-bottom: 1rem; border-bottom: 1px solid var(--border-color); }
+.debatual-filter-section:last-child { border-bottom: none; margin-bottom: 0; }
+#debAtualModal .modal-body { background: var(--bg-body); }
+.debatual-chart-wrap { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem 1rem 0.75rem; margin-bottom: 0; }
+.debatual-chart-wrap-tall { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem 1rem 0.75rem; }
+.debatual-chart-stage { height: 200px; position: relative; }
+.debatual-chart-stage-tall { height: 260px; position: relative; }
+.debatual-chart-title { font-size: 0.78rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.5rem; display: flex; align-items: center; }
+.debatual-alert-banner {
+background: linear-gradient(90deg, rgba(217,119,6,0.08) 0%, rgba(245,158,11,0.05) 100%);
+border: 1px solid rgba(217,119,6,0.25);
+border-left: 4px solid #d97706;
+border-radius: 8px;
+padding: 0.7rem 1rem;
+font-size: 0.78rem;
+color: var(--text-main);
+margin-bottom: 1rem;
+display: flex;
+align-items: flex-start;
+gap: 8px;
+}
+.debatual-alert-banner i { color: #d97706; font-size: 1rem; }
+.debatual-table-wrap { overflow-x: auto; max-height: 340px; overflow-y: auto; }
+#debAtualPdfModal.modal { z-index: 1060; }
+#debAtualPdfModal + .modal-backdrop { z-index: 1055; }
+.debatual-window-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 1049; pointer-events: none; }
+.debatual-window-overlay.show { display: block; }
+#debAtualModal.debatual-window-mode .modal-dialog {
+position: fixed;
+margin: 0;
+max-width: none;
+width: 920px;
+max-height: 82vh;
+top: 0;
+left: 0;
+transform: none !important;
+transition: none;
+}
+#debAtualModal.debatual-window-mode .modal-content {
+height: 82vh;
+max-height: 82vh;
+box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+display: flex;
+flex-direction: column;
+}
+#debAtualModal.debatual-window-mode .modal-body {
+flex: 1;
+overflow-y: auto;
+height: 0;
+}
+#debAtualModal.debatual-window-maximized .modal-dialog {
+top: 0 !important;
+left: 0 !important;
+width: 100vw !important;
+height: 100vh !important;
+max-width: 100vw;
+max-height: 100vh;
+}
+#debAtualModal.debatual-window-maximized .modal-content {
+height: 100vh;
+max-height: 100vh;
+border-radius: 0;
+display: flex;
+flex-direction: column;
+}
+#debAtualModal.debatual-window-maximized .modal-body {
+flex: 1;
+overflow-y: auto;
+height: 0;
+}
+#debAtualModal.debatual-window-minimized .modal-dialog {
+width: 300px !important;
+height: auto !important;
+max-height: none;
+top: auto !important;
+left: auto !important;
+bottom: 16px;
+right: 16px;
+}
+#debAtualModal.debatual-window-minimized .modal-content {
+height: auto;
+max-height: none;
+}
+#debAtualModal.debatual-window-minimized .modal-body,
+#debAtualModal.debatual-window-minimized .modal-footer { display: none !important; }
+#debAtualModal.debatual-window-minimized .modal-header {
+border-radius: var(--radius);
+cursor: pointer;
+padding: 0.75rem 1rem;
+}
+#debAtualModal.debatual-window-minimized .modal-header .debatual-header-subtitle,
+#debAtualModal.debatual-window-minimized .modal-header #debAtualExportPdfBtn { display: none !important; }
+#debAtualModal.debatual-window-minimized.debatual-window-mode .modal-backdrop { display: none; }
+/* Backdrop transparente no modo flutuante — permite arrastar livremente */
+#debAtualModal.debatual-window-mode:not(.debatual-window-maximized) ~ .modal-backdrop { opacity: 0; }
+/* ===== BOTÕES DE EXPORTAÇÃO NOS MODAIS ===== */
+.modal-export-btn-pdf {
+display: inline-flex; align-items: center; gap: 6px;
+font-weight: 700; font-size: 0.78rem; padding: 5px 13px;
+border-radius: 7px; border: none; cursor: pointer;
+transition: filter 0.15s, transform 0.1s, box-shadow 0.15s;
+white-space: nowrap;
+}
+.modal-export-btn-pdf:hover { filter: brightness(1.18); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+.modal-export-btn-pdf:active { transform: translateY(0); filter: brightness(0.95); }
+.modal-export-btn-xlsx {
+display: inline-flex; align-items: center; gap: 6px;
+font-weight: 700; font-size: 0.78rem; padding: 5px 13px;
+border-radius: 7px; border: none; cursor: pointer;
+transition: filter 0.15s, transform 0.1s, box-shadow 0.15s;
+white-space: nowrap;
+}
+.modal-export-btn-xlsx:hover { filter: brightness(1.18); transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
+.modal-export-btn-xlsx:active { transform: translateY(0); filter: brightness(0.95); }
+/* Inadimplência Histórica — vermelho */
+.inadi-btn-pdf  { background: linear-gradient(135deg, #ef4444, #dc2626); color: #fff; }
+.inadi-btn-xlsx { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
+/* Dívidas Atuais — âmbar */
+.debatual-btn-pdf  { background: linear-gradient(135deg, #f59e0b, #d97706); color: #fff; }
+.debatual-btn-xlsx { background: linear-gradient(135deg, #16a34a, #15803d); color: #fff; }
+/* Esconde botões de exportação no estado minimizado */
+#inadimplenciaModal.inadi-window-minimized .inadi-export-group,
+#debAtualModal.debatual-window-minimized .debatual-export-group { display: none !important; }
+/* Cabeçalho arrastável */
+#debAtualModal .modal-header.debatual-draggable-header { cursor: move; user-select: none; }
+#debAtualModal.debatual-window-maximized .modal-header.debatual-draggable-header,
+#debAtualModal.debatual-window-minimized .modal-header.debatual-draggable-header { cursor: default; }
+#debAtualModal.debatual-dragging { transition: none !important; }
+.debatual-insights-section { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 10px; padding: 1rem; margin-bottom: 0.75rem; }
+.debatual-insights-header { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; font-weight: 700; color: var(--text-main); margin-bottom: 0.75rem; }
+.debatual-insights-header i { color: #d97706; }
+.debatual-insights-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 0.6rem; }
+.debatual-insight-card { background: var(--bg-body); border: 1px solid var(--border-color); border-radius: 8px; padding: 0.7rem 0.85rem; position: relative; overflow: hidden; }
+.debatual-insight-card.tone-red { border-left: 3px solid #ef4444; }
+.debatual-insight-card.tone-amber { border-left: 3px solid #d97706; }
+.debatual-insight-card.tone-green { border-left: 3px solid #10b981; }
+.debatual-insight-card.tone-blue { border-left: 3px solid #4f46e5; }
+.debatual-insight-card.tone-violet { border-left: 3px solid #8b5cf6; }
+.debatual-insight-card.tone-cyan { border-left: 3px solid #06b6d4; }
+.debatual-insight-icon { font-size: 0.9rem; color: var(--text-muted); margin-bottom: 3px; display: block; }
+.debatual-insight-label { font-size: 0.65rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 700; margin-bottom: 2px; }
+.debatual-insight-value { font-size: 1rem; font-weight: 800; color: var(--text-main); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.debatual-insight-meta { font-size: 0.65rem; color: var(--text-muted); margin-top: 1px; }
+.debatual-year-selector-wrap { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.debatual-year-pill { display: inline-flex; align-items: center; gap: 5px; padding: 3px 10px; border-radius: 20px; border: 1.5px solid var(--border-color); font-size: 0.78rem; font-weight: 700; cursor: pointer; background: var(--bg-body); color: var(--text-muted); transition: var(--transition); white-space: nowrap; }
+.debatual-year-pill input[type="checkbox"] { display: none; }
+.debatual-year-pill.active { background: #d97706; border-color: #d97706; color: #fff; }
+.debatual-window-controls { display: flex; align-items: center; gap: 4px; }
+.debatual-window-btn { width: 26px; height: 26px; border-radius: 6px; border: none; background: rgba(255,255,255,0.12); color: rgba(255,255,255,0.85); font-size: 0.78rem; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: background 0.15s; }
+.debatual-window-btn:hover { background: rgba(255,255,255,0.22); }
+.debatual-window-btn-close:hover { background: rgba(239,68,68,0.55); }
+.debatual-badge { background: rgba(217,119,6,0.20); color: #d97706; border: 1px solid rgba(217,119,6,0.30); font-size: 0.72rem; font-weight: 700; padding: 3px 10px; border-radius: 20px; }
+.debatual-search-overlay { position: absolute; inset: 0; background: rgba(255,255,255,0.88); backdrop-filter: blur(4px); z-index: 20; display: none; align-items: center; justify-content: center; border-radius: var(--radius); }
+[data-theme="dark"] .debatual-search-overlay { background: rgba(15,23,42,0.90); }
+.debatual-search-card { background: var(--bg-card); border: 1px solid var(--border-color); border-radius: 14px; padding: 2rem 2.5rem; display: flex; flex-direction: column; align-items: center; gap: 10px; box-shadow: 0 8px 32px rgba(0,0,0,0.15); min-width: 260px; }
+.debatual-search-spinner { width: 36px; height: 36px; border: 3px solid var(--border-color); border-top-color: #d97706; border-radius: 50%; animation: spin 0.75s linear infinite; }
+.debatual-search-text { font-size: 0.85rem; font-weight: 700; color: var(--text-main); }
+.debatual-search-timer-large { font-size: 0.78rem; color: var(--text-muted); }
+
 #inadimplenciaModal .modal-header {
 background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
 color: #fff;
@@ -979,6 +1217,97 @@ align-items: center;
 gap: 10px;
 }
 .inadimplencia-alert-banner i { color: #ef4444; font-size: 1rem; }
+/* ===== INSIGHTS CARDS — INADIMPLÊNCIA ===== */
+.inadi-insights-section {
+  margin-bottom: 1rem;
+}
+.inadi-insights-header {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 0.6rem;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-muted);
+}
+.inadi-insights-header i { color: #4f46e5; }
+.inadi-insights-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  gap: 0.75rem;
+}
+.inadi-insight-card {
+  position: relative;
+  padding: 0.7rem 0.85rem 0.75rem 0.95rem;
+  border-radius: 12px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-left: 4px solid #4f46e5;
+  box-shadow: 0 2px 8px rgba(15,23,42,0.04);
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: var(--transition);
+  overflow: hidden;
+}
+.inadi-insight-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(15,23,42,0.08);
+}
+.inadi-insight-card.tone-red { border-left-color: #ef4444; }
+.inadi-insight-card.tone-amber { border-left-color: #f59e0b; }
+.inadi-insight-card.tone-green { border-left-color: #10b981; }
+.inadi-insight-card.tone-blue { border-left-color: #4f46e5; }
+.inadi-insight-card.tone-violet { border-left-color: #8b5cf6; }
+.inadi-insight-card.tone-cyan { border-left-color: #06b6d4; }
+.inadi-insight-icon {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 1rem;
+  opacity: 0.35;
+}
+.inadi-insight-card.tone-red .inadi-insight-icon { color: #ef4444; }
+.inadi-insight-card.tone-amber .inadi-insight-icon { color: #f59e0b; }
+.inadi-insight-card.tone-green .inadi-insight-icon { color: #10b981; }
+.inadi-insight-card.tone-blue .inadi-insight-icon { color: #4f46e5; }
+.inadi-insight-card.tone-violet .inadi-insight-icon { color: #8b5cf6; }
+.inadi-insight-card.tone-cyan .inadi-insight-icon { color: #06b6d4; }
+.inadi-insight-label {
+  font-size: 0.66rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  font-weight: 700;
+  padding-right: 22px;
+}
+.inadi-insight-value {
+  font-size: 1.05rem;
+  font-weight: 800;
+  color: var(--text-main);
+  line-height: 1.15;
+}
+.inadi-insight-card.tone-red .inadi-insight-value { color: #ef4444; }
+.inadi-insight-card.tone-amber .inadi-insight-value { color: #d97706; }
+.inadi-insight-card.tone-green .inadi-insight-value { color: #10b981; }
+.inadi-insight-card.tone-blue .inadi-insight-value { color: #4f46e5; }
+.inadi-insight-card.tone-violet .inadi-insight-value { color: #7c3aed; }
+.inadi-insight-card.tone-cyan .inadi-insight-value { color: #0891b2; }
+[data-theme="dark"] .inadi-insight-card.tone-red .inadi-insight-value { color: #f87171; }
+[data-theme="dark"] .inadi-insight-card.tone-amber .inadi-insight-value { color: #fbbf24; }
+[data-theme="dark"] .inadi-insight-card.tone-green .inadi-insight-value { color: #34d399; }
+[data-theme="dark"] .inadi-insight-card.tone-blue .inadi-insight-value { color: #818cf8; }
+[data-theme="dark"] .inadi-insight-card.tone-violet .inadi-insight-value { color: #a78bfa; }
+[data-theme="dark"] .inadi-insight-card.tone-cyan .inadi-insight-value { color: #22d3ee; }
+[data-theme="dark"] .inadi-insight-value { color: #fff; }
+.inadi-insight-meta {
+  font-size: 0.7rem;
+  color: var(--text-muted);
+  font-weight: 500;
+  line-height: 1.25;
+}
 #inadimplenciaModal .modal-body {
 max-height: 85vh;
 overflow-y: auto;
@@ -1022,7 +1351,187 @@ overflow-y: auto;
 #inadimplenciaPdfModal.modal { z-index: 1060; }
 #inadimplenciaPdfModal + .modal-backdrop { z-index: 1055; }
 body.inadi-pdf-open .modal-backdrop:last-of-type { z-index: 1055; }
-</style>
+
+/* ===== JANELA MÓVEL / MAXIMIZÁVEL / MINIMIZÁVEL — MODAL INADIMPLÊNCIA ===== */
+/* Quando "flutuante" (não maximizado), o diálogo vira uma janela posicionável
+   livremente na tela, arrastável pelo cabeçalho, com tamanho fixo. */
+#inadimplenciaModal.inadi-window-mode .modal-dialog {
+position: fixed;
+margin: 0;
+max-width: none;
+width: 920px;
+max-height: 82vh;
+top: 0;
+left: 0;
+transform: none !important;
+transition: none;
+}
+#inadimplenciaModal.inadi-window-mode .modal-content {
+height: 82vh;
+max-height: 82vh;
+box-shadow: 0 20px 50px rgba(0,0,0,0.35);
+}
+#inadimplenciaModal.inadi-window-mode .modal-body {
+max-height: none;
+height: 100%;
+}
+/* Estado maximizado: ocupa toda a viewport */
+#inadimplenciaModal.inadi-window-maximized .modal-dialog {
+top: 0 !important;
+left: 0 !important;
+width: 100vw !important;
+height: 100vh !important;
+max-width: 100vw;
+max-height: 100vh;
+}
+#inadimplenciaModal.inadi-window-maximized .modal-content {
+height: 100vh;
+max-height: 100vh;
+border-radius: 0;
+}
+/* Estado minimizado: encolhe para uma barrinha fixa no canto inferior direito */
+#inadimplenciaModal.inadi-window-minimized .modal-dialog {
+width: 300px !important;
+height: auto !important;
+max-height: none;
+top: auto !important;
+left: auto !important;
+bottom: 16px;
+right: 16px;
+}
+#inadimplenciaModal.inadi-window-minimized .modal-content {
+height: auto;
+max-height: none;
+}
+#inadimplenciaModal.inadi-window-minimized .modal-body,
+#inadimplenciaModal.inadi-window-minimized .modal-footer {
+display: none !important;
+}
+#inadimplenciaModal.inadi-window-minimized .modal-header {
+border-radius: var(--radius);
+cursor: pointer;
+padding: 0.75rem 1rem;
+}
+#inadimplenciaModal.inadi-window-minimized .modal-header .inadi-header-subtitle,
+#inadimplenciaModal.inadi-window-minimized .modal-header #inadiExportPdfBtn {
+display: none !important;
+}
+#inadimplenciaModal.inadi-window-minimized .modal-header #inadiRegistrosBadge {
+margin-right: 0;
+}
+#inadimplenciaModal.inadi-window-minimized.inadi-window-mode .modal-backdrop { display: none; }
+/* Cabeçalho arrastável */
+#inadimplenciaModal .modal-header.inadi-draggable-header {
+cursor: move;
+user-select: none;
+}
+#inadimplenciaModal.inadi-window-maximized .modal-header.inadi-draggable-header,
+#inadimplenciaModal.inadi-window-minimized .modal-header.inadi-draggable-header {
+cursor: pointer;
+}
+#inadimplenciaModal.inadi-dragging { transition: none !important; }
+/* Botões de controle da janela (minimizar / maximizar / restaurar) */
+.inadi-window-controls {
+display: flex;
+align-items: center;
+gap: 6px;
+}
+.inadi-window-btn {
+width: 28px;
+height: 28px;
+border-radius: 7px;
+border: 1px solid rgba(255,255,255,0.18);
+background: rgba(255,255,255,0.06);
+color: #cbd5e1;
+display: inline-flex;
+align-items: center;
+justify-content: center;
+font-size: 0.78rem;
+cursor: pointer;
+transition: var(--transition);
+}
+.inadi-window-btn:hover {
+background: rgba(255,255,255,0.16);
+color: #fff;
+}
+.inadi-window-btn.inadi-window-btn-close:hover {
+background: rgba(239,68,68,0.85);
+color: #fff;
+border-color: rgba(239,68,68,0.85);
+}
+/* Quando o backdrop não deve bloquear a tela (janela flutuante "solta") */
+#inadimplenciaModal.inadi-window-mode:not(.inadi-window-maximized) ~ .modal-backdrop {
+opacity: 0;
+}
+	/* Camada de fundo própria, usada apenas quando a janela está maximizada
+	   (o backdrop padrão do Bootstrap foi desativado para permitir o modo flutuante) */
+	.inadi-window-overlay {
+	position: fixed;
+	inset: 0;
+	background: rgba(15,23,42,0.55);
+	z-index: 1040;
+	display: none;
+	}
+	.inadi-window-overlay.show { display: block; }
+	
+	/* Overlay de Processamento da Busca Global */
+	.inadi-search-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background: rgba(255, 255, 255, 0.7);
+	backdrop-filter: blur(2px);
+	z-index: 2000;
+	display: none;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	border-radius: var(--radius);
+	transition: all 0.2s ease;
+	}
+	[data-theme="dark"] .inadi-search-overlay {
+	background: rgba(15, 23, 42, 0.7);
+	}
+	.inadi-search-card {
+	background: var(--bg-card);
+	padding: 1.5rem 2rem;
+	border-radius: 16px;
+	box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+	border: 1px solid var(--border-color);
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	gap: 12px;
+	min-width: 280px;
+	}
+	.inadi-search-spinner {
+	width: 40px;
+	height: 40px;
+	border: 4px solid rgba(79, 70, 229, 0.1);
+	border-left-color: var(--primary);
+	border-radius: 50%;
+	animation: inadi-spin 0.8s linear infinite;
+	}
+	@keyframes inadi-spin {
+	to { transform: rotate(360deg); }
+	}
+	.inadi-search-text {
+	font-weight: 700;
+	font-size: 0.95rem;
+	color: var(--text-main);
+	}
+	.inadi-search-timer-large {
+	font-family: 'Monaco', 'Consolas', monospace;
+	font-size: 0.85rem;
+	color: var(--primary);
+	background: rgba(79, 70, 229, 0.1);
+	padding: 4px 12px;
+	border-radius: 20px;
+	font-weight: 700;
+	}
+	</style>
 </head>
 <body>
 <nav class="navbar">
@@ -1222,7 +1731,12 @@ Empresas
 
 <!-- BOTÃO INADIMPLÊNCIA -->
 <button class="btn btn-outline-danger btn-sm shadow-sm" onclick="openInadimplenciaModal()" id="btnInadimplencia" style="display:none">
-    <i class="fas fa-exclamation-circle"></i><span>Inadimplência</span>
+    <i class="fas fa-exclamation-circle"></i><span>Inadimplência Histórica</span>
+</button>
+
+<!-- BOTÃO DÍVIDAS ATUAIS -->
+<button class="btn btn-outline-warning btn-sm shadow-sm" onclick="openDebAtualModal()" id="btnDebAtual" style="display:none">
+    <i class="fas fa-clock"></i><span>Dívidas Atuais</span>
 </button>
 
 <button class="btn btn-primary btn-sm shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
@@ -1440,6 +1954,11 @@ Empresas
     <i class="fas fa-exclamation-circle"></i><span>Inadimplência</span>
 </button>
 
+<!-- BOTÃO DÍVIDAS ATUAIS -->
+<button class="btn btn-outline-warning btn-sm shadow-sm" onclick="openDebAtualModal()" id="btnDebAtualReceitas" style="display:none">
+    <i class="fas fa-clock"></i><span>Dívidas Atuais</span>
+</button>
+
 <button class="btn btn-primary btn-sm shadow-sm" id="btnDetailReceitas" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
 </div>
 <!-- Receitas Charts -->
@@ -1594,30 +2113,318 @@ Empresas
 </div>
 </div>
 </div>
-<!-- ===== MODAL INADIMPLÊNCIA ===== -->
-<div class="modal fade" id="inadimplenciaModal" tabindex="-1" aria-labelledby="inadimplenciaModalLabel" aria-hidden="true">
+<!-- ===== MODAL PDF PREVIEW — DÍVIDAS ATUAIS ===== -->
+<div class="modal fade" id="debAtualPdfModal" tabindex="-1" aria-labelledby="debAtualPdfModalLabel" aria-hidden="true" style="z-index: 1060;">
 <div class="modal-dialog modal-xl modal-fullscreen-lg-down">
 <div class="modal-content">
-<div class="modal-header">
+<div class="modal-header" style="background:linear-gradient(135deg,#92400e,#d97706);color:#fff;">
+<h5 class="modal-title fw-bold" id="debAtualPdfModalLabel" style="color:#fff;"><i class="fas fa-eye me-2"></i>Pré-visualização — Relatório de Dívidas Atuais</h5>
+<button type="button" class="btn-close" id="debAtualPdfClose" aria-label="Close" style="filter:invert(1) brightness(2);"></button>
+</div>
+<div class="modal-body p-2">
+<iframe id="debAtualPdfFrame" style="width:100%;height:75vh;border:none;border-radius:0 0 8px 8px;"></iframe>
+</div>
+<div class="modal-footer">
+<button type="button" class="btn btn-secondary" id="debAtualPdfCloseBtn">Fechar</button>
+<button type="button" class="btn btn-success" id="debAtualPdfDownloadBtn"><i class="fas fa-download me-1"></i>Confirmar Download</button>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== MODAL DÍVIDAS ATUAIS (DebAtual) ===== -->
+<div class="debatual-window-overlay" id="debAtualWindowOverlay"></div>
+<div class="modal fade" id="debAtualModal" tabindex="-1" aria-labelledby="debAtualModalLabel" aria-hidden="true" data-bs-backdrop="false">
+<div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+<div class="modal-content">
+<div class="modal-header debatual-draggable-header" id="debAtualModalHeader">
+<div class="d-flex align-items-center gap-3">
+<div style="width:38px;height:38px;border-radius:10px;background:rgba(217,119,6,0.22);display:flex;align-items:center;justify-content:center;">
+<i class="fas fa-clock" style="color:#fbbf24;font-size:1.1rem;"></i>
+</div>
+<div>
+<h5 class="modal-title fw-bold mb-0" id="debAtualModalLabel">Dívidas Atuais</h5>
+<div class="debatual-header-subtitle" style="font-size:0.72rem;color:#fed7aa;font-weight:500;margin-top:1px;">GRUPO LABMEDIC · Carteira de Recebíveis em Aberto (DebAtual)</div>
+</div>
+</div>
+<div class="d-flex align-items-center gap-2 ms-auto me-3 debatual-export-group">
+<span class="debatual-badge" id="debAtualRegistrosBadge">0 registros</span>
+<button class="modal-export-btn-pdf debatual-btn-pdf" id="debAtualExportPdfBtn" onclick="previewDebAtualPDF()" title="Exportar relatório em PDF">
+<i class="fas fa-file-pdf"></i>PDF
+</button>
+<button class="modal-export-btn-xlsx debatual-btn-xlsx" id="debAtualExportXlsxBtn" onclick="exportDebAtualXlsx()" title="Exportar dados em Excel">
+<i class="fas fa-file-excel"></i>Excel
+</button>
+</div>
+<div class="debatual-window-controls" onmousedown="event.stopPropagation()">
+<button type="button" class="debatual-window-btn" id="debAtualBtnMinimize" title="Minimizar" aria-label="Minimizar" onclick="minimizeDebAtualModal(event)">
+<i class="fas fa-window-minimize"></i>
+</button>
+<button type="button" class="debatual-window-btn" id="debAtualBtnMaximize" title="Maximizar" aria-label="Maximizar" onclick="toggleMaximizeDebAtualModal(event)">
+<i class="fas fa-expand" id="debAtualMaximizeIcon"></i>
+</button>
+<button type="button" class="debatual-window-btn debatual-window-btn-close" title="Fechar" aria-label="Fechar" onclick="event.stopPropagation(); bootstrap.Modal.getOrCreateInstance(document.getElementById('debAtualModal')).hide();">
+<i class="fas fa-times"></i>
+</button>
+</div>
+</div>
+<div class="modal-body p-0" style="position:relative;">
+<!-- Overlay de Processamento de Busca -->
+<div id="debAtualSearchProcessOverlay" class="debatual-search-overlay">
+<div class="debatual-search-card">
+<div class="debatual-search-spinner"></div>
+<div class="debatual-search-text">Processando busca...</div>
+<div class="debatual-search-timer-large"><i class="fas fa-stopwatch me-2"></i><span id="debAtualSearchTimeValueLarge">0ms</span></div>
+<div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Filtrando registros e atualizando gráficos</div>
+</div>
+</div>
+<div class="row g-0" style="min-height:80vh;">
+<!-- SIDEBAR DE FILTROS -->
+<div class="col-lg-3 border-end" style="background:var(--bg-card);">
+<div class="p-3" style="position:sticky;top:0;max-height:85vh;overflow-y:auto;">
+<div class="d-flex align-items-center gap-2 mb-3">
+<i class="fas fa-sliders-h" style="color:#d97706;"></i>
+<span style="font-weight:700;font-size:0.9rem;color:var(--text-main);">Filtros</span>
+</div>
+<!-- Filtro Empresa -->
+<div class="debatual-filter-section">
+<div class="debatual-filter-label">
+<span>Empresa</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allDebAtualEmpresas" checked onchange="toggleAllDebAtual('empresa')">
+<label class="form-check-label small fw-bold" for="allDebAtualEmpresas">Todas</label>
+</div>
+</div>
+<div class="debatual-scroll-list" id="debAtualEmpresasGroup"></div>
+</div>
+<!-- Filtro Cliente -->
+<div class="debatual-filter-section">
+<div class="debatual-filter-label">
+<span>Cliente</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allDebAtualClientes" checked onchange="toggleAllDebAtual('cliente')">
+<label class="form-check-label small fw-bold" for="allDebAtualClientes">Todos</label>
+</div>
+</div>
+<div class="debatual-scroll-list" id="debAtualClientesGroup"></div>
+</div>
+<!-- Filtro Vendedor -->
+<div class="debatual-filter-section">
+<div class="debatual-filter-label">
+<span>Vendedor</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allDebAtualVendedores" checked onchange="toggleAllDebAtual('vendedor')">
+<label class="form-check-label small fw-bold" for="allDebAtualVendedores">Todos</label>
+</div>
+</div>
+<div class="debatual-scroll-list" id="debAtualVendedoresGroup"></div>
+</div>
+<!-- Filtro Período -->
+<div class="debatual-filter-section">
+<div class="debatual-filter-label">
+<span>Mês de Vencimento</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allDebAtualMeses" checked onchange="toggleAllDebAtualMeses()">
+<label class="form-check-label small fw-bold" for="allDebAtualMeses">Todos</label>
+</div>
+</div>
+<div class="debatual-year-selector-wrap" id="debAtualAnosGroup"></div>
+<div class="debatual-scroll-list" id="debAtualMesesGroup"></div>
+</div>
+<!-- Data Range -->
+<div class="debatual-filter-section">
+<div class="debatual-filter-label">Intervalo de Datas</div>
+<div class="row g-2 mb-2">
+<div class="col-6">
+<label class="form-label" style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);">Início</label>
+<input type="date" id="debAtualDataInicio" class="form-control form-control-sm" onchange="applyDebAtualFilters()">
+</div>
+<div class="col-6">
+<label class="form-label" style="font-size:0.72rem;font-weight:700;text-transform:uppercase;color:var(--text-muted);">Fim</label>
+<input type="date" id="debAtualDataFim" class="form-control form-control-sm" onchange="applyDebAtualFilters()">
+</div>
+</div>
+</div>
+<!-- Busca Global -->
+<div class="debatual-filter-section">
+<div class="debatual-filter-label d-flex justify-content-between align-items-center">
+<span>Busca Global</span>
+<span id="debAtualSearchTimer" style="font-size:0.65rem;font-weight:700;color:#d97706;display:none;background:rgba(217,119,6,0.10);padding:1px 6px;border-radius:10px;">
+<i class="fas fa-stopwatch me-1"></i><span id="debAtualSearchTimeValue">0ms</span>
+</span>
+</div>
+<div class="smart-search-wrap">
+<i class="fas fa-search search-icon" id="debAtualSearchIcon"></i>
+<div id="debAtualSearchSpinner" class="spinner-border spinner-border-sm" style="position:absolute;left:10px;display:none;z-index:1;width:0.85rem;height:0.85rem;border-width:0.15em;color:#d97706;"></div>
+<input type="text" id="debAtualSearch" class="form-control form-control-sm" style="padding-left:30px;border:2px solid var(--border-color);border-radius:8px;" placeholder="Cliente, vendedor..." oninput="applyDebAtualFiltersWithTimer()">
+</div>
+</div>
+<!-- Limpar -->
+<button class="btn btn-sm w-100 mt-1" style="border:2px solid #d97706;color:#d97706;background:transparent;font-weight:700;border-radius:8px;" onclick="resetDebAtualFilters()">
+<i class="fas fa-redo me-1"></i>Limpar Filtros
+</button>
+</div>
+</div>
+<!-- ÁREA PRINCIPAL DO DASHBOARD -->
+<div class="col-lg-9">
+<div class="p-3">
+<!-- Alert Banner -->
+<div class="debatual-alert-banner">
+<i class="fas fa-info-circle"></i>
+<span>Registros da aba <strong>DebAtual</strong>: títulos em aberto que ainda não foram liquidados, independentemente da data de vencimento. Utilize os filtros para segmentar por empresa, vendedor ou período de vencimento.</span>
+</div>
+<!-- KPI Grid -->
+<div class="debatual-metric-grid">
+<div class="debatual-metric-card">
+<div class="debatual-metric-label">Total em Aberto</div>
+<div class="debatual-metric-value" id="debAtualTotal">R$ 0,00</div>
+<div class="debatual-metric-meta" id="debAtualTotalMeta">0 registros</div>
+</div>
+<div class="debatual-metric-card card-amber">
+<div class="debatual-metric-label">Ticket Médio</div>
+<div class="debatual-metric-value" id="debAtualTicket">R$ 0,00</div>
+<div class="debatual-metric-meta">Por operação</div>
+</div>
+<div class="debatual-metric-card card-blue">
+<div class="debatual-metric-label">Clientes Envolvidos</div>
+<div class="debatual-metric-value" id="debAtualClientes">0</div>
+<div class="debatual-metric-meta">Clientes únicos</div>
+</div>
+<div class="debatual-metric-card card-green">
+<div class="debatual-metric-label">Empresas</div>
+<div class="debatual-metric-value" id="debAtualEmpresas">0</div>
+<div class="debatual-metric-meta">Unidades afetadas</div>
+</div>
+<div class="debatual-metric-card">
+<div class="debatual-metric-label">Maior Dívida</div>
+<div class="debatual-metric-value" id="debAtualMaior">R$ 0,00</div>
+<div class="debatual-metric-meta" id="debAtualMaiorCliente">—</div>
+</div>
+</div>
+<!-- Charts Row -->
+<div class="row g-3 mb-3">
+<div class="col-md-5">
+<div class="debatual-chart-wrap">
+<div class="debatual-chart-title"><i class="fas fa-building me-1" style="color:#d97706;"></i>Por Empresa</div>
+<div class="debatual-chart-stage">
+<canvas id="debAtualEmpresaChart"></canvas>
+</div>
+</div>
+</div>
+<div class="col-md-7">
+<div class="debatual-chart-wrap">
+<div class="debatual-chart-title"><i class="fas fa-user-tie me-1" style="color:#f59e0b;"></i>Dívidas por Vendedor</div>
+<div class="debatual-chart-stage">
+<canvas id="debAtualVendedorChart"></canvas>
+</div>
+</div>
+</div>
+</div>
+<!-- Insights Section -->
+<div class="debatual-insights-section" id="debAtualInsightsSection">
+<div class="debatual-insights-header"><i class="fas fa-lightbulb"></i><span>Insights Estratégicos</span><span class="badge" id="debAtualInsightsBadge" style="background:rgba(217,119,6,0.10);color:#d97706;border:1px solid rgba(217,119,6,0.25);font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:auto;">Dívidas Atuais</span></div>
+<div class="debatual-insights-grid" id="debAtualInsightsGrid"></div>
+</div>
+<!-- Gráfico: Comparativo Mensal por Ano -->
+<div class="debatual-chart-wrap debatual-chart-wrap-tall">
+<div class="d-flex align-items-center justify-content-between mb-1">
+<div class="debatual-chart-title mb-0"><i class="fas fa-layer-group me-1" style="color:#d97706;"></i>DÍVIDAS ATUAIS — Comparativo Mensal por Ano <small style="font-size:0.72em;font-weight:400;color:#94a3b8;">(volume mensal entre períodos anuais)</small></div>
+<span class="badge" id="debAtualYearCompareBadge" style="background:rgba(217,119,6,0.10);color:#d97706;border:1px solid rgba(217,119,6,0.25);font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;"></span>
+</div>
+<div class="debatual-chart-stage debatual-chart-stage-tall">
+<canvas id="debAtualMesChart"></canvas>
+</div>
+</div>
+<!-- Gráfico: Comparativo de Faturamento por Cliente -->
+<div class="debatual-chart-wrap debatual-chart-wrap-tall mt-3" id="debAtualFaturamentoClienteWrap">
+<div class="d-flex align-items-center justify-content-between mb-1">
+<div class="debatual-chart-title mb-0"><i class="fas fa-users me-1" style="color:#10b981;"></i>Comparativo por Cliente <small style="font-size:0.72em;font-weight:400;color:#94a3b8;">(comportamento mensal por cliente e ano, conforme filtros aplicados)</small></div>
+<span class="badge" id="debAtualFaturamentoClienteBadge" style="background:rgba(16,185,129,0.10);color:#10b981;border:1px solid rgba(16,185,129,0.25);font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;"></span>
+</div>
+<div class="debatual-chart-stage debatual-chart-stage-tall">
+<canvas id="debAtualFaturamentoClienteChart"></canvas>
+</div>
+</div>
+<!-- Records Table -->
+<div class="card mt-2">
+<div class="card-header d-flex align-items-center justify-content-between" style="padding:0.85rem 1rem;border-bottom:1px solid var(--border-color);">
+<span style="font-weight:700;color:#d97706;"><i class="fas fa-list me-2"></i>Registros de Dívidas Atuais</span>
+<div class="d-flex align-items-center gap-2">
+<span class="badge" style="background:rgba(217,119,6,0.12);color:#d97706;border:1px solid rgba(217,119,6,0.25);" id="debAtualTableCount">0 itens</span>
+</div>
+</div>
+<div class="debatual-table-wrap">
+<table class="table table-hover mb-0" style="font-size:0.8rem;">
+<thead>
+<tr>
+<th style="white-space:nowrap;">Empresa</th>
+<th>Cliente</th>
+<th>Nº Doc.</th>
+<th style="white-space:nowrap;">Vencimento</th>
+<th>Vendedor</th>
+<th class="text-end">Valor</th>
+</tr>
+</thead>
+<tbody id="debAtualTableBody"></tbody>
+</table>
+</div>
+<div class="px-3 py-2 border-top" id="debAtualTableFooter" style="font-size:0.75rem;color:var(--text-muted);"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ===== MODAL INADIMPLÊNCIA ===== -->
+<div class="inadi-window-overlay" id="inadimplenciaWindowOverlay"></div>
+<div class="modal fade" id="inadimplenciaModal" tabindex="-1" aria-labelledby="inadimplenciaModalLabel" aria-hidden="true" data-bs-backdrop="false">
+<div class="modal-dialog modal-xl modal-fullscreen-lg-down">
+<div class="modal-content">
+<div class="modal-header inadi-draggable-header" id="inadimplenciaModalHeader">
 <div class="d-flex align-items-center gap-3">
 <div style="width:38px;height:38px;border-radius:10px;background:rgba(239,68,68,0.18);display:flex;align-items:center;justify-content:center;">
 <i class="fas fa-exclamation-circle" style="color:#f87171;font-size:1.1rem;"></i>
 </div>
 <div>
 <h5 class="modal-title fw-bold mb-0" id="inadimplenciaModalLabel">Análise de Inadimplência</h5>
-<div style="font-size:0.72rem;color:#94a3b8;font-weight:500;margin-top:1px;">GRUPO LABMEDIC · Painel de Crédito e Cobrança</div>
+<div class="inadi-header-subtitle" style="font-size:0.72rem;color:#94a3b8;font-weight:500;margin-top:1px;">GRUPO LABMEDIC · Painel de Crédito e Cobrança</div>
 </div>
 </div>
-<div class="d-flex align-items-center gap-2 ms-auto me-3">
+<div class="d-flex align-items-center gap-2 ms-auto me-3 inadi-export-group">
 <span class="inadi-badge" id="inadiRegistrosBadge">0 registros</span>
-<button class="btn btn-sm" style="background:rgba(239,68,68,0.18);color:#f87171;border:1px solid rgba(239,68,68,0.3);font-weight:700;font-size:0.78rem;padding:5px 12px;" onclick="previewInadimplenciaPDF()">
-<i class="fas fa-file-pdf me-1"></i>Exportar PDF
+<button class="modal-export-btn-pdf inadi-btn-pdf" id="inadiExportPdfBtn" onclick="previewInadimplenciaPDF()" title="Exportar relatório em PDF">
+<i class="fas fa-file-pdf"></i>PDF
+</button>
+<button class="modal-export-btn-xlsx inadi-btn-xlsx" id="inadiExportXlsxBtn" onclick="exportInadimplenciaXlsx()" title="Exportar dados em Excel">
+<i class="fas fa-file-excel"></i>Excel
 </button>
 </div>
-<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+<div class="inadi-window-controls" onmousedown="event.stopPropagation()">
+<button type="button" class="inadi-window-btn" id="inadiBtnMinimize" title="Minimizar" aria-label="Minimizar" onclick="minimizeInadimplenciaModal(event)">
+<i class="fas fa-window-minimize"></i>
+</button>
+<button type="button" class="inadi-window-btn" id="inadiBtnMaximize" title="Maximizar" aria-label="Maximizar" onclick="toggleMaximizeInadimplenciaModal(event)">
+<i class="fas fa-expand" id="inadiMaximizeIcon"></i>
+</button>
+<button type="button" class="inadi-window-btn inadi-window-btn-close" title="Fechar" aria-label="Fechar" onclick="event.stopPropagation(); bootstrap.Modal.getOrCreateInstance(document.getElementById('inadimplenciaModal')).hide();">
+<i class="fas fa-times"></i>
+</button>
 </div>
-<div class="modal-body p-0">
-<div class="row g-0" style="min-height:80vh;">
+</div>
+	<div class="modal-body p-0" style="position:relative;">
+	<!-- Overlay de Processamento de Busca -->
+	<div id="inadiSearchProcessOverlay" class="inadi-search-overlay">
+	<div class="inadi-search-card">
+	<div class="inadi-search-spinner"></div>
+	<div class="inadi-search-text">Processando busca global...</div>
+	<div class="inadi-search-timer-large"><i class="fas fa-stopwatch me-2"></i><span id="inadiSearchTimeValueLarge">0ms</span></div>
+	<div style="font-size:0.75rem;color:var(--text-muted);margin-top:4px;">Filtrando registros e atualizando gráficos</div>
+	</div>
+	</div>
+	<div class="row g-0" style="min-height:80vh;">
 <!-- SIDEBAR DE FILTROS -->
 <div class="col-lg-3 border-end" style="background:var(--bg-card);">
 <div class="p-3" style="position:sticky;top:0;max-height:85vh;overflow-y:auto;">
@@ -1635,6 +2442,17 @@ Empresas
 </div>
 </div>
 <div class="inadimplencia-scroll-list" id="inadiEmpresasGroup"></div>
+</div>
+<!-- Filtro Cliente -->
+<div class="inadimplencia-filter-section">
+<div class="inadimplencia-filter-label">
+<span>Cliente</span>
+<div class="form-check m-0">
+<input class="form-check-input" type="checkbox" id="allInadiClientes" checked onchange="toggleAllInadi('cliente')">
+<label class="form-check-label small fw-bold" for="allInadiClientes">Todos</label>
+</div>
+</div>
+<div class="inadimplencia-scroll-list" id="inadiClientesGroup"></div>
 </div>
 <!-- Filtro Vendedor -->
 <div class="inadimplencia-filter-section">
@@ -1675,12 +2493,18 @@ Empresas
 </div>
 <!-- Busca Global -->
 <div class="inadimplencia-filter-section">
-<div class="inadimplencia-filter-label">Busca Global</div>
-<div class="smart-search-wrap">
-<i class="fas fa-search search-icon"></i>
-<input type="text" id="inadiSearch" class="form-control form-control-sm" style="padding-left:30px;border:2px solid var(--border-color);border-radius:8px;" placeholder="Cliente, vendedor..." oninput="applyInadimplenciaFilters()">
-</div>
-</div>
+	<div class="inadimplencia-filter-label d-flex justify-content-between align-items-center">
+	<span>Busca Global</span>
+	<span id="inadiSearchTimer" style="font-size:0.65rem;font-weight:700;color:var(--primary);display:none;background:rgba(79,70,229,0.1);padding:1px 6px;border-radius:10px;">
+	<i class="fas fa-stopwatch me-1"></i><span id="inadiSearchTimeValue">0ms</span>
+	</span>
+	</div>
+	<div class="smart-search-wrap">
+	<i class="fas fa-search search-icon" id="inadiSearchIcon"></i>
+	<div id="inadiSearchSpinner" class="spinner-border spinner-border-sm text-primary" style="position:absolute;left:10px;display:none;z-index:1;width:0.85rem;height:0.85rem;border-width:0.15em;"></div>
+	<input type="text" id="inadiSearch" class="form-control form-control-sm" style="padding-left:30px;border:2px solid var(--border-color);border-radius:8px;" placeholder="Cliente, vendedor..." oninput="applyInadimplenciaFiltersWithTimer()">
+	</div>
+	</div>
 <!-- Limpar -->
 <button class="btn btn-sm w-100 mt-1" style="border:2px solid var(--danger);color:var(--danger);background:transparent;font-weight:700;border-radius:8px;" onclick="resetInadimplenciaFilters()">
 <i class="fas fa-redo me-1"></i>Limpar Filtros
@@ -1693,7 +2517,7 @@ Empresas
 <!-- Alert Banner -->
 <div class="inadimplencia-alert-banner">
 <i class="fas fa-info-circle"></i>
-<span>Registros de créditos inadimplentes e operações em aberto. Utilize os filtros para segmentar por empresa, vendedor ou período de vencimento.</span>
+<span>Registros consolidados das abas Receitas e Inadimplência: títulos vencidos e ainda não pagos (a partir do encerramento do próprio mês de vencimento) são considerados inadimplentes. Utilize os filtros para segmentar por empresa, vendedor ou período de vencimento.</span>
 </div>
 <!-- KPI Grid -->
 <div class="inadimplencia-metric-grid">
@@ -1718,7 +2542,7 @@ Empresas
 <div class="inadimplencia-metric-meta">Unidades afetadas</div>
 </div>
 <div class="inadimplencia-metric-card">
-<div class="inadimplencia-metric-label">Maior Exposição</div>
+<div class="inadimplencia-metric-label">Maior Inadimplência</div>
 <div class="inadimplencia-metric-value" id="inadiMaior">R$ 0,00</div>
 <div class="inadimplencia-metric-meta" id="inadiMaiorCliente">—</div>
 </div>
@@ -1742,8 +2566,16 @@ Empresas
 </div>
 </div>
 </div>
+<!-- Insights Section -->
+<div class="inadi-insights-section" id="inadiInsightsSection">
+<div class="inadi-insights-header"><i class="fas fa-lightbulb"></i><span>Insights Estratégicos</span><span class="badge" id="inadiInsightsBadge" style="background:rgba(79,70,229,0.10);color:#4f46e5;border:1px solid rgba(79,70,229,0.25);font-size:0.65rem;font-weight:700;padding:2px 8px;border-radius:20px;margin-left:auto;">Histórico</span></div>
+<div class="inadi-insights-grid" id="inadiInsightsGrid"></div>
+</div>
 <div class="inadimplencia-chart-wrap inadimplencia-chart-wrap-tall">
-<div class="inadimplencia-chart-title"><i class="fas fa-chart-line me-1" style="color:#4f46e5;"></i>Evolução Mensal por Vencimento</div>
+<div class="d-flex align-items-center justify-content-between mb-1">
+<div class="inadimplencia-chart-title mb-0"><i class="fas fa-layer-group me-1" style="color:#4f46e5;"></i>INADIMPLÊNCIA HISTÓRICA - Comparativo Mensal por Ano <small style="font-size:0.72em;font-weight:400;color:#94a3b8;">(volume mensal entre períodos anuais)</small></div>
+<span class="badge" id="inadiYearCompareBadge" style="background:rgba(79,70,229,0.10);color:#4f46e5;border:1px solid rgba(79,70,229,0.25);font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;"></span>
+</div>
 <div class="inadimplencia-chart-stage inadimplencia-chart-stage-tall">
 <canvas id="inadiMesChart"></canvas>
 </div>
@@ -1751,11 +2583,21 @@ Empresas
 <!-- Gráfico: Percentual Mensal de Inadimplência -->
 <div class="inadimplencia-chart-wrap inadimplencia-chart-wrap-tall mt-3" id="inadiPercWrap" style="display:none;">
 <div class="d-flex align-items-center justify-content-between mb-1">
-<div class="inadimplencia-chart-title mb-0"><i class="fas fa-percent me-1" style="color:#ef4444;"></i>Percentual Mensal de Inadimplência</div>
+<div class="inadimplencia-chart-title mb-0"><i class="fas fa-percent me-1" style="color:#ef4444;"></i>Inadimplência Nominal Mensal <small style="font-size:0.72em;font-weight:400;color:#94a3b8;">(inadimplente no mês / faturado no mês)</small></div>
 <span class="badge" id="inadiPercTotalBadge" style="background:rgba(239,68,68,0.12);color:#ef4444;border:1px solid rgba(239,68,68,0.25);font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;"></span>
 </div>
 <div class="inadimplencia-chart-stage inadimplencia-chart-stage-tall">
 <canvas id="inadiPercChart"></canvas>
+</div>
+</div>
+<!-- Gráfico: Comparativo de Faturamento por Cliente -->
+<div class="inadimplencia-chart-wrap inadimplencia-chart-wrap-tall mt-3" id="inadiFaturamentoClienteWrap">
+<div class="d-flex align-items-center justify-content-between mb-1">
+<div class="inadimplencia-chart-title mb-0"><i class="fas fa-users me-1" style="color:#10b981;"></i>Comparativo de Faturamento por Cliente <small style="font-size:0.72em;font-weight:400;color:#94a3b8;">(comportamento mensal por cliente e ano, conforme filtros aplicados)</small></div>
+<span class="badge" id="inadiFaturamentoClienteBadge" style="background:rgba(16,185,129,0.10);color:#10b981;border:1px solid rgba(16,185,129,0.25);font-size:0.7rem;font-weight:700;padding:3px 10px;border-radius:20px;"></span>
+</div>
+<div class="inadimplencia-chart-stage inadimplencia-chart-stage-tall">
+<canvas id="inadiFaturamentoClienteChart"></canvas>
 </div>
 </div>
 <!-- Records Table -->
@@ -1811,10 +2653,32 @@ let receitasMonthOptions = [];
 let receitasVisibleYear = 'all';
 let inadimplenciaRawData = [];
 let inadimplenciaFilteredData = [];
+let inadimplenciaConsolidadaRawData = [];
 let inadiEmpresaChart = null;
 let inadiVendedorChart = null;
 let inadiMesChart = null;
 let inadiPercChart = null;
+let inadiFaturamentoClienteChart = null;
+// DebAtual state
+let debAtualRawData = [];
+let debAtualFilteredData = [];
+let debAtualEmpresaChart = null;
+let debAtualVendedorChart = null;
+let debAtualMesChart = null;
+let debAtualFaturamentoClienteChart = null;
+let debAtualUserEmpresaSel = null;
+let debAtualUserClienteSel = null;
+let debAtualUserVendedorSel = null;
+let debAtualVisibleYear = 'all';
+let debAtualMonthOptions = [];
+// Conjuntos com a seleção "lógica" do usuário para cada filtro de lista dinâmica.
+// null = nenhuma desmarcação manual ainda (equivalente a "Todos" selecionados).
+// Quando não-nulo, contém os valores que o usuário decidiu manter marcados,
+// mesmo que momentaneamente não estejam visíveis na lista (por causa de outro filtro).
+let inadiUserEmpresaSel = null;
+let inadiUserClienteSel = null;
+let inadiUserVendedorSel = null;
+let _inadiFaturamentoUniverseCache = null;
 let inadiVisibleYear = 'all';
 let inadiMonthOptions = [];
 const COLS = { CREDOR:0, VENCTO:1, DESC:2, VALOR:3, QUITACAO:4, BANCO:5, NATUREZA:6, EMPRESA:7 };
@@ -2496,14 +3360,44 @@ rr[1] = parseDate(rr[INADIMPLENCIA_COLS.VENCIMENTO]);
 rr[4] = parseDate(rr[INADIMPLENCIA_COLS.LIQUIDACAO]);
 return rr;
 }).filter(r => r[3] > 0 && r[0]);
-inadimplenciaFilteredData = [...inadimplenciaRawData];
+} else {
+inadimplenciaRawData = [];
+}
+// Consolida Receitas (títulos vencidos e ainda não pagos, considerando o mês do vencimento)
+// com a aba Inadimplência, evitando duplicidade entre as duas fontes.
+inadimplenciaConsolidadaRawData = buildInadimplenciaConsolidada(inadimplenciaRawData, receitasRawData);
+_inadiFaturamentoUniverseCache = null; // invalida cache: nova planilha foi importada
+inadimplenciaFilteredData = [...inadimplenciaConsolidadaRawData];
+if (inadimplenciaConsolidadaRawData.length > 0) {
 document.getElementById('btnInadimplencia').style.display = 'inline-flex';
 document.getElementById('btnInadimplenciaReceitas').style.display = 'inline-flex';
 } else {
-inadimplenciaRawData = [];
-inadimplenciaFilteredData = [];
 document.getElementById('btnInadimplencia').style.display = 'none';
 document.getElementById('btnInadimplenciaReceitas').style.display = 'none';
+}
+// Carrega a aba DebAtual
+const debAtualSheet = wb.SheetNames.find(name => name.trim() === 'DebAtual');
+if (debAtualSheet) {
+updateProgressOverlay(83, 'Processando a aba DebAtual.', undefined, 'Carregando dívidas atuais');
+await waitForUI(30);
+const debAtualJson = XLSX.utils.sheet_to_json(wb.Sheets[debAtualSheet], { header: 1, raw: true });
+debAtualRawData = debAtualJson.slice(1).map(r => {
+const rr = [...r];
+rr[3] = parseCurrency(rr[INADIMPLENCIA_COLS.VALOR]);
+rr[1] = parseDate(rr[INADIMPLENCIA_COLS.VENCIMENTO]);
+rr[4] = parseDate(rr[INADIMPLENCIA_COLS.LIQUIDACAO]);
+return rr;
+}).filter(r => r[3] > 0 && r[0]);
+} else {
+debAtualRawData = [];
+}
+debAtualFilteredData = [...debAtualRawData];
+if (debAtualRawData.length > 0) {
+document.getElementById('btnDebAtual').style.display = 'inline-flex';
+document.getElementById('btnDebAtualReceitas').style.display = 'inline-flex';
+} else {
+document.getElementById('btnDebAtual').style.display = 'none';
+document.getElementById('btnDebAtualReceitas').style.display = 'none';
 }
 updateProgressOverlay(82, 'Montando filtros e índices do dashboard.', undefined, 'Preparando filtros');
 await waitForUI(40);
@@ -3484,29 +4378,231 @@ alert('Erro ao exportar Excel: ' + err.message);
 }
 }
 // ============== INADIMPLÊNCIA ==============
+// Um título é considerado inadimplente quando NÃO foi quitado dentro do próprio
+// mês calendário de vencimento — independente de ter sido pago posteriormente.
+// A inadimplência nominal mensal = Σ títulos não quitados no mês /
+//                                   Σ títulos com vencimento no mês.
+// A base final combina os registros da aba "Receitas" (filtrados por essa regra)
+// com os registros já existentes na aba "Inadimplência", sem duplicar títulos
+// que eventualmente apareçam nas duas abas.
+function isTituloInadimplente(row, referenceDate) {
+const vencimento = row[1]; // VENCIMENTO
+const liquidacao = row[4]; // LIQUIDACAO
+if (!(vencimento instanceof Date) || isNaN(vencimento)) return false;
+// Um título é inadimplente quando NÃO foi quitado dentro do próprio mês
+// de vencimento: ou seja, a liquidação está ausente OU ocorreu em mês/ano
+// diferente do vencimento. Títulos cujo mês de vencimento ainda está no
+// futuro (em relação à data de referência) não são considerados inadimplentes.
+const mesVenc = vencimento.getFullYear() * 12 + vencimento.getMonth();
+const mesRef  = referenceDate.getFullYear() * 12 + referenceDate.getMonth();
+if (mesVenc > mesRef) return false; // vencimento ainda no futuro
+if (liquidacao instanceof Date && !isNaN(liquidacao)) {
+    const mesLiq = liquidacao.getFullYear() * 12 + liquidacao.getMonth();
+    if (mesLiq <= mesVenc) return false; // pago no próprio mês ou antecipadamente
+}
+return true; // não pago ou pago após o mês de vencimento (inadimplente)
+}
+function buildInadimplenciaKey(row) {
+const vencimento = row[1] instanceof Date && !isNaN(row[1]) ? row[1].toISOString().slice(0, 10) : '';
+return [
+String(row[INADIMPLENCIA_COLS.CLIENTE] || '').trim().toLowerCase(),
+String(row[INADIMPLENCIA_COLS.EMPRESA] || '').trim().toLowerCase(),
+String(row[INADIMPLENCIA_COLS.DESCRICAO] || '').trim().toLowerCase(),
+vencimento,
+Number(row[3] || 0).toFixed(2)
+].join('|');
+}
+function buildInadimplenciaConsolidada(inadimplenciaRows, receitasRows) {
+const referenceDate = new Date();
+const consolidado = [];
+const chavesExistentes = new Set();
+// 1) Registros já cadastrados na aba "Inadimplência" entram diretamente.
+(inadimplenciaRows || []).forEach(r => {
+consolidado.push(r);
+chavesExistentes.add(buildInadimplenciaKey(r));
+});
+// 2) Títulos da aba "Receitas" cujo mês de vencimento já passou E que não foram
+// quitados dentro do próprio mês de vencimento são incorporados, evitando duplicar
+// quem já constava na aba "Inadimplência".
+// Regra: inadimplente = sem liquidação OU liquidação em mês diferente do vencimento.
+(receitasRows || []).forEach(r => {
+if (!isTituloInadimplente(r, referenceDate)) return;
+const chave = buildInadimplenciaKey(r);
+if (chavesExistentes.has(chave)) return;
+chavesExistentes.add(chave);
+consolidado.push(r);
+});
+return consolidado;
+}
 function openInadimplenciaModal() {
-if (!inadimplenciaRawData || inadimplenciaRawData.length === 0) {
-alert('Nenhum dado de inadimplência encontrado. Importe a planilha com a aba "Inadimplência".');
+inadimplenciaConsolidadaRawData = buildInadimplenciaConsolidada(inadimplenciaRawData, receitasRawData);
+_inadiFaturamentoUniverseCache = null;
+if (!inadimplenciaConsolidadaRawData || inadimplenciaConsolidadaRawData.length === 0) {
+alert('Nenhum dado de inadimplência encontrado. Importe a planilha com as abas "Receitas" e/ou "Inadimplência".');
 return;
 }
 initInadimplenciaFilters();
 applyInadimplenciaFilters();
 const modalEl = document.getElementById('inadimplenciaModal');
 if (!modalEl) return;
+resetInadimplenciaWindowState(modalEl);
 modalEl.addEventListener('hidden.bs.modal', () => {
 destroyInadiCharts();
+resetInadimplenciaWindowState(modalEl);
+updateInadiWindowOverlay();
 }, { once: true });
 bootstrap.Modal.getOrCreateInstance(modalEl).show();
+modalEl.addEventListener('shown.bs.modal', () => {
+centerInadimplenciaWindow(modalEl);
+updateInadiWindowOverlay();
+}, { once: true });
+setupInadimplenciaWindowDrag(modalEl);
+}
+// ============== JANELA MÓVEL / MAXIMIZÁVEL / MINIMIZÁVEL (MODAL INADIMPLÊNCIA) ==============
+let inadiWindowDragBound = false;
+let inadiWindowState = 'normal'; // 'normal' | 'maximized' | 'minimized'
+let inadiWindowPrevPos = null; // posição (top/left) salva antes de maximizar
+function updateInadiWindowOverlay() {
+const overlay = document.getElementById('inadimplenciaWindowOverlay');
+if (!overlay) return;
+const modalEl = document.getElementById('inadimplenciaModal');
+const isOpen = !!(modalEl && modalEl.classList.contains('show'));
+overlay.classList.toggle('show', isOpen && inadiWindowState === 'maximized');
+}
+function resetInadimplenciaWindowState(modalEl) {
+modalEl.classList.remove('inadi-window-maximized', 'inadi-window-minimized');
+modalEl.classList.add('inadi-window-mode');
+inadiWindowState = 'normal';
+inadiWindowPrevPos = null;
+const icon = document.getElementById('inadiMaximizeIcon');
+if (icon) icon.className = 'fas fa-expand';
+const maxBtn = document.getElementById('inadiBtnMaximize');
+if (maxBtn) maxBtn.title = 'Maximizar';
+const minBtn = document.getElementById('inadiBtnMinimize');
+if (minBtn) minBtn.title = 'Minimizar';
+const dialog = modalEl.querySelector('.modal-dialog');
+if (dialog) { dialog.style.top = ''; dialog.style.left = ''; }
+updateInadiWindowOverlay();
+}
+function centerInadimplenciaWindow(modalEl) {
+const dialog = modalEl.querySelector('.modal-dialog');
+if (!dialog || inadiWindowState !== 'normal') return;
+const rect = dialog.getBoundingClientRect();
+const top = Math.max(16, (window.innerHeight - rect.height) / 2);
+const left = Math.max(16, (window.innerWidth - rect.width) / 2);
+dialog.style.top = `${top}px`;
+dialog.style.left = `${left}px`;
+}
+function setupInadimplenciaWindowDrag(modalEl) {
+if (inadiWindowDragBound) return;
+inadiWindowDragBound = true;
+const header = document.getElementById('inadimplenciaModalHeader');
+const dialog = modalEl.querySelector('.modal-dialog');
+if (!header || !dialog) return;
+let dragging = false;
+let startX = 0, startY = 0, startTop = 0, startLeft = 0;
+header.addEventListener('mousedown', (e) => {
+// Não inicia arraste se o clique foi em um botão/controle, ou se a janela está maximizada
+if (e.target.closest('.inadi-window-controls') || e.target.closest('button')) return;
+if (inadiWindowState === 'maximized') return;
+if (inadiWindowState === 'minimized') return;
+dragging = true;
+modalEl.classList.add('inadi-dragging');
+const rect = dialog.getBoundingClientRect();
+startX = e.clientX; startY = e.clientY;
+startTop = rect.top; startLeft = rect.left;
+e.preventDefault();
+});
+document.addEventListener('mousemove', (e) => {
+if (!dragging) return;
+const dx = e.clientX - startX;
+const dy = e.clientY - startY;
+const newTop = Math.min(Math.max(0, startTop + dy), window.innerHeight - 60);
+const newLeft = Math.min(Math.max(0, startLeft + dx), window.innerWidth - 60);
+dialog.style.top = `${newTop}px`;
+dialog.style.left = `${newLeft}px`;
+});
+document.addEventListener('mouseup', () => {
+if (dragging) {
+dragging = false;
+modalEl.classList.remove('inadi-dragging');
+}
+});
+}
+function toggleMaximizeInadimplenciaModal(event) {
+if (event) event.stopPropagation();
+const modalEl = document.getElementById('inadimplenciaModal');
+if (!modalEl) return;
+const dialog = modalEl.querySelector('.modal-dialog');
+const icon = document.getElementById('inadiMaximizeIcon');
+const btn = document.getElementById('inadiBtnMaximize');
+if (inadiWindowState === 'minimized') {
+// Restaura para normal antes de maximizar
+modalEl.classList.remove('inadi-window-minimized');
+inadiWindowState = 'normal';
+}
+if (inadiWindowState === 'maximized') {
+// Restaurar
+modalEl.classList.remove('inadi-window-maximized');
+inadiWindowState = 'normal';
+if (icon) icon.className = 'fas fa-expand';
+if (btn) btn.title = 'Maximizar';
+if (dialog && inadiWindowPrevPos) {
+dialog.style.top = inadiWindowPrevPos.top;
+dialog.style.left = inadiWindowPrevPos.left;
+}
+} else {
+// Maximizar
+if (dialog) {
+inadiWindowPrevPos = { top: dialog.style.top, left: dialog.style.left };
+}
+modalEl.classList.add('inadi-window-maximized');
+inadiWindowState = 'maximized';
+if (icon) icon.className = 'fas fa-compress';
+if (btn) btn.title = 'Restaurar';
+}
+updateInadiWindowOverlay();
+}
+function minimizeInadimplenciaModal(event) {
+if (event) event.stopPropagation();
+const modalEl = document.getElementById('inadimplenciaModal');
+if (!modalEl) return;
+const minBtn = document.getElementById('inadiBtnMinimize');
+if (inadiWindowState === 'minimized') {
+restoreInadimplenciaModal();
+return;
+}
+modalEl.classList.remove('inadi-window-maximized');
+modalEl.classList.add('inadi-window-minimized');
+inadiWindowState = 'minimized';
+const icon = document.getElementById('inadiMaximizeIcon');
+const maxBtn = document.getElementById('inadiBtnMaximize');
+if (icon) icon.className = 'fas fa-expand';
+if (maxBtn) maxBtn.title = 'Maximizar';
+if (minBtn) minBtn.title = 'Restaurar';
+updateInadiWindowOverlay();
+const header = document.getElementById('inadimplenciaModalHeader');
+if (header) {
+header.addEventListener('click', restoreOnHeaderClick, { once: true });
+}
+}
+function restoreOnHeaderClick(e) {
+if (e.target.closest('.inadi-window-controls')) return;
+restoreInadimplenciaModal();
+}
+function restoreInadimplenciaModal() {
+const modalEl = document.getElementById('inadimplenciaModal');
+if (!modalEl) return;
+modalEl.classList.remove('inadi-window-minimized');
+inadiWindowState = 'normal';
+const minBtn = document.getElementById('inadiBtnMinimize');
+if (minBtn) minBtn.title = 'Minimizar';
+updateInadiWindowOverlay();
 }
 function initInadimplenciaFilters() {
-const empresas = new Set();
-const vendedores = new Set();
 const anosSet = new Set();
 const mesesMap = new Map();
-inadimplenciaRawData.forEach(r => {
-if (r[INADIMPLENCIA_COLS.EMPRESA]) empresas.add(String(r[INADIMPLENCIA_COLS.EMPRESA]).trim());
-const vend = r[INADIMPLENCIA_COLS.VENDEDOR];
-if (vend && String(vend).trim()) vendedores.add(String(vend).trim());
+inadimplenciaConsolidadaRawData.forEach(r => {
 const dataRef = r[1]; // VENCIMENTO parsed
 if (dataRef instanceof Date && !isNaN(dataRef)) {
 const ano = dataRef.getFullYear();
@@ -3522,25 +4618,12 @@ label: new Date(ano, dataRef.getMonth(), 1).toLocaleDateString('pt-BR', { month:
 });
 inadiMonthOptions = Array.from(mesesMap.values()).sort((a, b) => b.value.localeCompare(a.value));
 inadiVisibleYear = 'all';
-// Empresas
-const empGroup = document.getElementById('inadiEmpresasGroup');
-if (empGroup) {
-empGroup.innerHTML = '';
-Array.from(empresas).sort().forEach(e => {
-const id = `inadi-emp-${e.replace(/\s+/g,'-')}`;
-empGroup.innerHTML += `<div class="inadimplencia-checkbox-wrapper"><input type="checkbox" id="${id}" class="inadi-empresa-check" value="${e}" checked onchange="syncInadiAllCheckbox('empresa'); applyInadimplenciaFilters()"><label for="${id}">${e}</label></div>`;
-});
-}
+// Seleções lógicas do usuário voltam ao estado "Todos" (null) ao reabrir/recarregar.
+inadiUserEmpresaSel = null;
+inadiUserClienteSel = null;
+inadiUserVendedorSel = null;
 document.getElementById('allInadiEmpresas').checked = true;
-// Vendedores
-const vendGroup = document.getElementById('inadiVendedoresGroup');
-if (vendGroup) {
-vendGroup.innerHTML = '';
-Array.from(vendedores).sort().forEach(v => {
-const id = `inadi-vend-${v.replace(/[\s\/]+/g,'-')}`;
-vendGroup.innerHTML += `<div class="inadimplencia-checkbox-wrapper"><input type="checkbox" id="${id}" class="inadi-vendedor-check" value="${v}" checked onchange="syncInadiAllCheckbox('vendedor'); applyInadimplenciaFilters()"><label for="${id}">${v}</label></div>`;
-});
-}
+document.getElementById('allInadiClientes').checked = true;
 document.getElementById('allInadiVendedores').checked = true;
 // Ano pills
 const anosGroup = document.getElementById('inadiAnosGroup');
@@ -3555,6 +4638,119 @@ document.getElementById('allInadiMeses').checked = true;
 document.getElementById('inadiDataInicio').value = '';
 document.getElementById('inadiDataFim').value = '';
 document.getElementById('inadiSearch').value = '';
+refreshInadiDynamicFilterLists();
+}
+// ── Listas dinâmicas de Empresa / Cliente / Vendedor ──────────────────────
+// Cada lista exibe apenas os valores que efetivamente ocorrem nos registros
+// depois de aplicar TODOS os demais critérios ativos (as outras duas listas,
+// o período selecionado e a Busca Global) — exceto a própria dimensão, para
+// permitir seleção múltipla dentro dela. Assim, localizar um cliente pela
+// Busca Global (ou restringir por Empresa/Vendedor) já reduz as opções
+// disponíveis nos demais filtros, mantendo tudo coerente com os dados.
+function passesInadiBaseFilters(r, { skipEmpresa, skipCliente, skipVendedor } = {}) {
+const searchVal = (document.getElementById('inadiSearch')?.value || '').toLowerCase().trim();
+const dataInicio = document.getElementById('inadiDataInicio')?.value;
+const dataFim = document.getElementById('inadiDataFim')?.value;
+const start = dataInicio ? new Date(dataInicio + 'T00:00:00') : null;
+const end = dataFim ? new Date(dataFim + 'T23:59:59') : null;
+const mesSel = new Set(inadiMonthOptions.filter(o => o.checked).map(o => o.value));
+if (!skipEmpresa && inadiUserEmpresaSel) {
+const emp = String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim();
+if (!inadiUserEmpresaSel.has(emp)) return false;
+}
+if (!skipCliente && inadiUserClienteSel) {
+const cli = String(r[INADIMPLENCIA_COLS.CLIENTE] || '').trim();
+if (cli && !inadiUserClienteSel.has(cli)) return false;
+}
+if (!skipVendedor && inadiUserVendedorSel) {
+const vend = String(r[INADIMPLENCIA_COLS.VENDEDOR] || '').trim();
+if (vend && !inadiUserVendedorSel.has(vend)) return false;
+}
+const dataRef = r[1]; // VENCIMENTO
+if (dataRef instanceof Date && !isNaN(dataRef)) {
+if (inadiVisibleYear !== 'all' && String(dataRef.getFullYear()) !== String(inadiVisibleYear)) return false;
+if (mesSel.size) {
+const mk = `${dataRef.getFullYear()}-${String(dataRef.getMonth()+1).padStart(2,'0')}`;
+if (!mesSel.has(mk)) return false;
+}
+if (start && dataRef < start) return false;
+if (end && dataRef > end) return false;
+}
+if (searchVal) {
+const haystack = [
+r[INADIMPLENCIA_COLS.CLIENTE],
+r[INADIMPLENCIA_COLS.EMPRESA],
+r[INADIMPLENCIA_COLS.VENDEDOR],
+String(r[INADIMPLENCIA_COLS.DESCRICAO] || ''),
+formatCurrencyBR(r[3])
+].join(' ').toLowerCase();
+if (!haystack.includes(searchVal)) return false;
+}
+return true;
+}
+function renderInadiCheckList(groupEl, values, { prefix, cssClass, userSel, sanitizeId, onChangeType }) {
+if (!groupEl) return;
+groupEl.innerHTML = '';
+values.sort().forEach(v => {
+const id = `${prefix}${sanitizeId(v)}`;
+const isChecked = !userSel || userSel.has(v);
+groupEl.innerHTML += `<div class="inadimplencia-checkbox-wrapper"><input type="checkbox" id="${id}" class="${cssClass}" value="${v.replace(/"/g,'&quot;')}" ${isChecked ? 'checked' : ''} onchange="syncInadiAllCheckbox('${onChangeType}'); applyInadimplenciaFilters()"><label for="${id}">${v}</label></div>`;
+});
+}
+function refreshInadiDynamicFilterLists() {
+const empresasVisiveis = new Set();
+const clientesVisiveis = new Set();
+const vendedoresVisiveis = new Set();
+inadimplenciaConsolidadaRawData.forEach(r => {
+const emp = String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim();
+const vend = String(r[INADIMPLENCIA_COLS.VENDEDOR] || '').trim();
+if (emp && passesInadiBaseFilters(r, { skipEmpresa: true })) empresasVisiveis.add(emp);
+if (vend && passesInadiBaseFilters(r, { skipVendedor: true })) vendedoresVisiveis.add(vend);
+});
+// A lista de Clientes reflete o universo completo de faturamento (Receitas +
+// Inadimplência consolidados, sem duplicar títulos), e não apenas quem está
+// inadimplente — assim ela é coerente com a Busca Global e com o gráfico
+// "Comparativo de Faturamento por Cliente", que também usam essa base ampla.
+const universoClientes = inadiGetFaturamentoUniverse();
+universoClientes.forEach(r => {
+const cli = String(r[INADIMPLENCIA_COLS.CLIENTE] || '').trim();
+if (cli && passesInadiBaseFilters(r, { skipCliente: true })) clientesVisiveis.add(cli);
+});
+renderInadiCheckList(document.getElementById('inadiEmpresasGroup'), Array.from(empresasVisiveis), {
+prefix: 'inadi-emp-', cssClass: 'inadi-empresa-check', userSel: inadiUserEmpresaSel,
+sanitizeId: e => e.replace(/[^a-zA-Z0-9]+/g,'-'), onChangeType: 'empresa'
+});
+renderInadiCheckList(document.getElementById('inadiClientesGroup'), Array.from(clientesVisiveis), {
+prefix: 'inadi-cli-', cssClass: 'inadi-cliente-check', userSel: inadiUserClienteSel,
+sanitizeId: c => c.replace(/[^a-zA-Z0-9]+/g,'-'), onChangeType: 'cliente'
+});
+renderInadiCheckList(document.getElementById('inadiVendedoresGroup'), Array.from(vendedoresVisiveis), {
+prefix: 'inadi-vend-', cssClass: 'inadi-vendedor-check', userSel: inadiUserVendedorSel,
+sanitizeId: v => v.replace(/[^a-zA-Z0-9]+/g,'-'), onChangeType: 'vendedor'
+});
+syncInadiAllLabel('empresa');
+syncInadiAllLabel('cliente');
+syncInadiAllLabel('vendedor');
+}
+// Retorna o conjunto de registros do universo de faturamento (Receitas +
+// Inadimplência), deduplicado por chave, em cache para evitar recomputar a
+// cada digitação na Busca Global.
+function inadiGetFaturamentoUniverse() {
+if (_inadiFaturamentoUniverseCache) return _inadiFaturamentoUniverseCache;
+const universo = [];
+const chaves = new Set();
+(receitasRawData || []).forEach(r => {
+universo.push(r);
+chaves.add(buildInadimplenciaKey(r));
+});
+(inadimplenciaRawData || []).forEach(r => {
+const chave = buildInadimplenciaKey(r);
+if (chaves.has(chave)) return;
+chaves.add(chave);
+universo.push(r);
+});
+_inadiFaturamentoUniverseCache = universo;
+return universo;
 }
 function setInadiYear(year) {
 inadiVisibleYear = year;
@@ -3592,9 +4788,15 @@ function toggleAllInadi(type) {
 if (type === 'empresa') {
 const checked = document.getElementById('allInadiEmpresas').checked;
 document.querySelectorAll('.inadi-empresa-check').forEach(i => i.checked = checked);
+inadiUserEmpresaSel = checked ? null : new Set();
+} else if (type === 'cliente') {
+const checked = document.getElementById('allInadiClientes').checked;
+document.querySelectorAll('.inadi-cliente-check').forEach(i => i.checked = checked);
+inadiUserClienteSel = checked ? null : new Set();
 } else if (type === 'vendedor') {
 const checked = document.getElementById('allInadiVendedores').checked;
 document.querySelectorAll('.inadi-vendedor-check').forEach(i => i.checked = checked);
+inadiUserVendedorSel = checked ? null : new Set();
 }
 applyInadimplenciaFilters();
 }
@@ -3604,22 +4806,55 @@ document.querySelectorAll('#inadiMesesGroup .inadi-mes-check').forEach(i => i.ch
 inadiMonthOptions = inadiMonthOptions.map(o => ({ ...o, checked }));
 applyInadimplenciaFilters();
 }
+// Atualiza apenas o estado visual do checkbox "Todos" de cada lista, com base
+// nos itens atualmente visíveis e na seleção lógica do usuário — SEM alterar
+// essa seleção lógica. Usada após re-renderizar as listas dinâmicas, para não
+// sobrescrever (de forma incorreta) a escolha do usuário com o resultado
+// momentâneo de uma lista que está temporariamente reduzida por outro filtro.
+function syncInadiAllLabel(type) {
+const map = {
+empresa: { cls: '.inadi-empresa-check', all: 'allInadiEmpresas' },
+cliente: { cls: '.inadi-cliente-check', all: 'allInadiClientes' },
+vendedor: { cls: '.inadi-vendedor-check', all: 'allInadiVendedores' }
+};
+const cfg = map[type];
+if (!cfg) return;
+const all = document.querySelectorAll(cfg.cls);
+const chk = document.querySelectorAll(cfg.cls + ':checked');
+const el = document.getElementById(cfg.all);
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+}
 function syncInadiAllCheckbox(type) {
 if (type === 'empresa') {
 const all = document.querySelectorAll('.inadi-empresa-check');
 const chk = document.querySelectorAll('.inadi-empresa-check:checked');
 const el = document.getElementById('allInadiEmpresas');
 if (el) el.checked = all.length > 0 && all.length === chk.length;
+// Atualiza a seleção lógica a partir do estado atual dos checkboxes visíveis.
+const checkedValues = Array.from(chk).map(i => i.value);
+inadiUserEmpresaSel = (all.length > 0 && all.length === chk.length) ? null : new Set(checkedValues);
+} else if (type === 'cliente') {
+const all = document.querySelectorAll('.inadi-cliente-check');
+const chk = document.querySelectorAll('.inadi-cliente-check:checked');
+const el = document.getElementById('allInadiClientes');
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+const checkedValues = Array.from(chk).map(i => i.value);
+inadiUserClienteSel = (all.length > 0 && all.length === chk.length) ? null : new Set(checkedValues);
 } else if (type === 'vendedor') {
 const all = document.querySelectorAll('.inadi-vendedor-check');
 const chk = document.querySelectorAll('.inadi-vendedor-check:checked');
 const el = document.getElementById('allInadiVendedores');
 if (el) el.checked = all.length > 0 && all.length === chk.length;
+const checkedValues = Array.from(chk).map(i => i.value);
+inadiUserVendedorSel = (all.length > 0 && all.length === chk.length) ? null : new Set(checkedValues);
 }
 }
 function resetInadimplenciaFilters() {
-document.querySelectorAll('.inadi-empresa-check, .inadi-vendedor-check').forEach(i => i.checked = true);
+inadiUserEmpresaSel = null;
+inadiUserClienteSel = null;
+inadiUserVendedorSel = null;
 document.getElementById('allInadiEmpresas').checked = true;
+document.getElementById('allInadiClientes').checked = true;
 document.getElementById('allInadiVendedores').checked = true;
 inadiVisibleYear = 'all';
 inadiMonthOptions = inadiMonthOptions.map(o => ({ ...o, checked: true }));
@@ -3630,48 +4865,65 @@ renderInadiMonthList();
 document.getElementById('inadiDataInicio').value = '';
 document.getElementById('inadiDataFim').value = '';
 document.getElementById('inadiSearch').value = '';
-applyInadimplenciaFilters();
+		const timerEl = document.getElementById('inadiSearchTimer');
+		const overlayEl = document.getElementById('inadiSearchProcessOverlay');
+		if (timerEl) timerEl.style.display = 'none';
+		if (overlayEl) overlayEl.style.display = 'none';
+		applyInadimplenciaFilters();
 }
-function applyInadimplenciaFilters() {
-syncInadiAllMesCheckbox();
-const empSel = new Set(Array.from(document.querySelectorAll('.inadi-empresa-check:checked')).map(i => i.value));
-const vendSel = new Set(Array.from(document.querySelectorAll('.inadi-vendedor-check:checked')).map(i => i.value));
-const mesSel = new Set(inadiMonthOptions.filter(o => o.checked).map(o => o.value));
-const searchVal = (document.getElementById('inadiSearch').value || '').toLowerCase().trim();
-const dataInicio = document.getElementById('inadiDataInicio').value;
-const dataFim = document.getElementById('inadiDataFim').value;
-const start = dataInicio ? new Date(dataInicio + 'T00:00:00') : null;
-const end = dataFim ? new Date(dataFim + 'T23:59:59') : null;
-inadimplenciaFilteredData = inadimplenciaRawData.filter(r => {
-const emp = String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim();
-if (empSel.size && !empSel.has(emp)) return false;
-const vend = String(r[INADIMPLENCIA_COLS.VENDEDOR] || '').trim();
-if (vendSel.size && vend && !vendSel.has(vend)) return false;
-const dataRef = r[1]; // VENCIMENTO
-if (dataRef instanceof Date) {
-if (inadiVisibleYear !== 'all' && String(dataRef.getFullYear()) !== String(inadiVisibleYear)) return false;
-if (mesSel.size) {
-const mk = `${dataRef.getFullYear()}-${String(dataRef.getMonth()+1).padStart(2,'0')}`;
-if (!mesSel.has(mk)) return false;
-}
-if (start && dataRef < start) return false;
-if (end && dataRef > end) return false;
-}
-if (searchVal) {
-const haystack = [
-r[INADIMPLENCIA_COLS.CLIENTE],
-r[INADIMPLENCIA_COLS.EMPRESA],
-r[INADIMPLENCIA_COLS.VENDEDOR],
-String(r[INADIMPLENCIA_COLS.DESCRICAO] || ''),
-formatCurrencyBR(r[3])
-].join(' ').toLowerCase();
-if (!haystack.includes(searchVal)) return false;
-}
-return true;
-});
-inadimplenciaFilteredData.sort((a, b) => b[3] - a[3]);
-updateInadimplenciaUI();
-}
+function applyInadimplenciaFiltersWithTimer() {
+		const searchInput = document.getElementById('inadiSearch');
+		const hasSearch = searchInput && searchInput.value.trim().length > 0;
+		const timerEl = document.getElementById('inadiSearchTimer');
+		const timeValEl = document.getElementById('inadiSearchTimeValue');
+		const timeValLargeEl = document.getElementById('inadiSearchTimeValueLarge');
+		const overlayEl = document.getElementById('inadiSearchProcessOverlay');
+		const iconEl = document.getElementById('inadiSearchIcon');
+		const spinnerEl = document.getElementById('inadiSearchSpinner');
+		
+		if (hasSearch) {
+		if (overlayEl) overlayEl.style.display = 'flex';
+		if (timerEl) timerEl.style.display = 'inline-flex';
+		if (iconEl) iconEl.style.display = 'none';
+		if (spinnerEl) spinnerEl.style.display = 'block';
+		} else {
+		if (overlayEl) overlayEl.style.display = 'none';
+		if (timerEl) timerEl.style.display = 'none';
+		if (iconEl) iconEl.style.display = 'block';
+		if (spinnerEl) spinnerEl.style.display = 'none';
+		}
+		
+		// Pequeno delay para permitir que o navegador renderize o overlay antes do processamento pesado (síncrono)
+		setTimeout(() => {
+		const start = performance.now();
+		applyInadimplenciaFilters();
+		const end = performance.now();
+		const duration = Math.round(end - start);
+		
+		if (hasSearch) {
+		if (timeValEl) timeValEl.textContent = `${duration}ms`;
+		if (timeValLargeEl) timeValLargeEl.textContent = `${duration}ms`;
+		}
+		
+		// Ocultar o overlay após um breve momento para o usuário ver o resultado
+		setTimeout(() => {
+		if (overlayEl) overlayEl.style.display = 'none';
+		if (spinnerEl) spinnerEl.style.display = 'none';
+		if (hasSearch && iconEl) iconEl.style.display = 'block';
+		}, 300);
+		}, 50);
+		}
+	function applyInadimplenciaFilters() {
+	syncInadiAllMesCheckbox();
+	refreshInadiDynamicFilterLists();
+	inadimplenciaFilteredData = inadimplenciaConsolidadaRawData.filter(r => passesInadiBaseFilters(r));
+	inadimplenciaFilteredData.sort((a, b) => {
+	const da = a[1] instanceof Date && !isNaN(a[1]) ? a[1].getTime() : 0;
+	const db = b[1] instanceof Date && !isNaN(b[1]) ? b[1].getTime() : 0;
+	return da - db;
+	});
+	updateInadimplenciaUI();
+	}
 function updateInadimplenciaUI() {
 const data = inadimplenciaFilteredData;
 const total = data.reduce((s, r) => s + r[3], 0);
@@ -3715,11 +4967,272 @@ footer.textContent = `${data.length} registro(s) exibido(s). Total: ${formatCurr
 }
 renderInadimplenciaCharts();
 }
+// ============== INSIGHTS DE INADIMPLÊNCIA ==============
+// Calcula um conjunto consolidado de insights a partir do dataset filtrado.
+// É utilizado tanto pelos cards no dashboard do modal quanto pelo PDF gerado,
+// garantindo consistência visual e analítica entre os dois canais.
+function computeInadimplenciaInsights(data) {
+  const result = {
+    hasData: false,
+    total: 0,
+    yearsSorted: [],
+    yearTotals: {},
+    yearMonthMap: {},
+    peakMonth: null,        // { label, value, year, monthIdx }
+    lowMonth: null,         // { label, value, year, monthIdx }
+    bestYear: null,         // { year, total }
+    worstYear: null,        // { year, total }
+    yoyChange: null,        // { from, to, fromTotal, toTotal, deltaPct }
+    seasonalQuarter: null,  // { label, avg }
+    topClientShare: null,   // { count, share, names }
+    topVendor: null,        // { name, total, share }
+    avgTicket: 0,
+    medianTicket: 0,
+    monthsWithData: 0,
+    avgMonthly: 0,
+    trend: null             // { dir: 'up'|'down'|'flat', slopePct }
+  };
+  if (!data || data.length === 0) return result;
+  result.hasData = true;
+  const monthLabels = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const yearMonthMap = {};
+  const yearTotals = {};
+  const monthlyTotalsAcrossYears = [0,0,0,0,0,0,0,0,0,0,0,0];
+  const monthlySeries = {}; // mk -> total, para tendência
+  data.forEach(r => {
+    const v = r[3] || 0;
+    result.total += v;
+    const d = r[1];
+    if (d instanceof Date && !isNaN(d)) {
+      const yr = d.getFullYear();
+      const mo = d.getMonth();
+      if (!yearMonthMap[yr]) yearMonthMap[yr] = {};
+      yearMonthMap[yr][mo + 1] = (yearMonthMap[yr][mo + 1] || 0) + v;
+      yearTotals[yr] = (yearTotals[yr] || 0) + v;
+      monthlyTotalsAcrossYears[mo] += v;
+      const mk = `${yr}-${String(mo + 1).padStart(2,'0')}`;
+      monthlySeries[mk] = (monthlySeries[mk] || 0) + v;
+    }
+  });
+  result.yearMonthMap = yearMonthMap;
+  result.yearTotals = yearTotals;
+  result.yearsSorted = Object.keys(yearTotals).map(y => parseInt(y, 10)).sort((a,b) => a - b);
+  // Pico / vale mensal (em todo o período)
+  let peak = { label: '', value: -Infinity, year: null, monthIdx: -1 };
+  let low  = { label: '', value: Infinity,  year: null, monthIdx: -1 };
+  result.yearsSorted.forEach(yr => {
+    for (let m = 1; m <= 12; m++) {
+      const v = yearMonthMap[yr][m] || 0;
+      if (v <= 0) continue;
+      if (v > peak.value) peak = { label: `${monthLabels[m-1]}/${String(yr).slice(-2)}`, value: v, year: yr, monthIdx: m };
+      if (v < low.value)  low  = { label: `${monthLabels[m-1]}/${String(yr).slice(-2)}`, value: v, year: yr, monthIdx: m };
+    }
+  });
+  if (peak.value > -Infinity) result.peakMonth = peak;
+  if (low.value  <  Infinity) result.lowMonth  = low;
+  // Anos extremos
+  if (result.yearsSorted.length > 0) {
+    let best = { year: null, total: -Infinity }, worst = { year: null, total: Infinity };
+    result.yearsSorted.forEach(yr => {
+      const t = yearTotals[yr];
+      if (t > best.total)  best  = { year: yr, total: t };
+      if (t < worst.total) worst = { year: yr, total: t };
+    });
+    result.worstYear = best;   // "pior" = maior inadimplência
+    result.bestYear  = worst;  // "melhor" = menor inadimplência
+  }
+  // Variação YoY entre os dois últimos anos com dados
+  if (result.yearsSorted.length >= 2) {
+    const yA = result.yearsSorted[result.yearsSorted.length - 2];
+    const yB = result.yearsSorted[result.yearsSorted.length - 1];
+    const tA = yearTotals[yA];
+    const tB = yearTotals[yB];
+    const deltaPct = tA > 0 ? ((tB - tA) / tA) * 100 : null;
+    result.yoyChange = { from: yA, to: yB, fromTotal: tA, toTotal: tB, deltaPct };
+  }
+  // Trimestre crítico (média mensal por trimestre, agregada por todos os anos)
+  const quarters = [
+    { label: 'Q1 (Jan–Mar)', sum: monthlyTotalsAcrossYears[0] + monthlyTotalsAcrossYears[1] + monthlyTotalsAcrossYears[2] },
+    { label: 'Q2 (Abr–Jun)', sum: monthlyTotalsAcrossYears[3] + monthlyTotalsAcrossYears[4] + monthlyTotalsAcrossYears[5] },
+    { label: 'Q3 (Jul–Set)', sum: monthlyTotalsAcrossYears[6] + monthlyTotalsAcrossYears[7] + monthlyTotalsAcrossYears[8] },
+    { label: 'Q4 (Out–Dez)', sum: monthlyTotalsAcrossYears[9] + monthlyTotalsAcrossYears[10] + monthlyTotalsAcrossYears[11] }
+  ];
+  quarters.sort((a,b) => b.sum - a.sum);
+  if (quarters[0].sum > 0) result.seasonalQuarter = { label: quarters[0].label, total: quarters[0].sum };
+  // Concentração: % dos top 5 clientes sobre o total
+  const clientMap = {};
+  data.forEach(r => {
+    const c = String(r[INADIMPLENCIA_COLS.CLIENTE] || 'Sem Cliente').trim();
+    clientMap[c] = (clientMap[c] || 0) + (r[3] || 0);
+  });
+  const clientSorted = Object.entries(clientMap).sort((a,b) => b[1] - a[1]);
+  if (clientSorted.length > 0 && result.total > 0) {
+    const topN = Math.min(5, clientSorted.length);
+    const sumTop = clientSorted.slice(0, topN).reduce((s, x) => s + x[1], 0);
+    result.topClientShare = {
+      count: topN,
+      share: (sumTop / result.total) * 100,
+      names: clientSorted.slice(0, topN).map(x => x[0])
+    };
+  }
+  // Vendedor com maior exposição
+  const vendMap = {};
+  data.forEach(r => {
+    const v = String(r[INADIMPLENCIA_COLS.VENDEDOR] || 'Sem Vendedor').trim();
+    vendMap[v] = (vendMap[v] || 0) + (r[3] || 0);
+  });
+  const vendSorted = Object.entries(vendMap).sort((a,b) => b[1] - a[1]);
+  if (vendSorted.length > 0 && result.total > 0) {
+    result.topVendor = {
+      name: vendSorted[0][0],
+      total: vendSorted[0][1],
+      share: (vendSorted[0][1] / result.total) * 100
+    };
+  }
+  // Ticket médio e mediano
+  const values = data.map(r => r[3] || 0).filter(v => v > 0).sort((a,b) => a - b);
+  result.avgTicket = values.length ? values.reduce((s,v) => s + v, 0) / values.length : 0;
+  result.medianTicket = values.length
+    ? (values.length % 2 === 1 ? values[(values.length - 1) >> 1] : (values[values.length/2 - 1] + values[values.length/2]) / 2)
+    : 0;
+  // Média mensal e tendência linear sobre a série cronológica
+  const monthlyKeys = Object.keys(monthlySeries).sort();
+  result.monthsWithData = monthlyKeys.length;
+  const monthlyVals = monthlyKeys.map(k => monthlySeries[k]);
+  result.avgMonthly = monthlyVals.length ? monthlyVals.reduce((s,v) => s+v, 0) / monthlyVals.length : 0;
+  if (monthlyVals.length >= 2) {
+    const n = monthlyVals.length;
+    const sumX = monthlyVals.reduce((s,_,i) => s + i, 0);
+    const sumY = monthlyVals.reduce((s,v) => s + v, 0);
+    const sumXY = monthlyVals.reduce((s,v,i) => s + i*v, 0);
+    const sumX2 = monthlyVals.reduce((s,_,i) => s + i*i, 0);
+    const denom = (n * sumX2 - sumX * sumX);
+    const slope = denom !== 0 ? (n * sumXY - sumX * sumY) / denom : 0;
+    const baseline = result.avgMonthly || 1;
+    const slopePct = (slope / baseline) * 100;
+    const dir = slopePct > 1 ? 'up' : slopePct < -1 ? 'down' : 'flat';
+    result.trend = { dir, slopePct, slope };
+  }
+  return result;
+}
+function renderInadimplenciaInsights(data, yearMonthMap, yearsSorted, yearTotals) {
+  const grid = document.getElementById('inadiInsightsGrid');
+  const section = document.getElementById('inadiInsightsSection');
+  if (!grid) return;
+  const ins = computeInadimplenciaInsights(data);
+  if (!ins.hasData) {
+    grid.innerHTML = '';
+    if (section) section.style.display = 'none';
+    return;
+  }
+  if (section) section.style.display = '';
+  const cards = [];
+  // 1) Pior mês histórico
+  if (ins.peakMonth) {
+    cards.push({
+      tone: 'red', icon: 'fa-arrow-trend-up',
+      label: 'Mês mais crítico',
+      value: ins.peakMonth.label,
+      meta: `${formatCurrencyBR(ins.peakMonth.value)} acumulados`
+    });
+  }
+  // 2) Pior ano
+  if (ins.worstYear && ins.worstYear.year != null) {
+    const share = ins.total > 0 ? (ins.worstYear.total / ins.total) * 100 : 0;
+    cards.push({
+      tone: 'amber', icon: 'fa-calendar-xmark',
+      label: 'Ano de maior inadimplência',
+      value: String(ins.worstYear.year),
+      meta: `${formatCurrencyBR(ins.worstYear.total)} · ${share.toFixed(1)}% do histórico`
+    });
+  }
+  // 3) Variação YoY
+  if (ins.yoyChange && ins.yoyChange.deltaPct != null) {
+    const dp = ins.yoyChange.deltaPct;
+    const tone = dp > 0 ? 'red' : (dp < 0 ? 'green' : 'blue');
+    const arrow = dp > 0 ? '↑' : dp < 0 ? '↓' : '→';
+    cards.push({
+      tone, icon: 'fa-right-left',
+      label: `Variação ${ins.yoyChange.from} → ${ins.yoyChange.to}`,
+      value: `${arrow} ${Math.abs(dp).toFixed(1)}%`,
+      meta: `${formatCurrencyBR(ins.yoyChange.fromTotal)} → ${formatCurrencyBR(ins.yoyChange.toTotal)}`
+    });
+  } else if (ins.yearsSorted.length === 1) {
+    cards.push({
+      tone: 'blue', icon: 'fa-circle-info',
+      label: 'Comparação YoY',
+      value: '—',
+      meta: `Apenas ${ins.yearsSorted[0]} no filtro atual`
+    });
+  }
+  // 4) Trimestre crítico
+  if (ins.seasonalQuarter) {
+    cards.push({
+      tone: 'violet', icon: 'fa-chart-column',
+      label: 'Trimestre crítico',
+      value: ins.seasonalQuarter.label,
+      meta: `${formatCurrencyBR(ins.seasonalQuarter.total)} consolidados`
+    });
+  }
+  // 5) Concentração de clientes
+  if (ins.topClientShare) {
+    cards.push({
+      tone: 'cyan', icon: 'fa-users-line',
+      label: `Top ${ins.topClientShare.count} clientes`,
+      value: `${ins.topClientShare.share.toFixed(1)}%`,
+      meta: `${safeShortText(ins.topClientShare.names[0] || '—', 28)} lidera`
+    });
+  }
+  // 6) Vendedor com maior exposição
+  if (ins.topVendor && ins.topVendor.name && ins.topVendor.name !== 'Sem Vendedor') {
+    cards.push({
+      tone: 'amber', icon: 'fa-user-tie',
+      label: 'Vendedor mais exposto',
+      value: safeShortText(ins.topVendor.name, 22),
+      meta: `${ins.topVendor.share.toFixed(1)}% · ${formatCurrencyBR(ins.topVendor.total)}`
+    });
+  }
+  // 7) Tendência
+  if (ins.trend) {
+    const t = ins.trend;
+    const tone = t.dir === 'up' ? 'red' : t.dir === 'down' ? 'green' : 'blue';
+    const arrow = t.dir === 'up' ? '↗' : t.dir === 'down' ? '↘' : '→';
+    const text = t.dir === 'up' ? 'Em alta' : t.dir === 'down' ? 'Em queda' : 'Estável';
+    cards.push({
+      tone, icon: 'fa-wave-square',
+      label: 'Tendência histórica',
+      value: `${arrow} ${text}`,
+      meta: `${t.slopePct >= 0 ? '+' : ''}${t.slopePct.toFixed(1)}% por mês · ${ins.monthsWithData} meses`
+    });
+  }
+  // 8) Ticket médio vs mediano (revela assimetria)
+  if (ins.avgTicket > 0) {
+    const skew = ins.medianTicket > 0 ? (ins.avgTicket / ins.medianTicket) : 1;
+    const meta = skew > 1.5
+      ? `Mediana: ${formatCurrencyBR(ins.medianTicket)} · alta dispersão`
+      : `Mediana: ${formatCurrencyBR(ins.medianTicket)}`;
+    cards.push({
+      tone: 'blue', icon: 'fa-scale-balanced',
+      label: 'Ticket médio',
+      value: formatCurrencyBR(ins.avgTicket),
+      meta
+    });
+  }
+  grid.innerHTML = cards.map(c => `
+    <div class="inadi-insight-card tone-${c.tone}">
+      <i class="fas ${c.icon} inadi-insight-icon"></i>
+      <div class="inadi-insight-label">${c.label}</div>
+      <div class="inadi-insight-value" title="${String(c.value).replace(/"/g, '&quot;')}">${c.value}</div>
+      <div class="inadi-insight-meta">${c.meta}</div>
+    </div>
+  `).join('');
+}
 function destroyInadiCharts() {
 if (inadiEmpresaChart) { inadiEmpresaChart.destroy(); inadiEmpresaChart = null; }
 if (inadiVendedorChart) { inadiVendedorChart.destroy(); inadiVendedorChart = null; }
 if (inadiMesChart) { inadiMesChart.destroy(); inadiMesChart = null; }
 if (inadiPercChart) { inadiPercChart.destroy(); inadiPercChart = null; }
+if (inadiFaturamentoClienteChart) { inadiFaturamentoClienteChart.destroy(); inadiFaturamentoClienteChart = null; }
 }
 function renderInadimplenciaCharts() {
 destroyInadiCharts();
@@ -3789,70 +5302,143 @@ tooltip: { callbacks: { label: ctx => ` ${formatCurrencyBR(ctx.parsed.x)}` } }
 }
 });
 }
-// Chart 3: Evolução Mensal por Vencimento (line)
+// Chart 3: INADIMPLÊNCIA HISTÓRICA - Comparativo Mensal por Ano (grouped bar — volume mensal entre períodos anuais)
+// Mantém também o mesSorted (cronológico) para uso no cálculo do gráfico
+// percentual de inadimplência (Chart 4), preservando o comportamento original.
 const mesMap = {};
+const yearMonthMap = {}; // { year: { 1: total, 2: total, ... 12: total } }
+const yearTotals = {};
 data.forEach(r => {
 const d = r[1]; // VENCIMENTO
 if (d instanceof Date && !isNaN(d)) {
 const mk = `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
 mesMap[mk] = (mesMap[mk] || { key: `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}`, total: 0 });
 mesMap[mk].total += r[3];
+const yr = d.getFullYear();
+const mo = d.getMonth() + 1;
+if (!yearMonthMap[yr]) yearMonthMap[yr] = {};
+yearMonthMap[yr][mo] = (yearMonthMap[yr][mo] || 0) + (r[3] || 0);
+yearTotals[yr] = (yearTotals[yr] || 0) + (r[3] || 0);
 }
 });
 const mesSorted = Object.entries(mesMap).sort((a,b) => a[1].key.localeCompare(b[1].key));
+const monthLabels = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const yearsSorted = Object.keys(yearMonthMap).map(y => parseInt(y, 10)).sort((a,b) => a - b);
+// Paleta cíclica para diferentes anos
+const yearPalette = [
+  { bg: 'rgba(79,70,229,0.78)',  border: '#4f46e5' },  // indigo
+  { bg: 'rgba(239,68,68,0.78)',  border: '#ef4444' },  // red
+  { bg: 'rgba(245,158,11,0.78)', border: '#f59e0b' },  // amber
+  { bg: 'rgba(16,185,129,0.78)', border: '#10b981' },  // green
+  { bg: 'rgba(6,182,212,0.78)',  border: '#06b6d4' },  // cyan
+  { bg: 'rgba(139,92,246,0.78)', border: '#8b5cf6' },  // violet
+  { bg: 'rgba(236,72,153,0.78)', border: '#ec4899' }   // pink
+];
+const yearDatasets = yearsSorted.map((yr, idx) => {
+  const color = yearPalette[idx % yearPalette.length];
+  return {
+    label: String(yr),
+    data: monthLabels.map((_, i) => yearMonthMap[yr][i + 1] || 0),
+    backgroundColor: color.bg,
+    borderColor: color.border,
+    borderWidth: 1.5,
+    borderRadius: 4,
+    maxBarThickness: 28
+  };
+});
+// Atualiza badge resumo (ex.: "3 anos · 2022 → 2024")
+const yearBadge = document.getElementById('inadiYearCompareBadge');
+if (yearBadge) {
+  if (yearsSorted.length === 0) {
+    yearBadge.textContent = 'Sem dados';
+  } else if (yearsSorted.length === 1) {
+    yearBadge.textContent = `Ano único: ${yearsSorted[0]}`;
+  } else {
+    yearBadge.textContent = `${yearsSorted.length} anos · ${yearsSorted[0]} → ${yearsSorted[yearsSorted.length - 1]}`;
+  }
+}
 const mesCanvas = document.getElementById('inadiMesChart');
 if (mesCanvas) {
 const mesCtx = mesCanvas.getContext('2d');
 inadiMesChart = new Chart(mesCtx, {
-type: 'line',
+type: 'bar',
 data: {
-labels: mesSorted.map(e => e[0]),
-datasets: [{
-label: 'Inadimplência Mensal',
-data: mesSorted.map(e => e[1].total),
-borderColor: '#4f46e5',
-backgroundColor: 'rgba(79,70,229,0.08)',
-borderWidth: 2.5,
-fill: true,
-tension: 0.4,
-pointBackgroundColor: '#ef4444',
-pointBorderColor: '#fff',
-pointBorderWidth: 2,
-pointRadius: 5,
-pointHoverRadius: 7
-}]
+labels: monthLabels,
+datasets: yearDatasets
 },
 options: {
 responsive: true, maintainAspectRatio: false,
+interaction: { mode: 'index', intersect: false },
 scales: {
-y: { ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } }, grid: { color: gridColor } },
-x: { ticks: { color: tickColor, font: { size: 9 }, maxRotation: 45 }, grid: { display: false } }
+y: { beginAtZero: true, ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } }, grid: { color: gridColor } },
+x: { ticks: { color: tickColor, font: { size: 10, weight: '600' } }, grid: { display: false } }
 },
 plugins: {
-legend: { display: false },
-tooltip: { callbacks: { label: ctx => ` ${formatCurrencyBR(ctx.parsed.y)}` } }
+legend: { display: yearDatasets.length > 0, position: 'top', labels: { color: tickColor, font: { size: 10, weight: '700' }, padding: 12, usePointStyle: true, boxWidth: 10 } },
+tooltip: {
+  callbacks: {
+    title: ctx => ctx[0] ? `${ctx[0].label} — comparativo anual` : '',
+    label: ctx => ` ${ctx.dataset.label}: ${formatCurrencyBR(ctx.parsed.y)}`,
+    footer: items => {
+      const sum = items.reduce((s, i) => s + (i.parsed.y || 0), 0);
+      return items.length > 1 ? `Soma do mês: ${formatCurrencyBR(sum)}` : '';
+    }
+  }
+}
 }
 }
 });
 }
-// ── Chart 4: Percentual Mensal de Inadimplência ──────────────────────────
-// Para cada mês presente nos dados filtrados, calcula o peso percentual
-// daquele mês em relação ao total inadimplente do período selecionado.
+// Atualiza cards de insights
+renderInadimplenciaInsights(data, yearMonthMap, yearsSorted, yearTotals);
+// ── Chart 4: Inadimplência Nominal Mensal ─────────────────────────────────
+// Para cada mês com vencimentos presentes nos dados filtrados, calcula a taxa:
+//   inadimplência nominal = Σ títulos não quitados no mês / Σ títulos com
+//   vencimento no mês (usando receitasRawData como denominador, assim o cálculo
+//   reflete o volume total faturado no período, independente do status de pagamento).
 // A linha de tendência é calculada por regressão linear (mínimos quadrados).
 const percWrap   = document.getElementById('inadiPercWrap');
 const percCanvas = document.getElementById('inadiPercChart');
 const percBadge  = document.getElementById('inadiPercTotalBadge');
+// Monta o total faturado por mês (denominador) somando TODOS os títulos com
+// vencimento no mês, independente do status de pagamento, oriundos tanto da
+// aba "Receitas" quanto da aba "Inadimplência" (evitando dupla contagem de
+// registros que constam nas duas abas, via chave composta).
+const totalFaturadoPorMes = {};
+const chavesContadas = new Set();
+const acumularNoMes = (r) => {
+    const d = r[1]; // VENCIMENTO
+    if (!(d instanceof Date) || isNaN(d)) return;
+    const mk = `${String(d.getMonth()+1).padStart(2,'0')}/${String(d.getFullYear()).slice(-2)}`;
+    totalFaturadoPorMes[mk] = (totalFaturadoPorMes[mk] || 0) + (r[3] || 0);
+};
+(receitasRawData || []).forEach(r => {
+    const chave = buildInadimplenciaKey(r);
+    chavesContadas.add(chave);
+    acumularNoMes(r);
+});
+(inadimplenciaRawData || []).forEach(r => {
+    const chave = buildInadimplenciaKey(r);
+    if (chavesContadas.has(chave)) return; // já contado via Receitas
+    acumularNoMes(r);
+});
+// mesSorted já contém os meses inadimplentes filtrados (numerador)
+const percLabels = mesSorted.map(e => e[0]);
+const percVals = mesSorted.map(e => {
+const inadimplMes = e[1].total;
+const faturadoMes = totalFaturadoPorMes[e[0]] || 0;
+if (faturadoMes <= 0) return 0;
+return parseFloat(((inadimplMes / faturadoMes) * 100).toFixed(2));
+});
 const totalPeriodo = Object.values(mesMap).reduce((s, v) => s + v.total, 0);
 if (mesSorted.length >= 2 && totalPeriodo > 0 && percCanvas) {
 if (percWrap) percWrap.style.display = '';
-const percLabels = mesSorted.map(e => e[0]);
-const percVals   = mesSorted.map(e => parseFloat(((e[1].total / totalPeriodo) * 100).toFixed(2)));
 const maxPerc    = Math.max(...percVals);
 const maxIdx     = percVals.indexOf(maxPerc);
 const barColors  = percVals.map((v, i) => i === maxIdx ? 'rgba(239,68,68,0.90)' : 'rgba(239,68,68,0.42)');
 const barBorders = percVals.map((v, i) => i === maxIdx ? '#ef4444' : 'rgba(239,68,68,0.65)');
 // Regressão linear (mínimos quadrados): y = a + b·x
-// x = índice do mês (0, 1, 2 …), y = percentual
+// x = índice do mês (0, 1, 2 …), y = taxa de inadimplência (%)
 const n = percVals.length;
 const sumX  = percVals.reduce((s, _, i) => s + i, 0);
 const sumY  = percVals.reduce((s, v) => s + v, 0);
@@ -3870,7 +5456,7 @@ labels: percLabels,
 datasets: [
 {
 type: 'bar',
-label: '% do período',
+label: '% inadimplência no mês',
 data: percVals,
 backgroundColor: barColors,
 borderColor: barBorders,
@@ -3918,7 +5504,7 @@ tooltip: {
 callbacks: {
 label: ctx => ctx.dataset.type === 'line'
 ? ` Tendência: ${ctx.parsed.y.toFixed(2)}%`
-: ` Participação: ${ctx.parsed.y.toFixed(2)}%`
+: ` Inadimplência: ${ctx.parsed.y.toFixed(2)}%`
 }
 }
 }
@@ -3927,7 +5513,179 @@ label: ctx => ctx.dataset.type === 'line'
 } else {
 if (percWrap) percWrap.style.display = 'none';
 }
+// ── Chart 5: Comparativo de Faturamento por Cliente ──────────────────────
+// Mostra o comportamento MENSAL dos clientes selecionados, por ano.
+// Cada dataset representa um cliente + ano (ex.: "Cliente A – 2024").
+// Eixo X = meses (Jan–Dez); Eixo Y = valor faturado no mês.
+// Respeita todos os filtros do painel (empresa, cliente, vendedor, período, busca).
+const faturamentoBadge = document.getElementById('inadiFaturamentoClienteBadge');
+const faturamentoCanvas = document.getElementById('inadiFaturamentoClienteChart');
+if (faturamentoCanvas) {
+  // Mapa: cliente → ano → mês(1-12) → total
+  const clienteAnoMesMap = {}; // { "Cliente X": { 2023: { 1: val, 2: val, ... }, 2024: {...} } }
+  inadiGetFaturamentoUniverse().forEach(r => {
+    if (!passesInadiBaseFilters(r)) return;
+    const c = String(r[INADIMPLENCIA_COLS.CLIENTE] || 'Sem Cliente').trim();
+    const d = r[1];
+    if (!(d instanceof Date) || isNaN(d)) return;
+    const yr = d.getFullYear();
+    const mo = d.getMonth() + 1;
+    if (!clienteAnoMesMap[c]) clienteAnoMesMap[c] = {};
+    if (!clienteAnoMesMap[c][yr]) clienteAnoMesMap[c][yr] = {};
+    clienteAnoMesMap[c][yr][mo] = (clienteAnoMesMap[c][yr][mo] || 0) + (r[3] || 0);
+  });
+
+  const clientesPresentes = Object.keys(clienteAnoMesMap).sort();
+  const anosPresentes = Array.from(
+    new Set(clientesPresentes.flatMap(c => Object.keys(clienteAnoMesMap[c]).map(Number)))
+  ).sort((a, b) => a - b);
+
+  const monthLabels = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+
+  // Paleta: uma cor base por cliente, variando opacidade/traço por ano
+  const clientePalette = [
+    { base: '#10b981', bgs: ['rgba(16,185,129,0.80)','rgba(16,185,129,0.50)','rgba(16,185,129,0.30)'] },
+    { base: '#4f46e5', bgs: ['rgba(79,70,229,0.80)','rgba(79,70,229,0.50)','rgba(79,70,229,0.30)'] },
+    { base: '#ef4444', bgs: ['rgba(239,68,68,0.80)','rgba(239,68,68,0.50)','rgba(239,68,68,0.30)'] },
+    { base: '#f59e0b', bgs: ['rgba(245,158,11,0.80)','rgba(245,158,11,0.50)','rgba(245,158,11,0.30)'] },
+    { base: '#06b6d4', bgs: ['rgba(6,182,212,0.80)','rgba(6,182,212,0.50)','rgba(6,182,212,0.30)'] },
+    { base: '#8b5cf6', bgs: ['rgba(139,92,246,0.80)','rgba(139,92,246,0.50)','rgba(139,92,246,0.30)'] },
+    { base: '#ec4899', bgs: ['rgba(236,72,153,0.80)','rgba(236,72,153,0.50)','rgba(236,72,153,0.30)'] },
+    { base: '#14b8a6', bgs: ['rgba(20,184,166,0.80)','rgba(20,184,166,0.50)','rgba(20,184,166,0.30)'] },
+    { base: '#f97316', bgs: ['rgba(249,115,22,0.80)','rgba(249,115,22,0.50)','rgba(249,115,22,0.30)'] },
+    { base: '#6366f1', bgs: ['rgba(99,102,241,0.80)','rgba(99,102,241,0.50)','rgba(99,102,241,0.30)'] },
+  ];
+
+  // Tipos de traçado por ano para diferenciar visualmente anos do mesmo cliente
+  const borderDashStyles = [[], [6, 3], [2, 3], [8, 4, 2, 4]];
+
+  const datasets = [];
+  // Limita a 8 clientes para legibilidade; se nenhum cliente específico selecionado, top 8 por total
+  const clientesExibidos = (inadiUserClienteSel && inadiUserClienteSel.size > 0 && inadiUserClienteSel.size <= 8)
+    ? clientesPresentes.filter(c => inadiUserClienteSel.has(c))
+    : (() => {
+        const totais = clientesPresentes.map(c => ({
+          c,
+          total: Object.values(clienteAnoMesMap[c]).flatMap(m => Object.values(m)).reduce((s, v) => s + v, 0)
+        }));
+        return totais.sort((a, b) => b.total - a.total).slice(0, 8).map(x => x.c);
+      })();
+
+  clientesExibidos.forEach((cliente, ci) => {
+    const palette = clientePalette[ci % clientePalette.length];
+    const anosDoCliente = Object.keys(clienteAnoMesMap[cliente]).map(Number).sort((a, b) => a - b);
+    anosDoCliente.forEach((yr, yi) => {
+      const monthData = monthLabels.map((_, i) => clienteAnoMesMap[cliente][yr][i + 1] || null);
+      // Verifica se há algum dado real no ano para este cliente
+      const hasData = monthData.some(v => v !== null && v > 0);
+      if (!hasData) return;
+      datasets.push({
+        label: clientesExibidos.length === 1 ? String(yr) : `${safeShortText(cliente, 20)} – ${yr}`,
+        data: monthData,
+        borderColor: palette.base,
+        backgroundColor: palette.bgs[yi % palette.bgs.length],
+        borderWidth: 2,
+        borderDash: borderDashStyles[yi % borderDashStyles.length],
+        pointRadius: 4,
+        pointHoverRadius: 6,
+        tension: 0.3,
+        spanGaps: false,
+        fill: false,
+        _cliente: cliente,
+        _ano: yr
+      });
+    });
+  });
+
+  // Badge informativo
+  const totalGeral = clientesExibidos.reduce((s, c) =>
+    s + Object.values(clienteAnoMesMap[c] || {}).flatMap(m => Object.values(m)).reduce((a, v) => a + v, 0), 0
+  );
+  if (faturamentoBadge) {
+    const nClientes = clientesExibidos.length;
+    const nAnos = anosPresentes.length;
+    faturamentoBadge.textContent = nClientes > 0
+      ? `${nClientes} cliente(s) · ${nAnos} ano(s) · Total: ${formatCurrencyBR(totalGeral)}`
+      : 'Sem dados';
+  }
+
+  inadiFaturamentoClienteChart = new Chart(faturamentoCanvas.getContext('2d'), {
+    type: 'line',
+    data: {
+      labels: monthLabels,
+      datasets: datasets
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      interaction: { mode: 'index', intersect: false },
+      scales: {
+        x: {
+          ticks: { color: tickColor, font: { size: 10, weight: '600' } },
+          grid: { color: gridColor }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } },
+          grid: { color: gridColor }
+        }
+      },
+      plugins: {
+        legend: {
+          display: datasets.length > 0,
+          position: 'top',
+          labels: {
+            color: tickColor,
+            font: { size: 10, weight: '700' },
+            padding: 12,
+            usePointStyle: true,
+            boxWidth: 10
+          }
+        },
+        tooltip: {
+          callbacks: {
+            title: ctx => ctx[0] ? `${ctx[0].label}` : '',
+            label: ctx => {
+              const v = ctx.parsed.y;
+              if (v === null || v === undefined) return null;
+              return ` ${ctx.dataset.label}: ${formatCurrencyBR(v)}`;
+            },
+            footer: items => {
+              const sum = items.reduce((s, i) => s + (i.parsed.y || 0), 0);
+              return items.length > 1 ? `Total do mês: ${formatCurrencyBR(sum)}` : '';
+            }
+          }
+        }
+      }
+    }
+  });
 }
+}
+// ============== INADIMPLÊNCIA EXCEL ==============
+function exportInadimplenciaXlsx() {
+const data = inadimplenciaFilteredData;
+if (!data || data.length === 0) { alert('Nenhum dado de inadimplência para exportar.'); return; }
+const header = ['Empresa', 'Cliente', 'Nº Documento', 'Vencimento', 'Liquidação', 'Vendedor', 'Valor (R$)'];
+const rows = data.map(r => [
+String(r[INADIMPLENCIA_COLS.EMPRESA] || ''),
+String(r[INADIMPLENCIA_COLS.CLIENTE] || ''),
+String(r[INADIMPLENCIA_COLS.DESCRICAO] || ''),
+r[1] instanceof Date && !isNaN(r[1]) ? r[1].toLocaleDateString('pt-BR') : '',
+r[4] instanceof Date && !isNaN(r[4]) ? r[4].toLocaleDateString('pt-BR') : '',
+String(r[INADIMPLENCIA_COLS.VENDEDOR] || ''),
+Number((r[3] || 0).toFixed(2))
+]);
+// Linha de totais
+const total = data.reduce((s, r) => s + r[3], 0);
+rows.push(['', '', '', '', '', 'TOTAL', Number(total.toFixed(2))]);
+const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+// Larguras de coluna
+ws['!cols'] = [{ wch: 14 }, { wch: 32 }, { wch: 22 }, { wch: 13 }, { wch: 13 }, { wch: 22 }, { wch: 16 }];
+const wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, 'Inadimplência');
+XLSX.writeFile(wb, `inadimplencia_${new Date().getTime()}.xlsx`);
+}
+
 // ============== INADIMPLÊNCIA PDF ==============
 let inadimplenciaPdfUrl = null;
 function previewInadimplenciaPDF() {
@@ -4050,7 +5808,7 @@ body: [
 ['Empresas Afetadas', empresas.toString()],
 ['Vendedores Envolvidos', vendedores.toString()],
 ['Ticket Médio', formatCurrencyBR(ticketMedio)],
-['Maior Exposição', `${formatCurrencyBR(maxRec[3])} — ${safeShortText(maxRec[INADIMPLENCIA_COLS.CLIENTE]||'-', 35)}`]
+['Maior Inadimplência', `${formatCurrencyBR(maxRec[3])} — ${safeShortText(maxRec[INADIMPLENCIA_COLS.CLIENTE]||'-', 35)}`]
 ],
 theme: 'striped',
 styles: { fontSize: 9, textColor: [0,0,0] },
@@ -4079,6 +5837,116 @@ margin: { left: pageWidth/2 + 5, right: 15 }
 });
 const empresaFinalY = doc.lastAutoTable.finalY;
 y = Math.max(resumoFinalY, empresaFinalY) + 14;
+// ===== INSIGHTS ESTRATÉGICOS =====
+// Renderiza um painel de cards com os mesmos insights apresentados no
+// dashboard (mês crítico, variação YoY, trimestre crítico, concentração,
+// vendedor mais exposto, tendência histórica, etc.) seguindo o layout
+// visual do relatório para reforçar a leitura executiva.
+try {
+  const ins = computeInadimplenciaInsights(data);
+  if (ins && ins.hasData) {
+    if (y > 150) { doc.addPage(); y = 20; }
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(11);
+    doc.setTextColor(79, 70, 229);
+    doc.text('INSIGHTS ESTRATÉGICOS', 15, y);
+    y += 3;
+    doc.setFillColor(79, 70, 229);
+    doc.rect(15, y, 60, 0.5, 'F');
+    y += 6;
+    doc.setFont('helvetica', 'italic');
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text('Indicadores históricos consolidados a partir do conjunto filtrado — podem não refletir a posição atual da carteira.', 15, y);
+    y += 6;
+    // Monta cards (label, value, meta, color)
+    const C = {
+      red:    { fill: [254, 226, 226], stripe: [239, 68, 68],  text: [185, 28, 28] },
+      amber:  { fill: [254, 243, 199], stripe: [245, 158, 11], text: [180, 83, 9]  },
+      green:  { fill: [220, 252, 231], stripe: [16, 185, 129], text: [4, 120, 87]  },
+      blue:   { fill: [224, 231, 255], stripe: [79, 70, 229],  text: [55, 48, 163] },
+      violet: { fill: [237, 233, 254], stripe: [139, 92, 246], text: [91, 33, 182] },
+      cyan:   { fill: [207, 250, 254], stripe: [6, 182, 212],  text: [21, 94, 117] }
+    };
+    const cards = [];
+    if (ins.peakMonth) cards.push({ tone: 'red', label: 'Mês mais crítico', value: ins.peakMonth.label, meta: `${formatCurrencyBR(ins.peakMonth.value)} acumulados` });
+    if (ins.worstYear && ins.worstYear.year != null) {
+      const share = ins.total > 0 ? (ins.worstYear.total / ins.total) * 100 : 0;
+      cards.push({ tone: 'amber', label: 'Ano de maior Inadimplência', value: String(ins.worstYear.year), meta: `${formatCurrencyBR(ins.worstYear.total)} · ${share.toFixed(1)}% do histórico` });
+    }
+    if (ins.yoyChange && ins.yoyChange.deltaPct != null) {
+      const dp = ins.yoyChange.deltaPct;
+      const tone = dp > 0 ? 'red' : (dp < 0 ? 'green' : 'blue');
+      const arrow = dp > 0 ? 'Alta' : dp < 0 ? 'Queda' : 'Estável';
+      cards.push({
+        tone,
+        label: `Variação ${ins.yoyChange.from} -> ${ins.yoyChange.to}`,
+        value: `${arrow} ${Math.abs(dp).toFixed(1)}%`,
+        meta: `${formatCurrencyBR(ins.yoyChange.fromTotal)} -> ${formatCurrencyBR(ins.yoyChange.toTotal)}`
+      });
+    } else if (ins.yearsSorted.length === 1) {
+      cards.push({ tone: 'blue', label: 'Comparação YoY', value: '-', meta: `Apenas ${ins.yearsSorted[0]} no filtro atual` });
+    }
+    if (ins.seasonalQuarter) cards.push({ tone: 'violet', label: 'Trimestre crítico', value: ins.seasonalQuarter.label, meta: `${formatCurrencyBR(ins.seasonalQuarter.total)} consolidados` });
+    if (ins.topClientShare) cards.push({ tone: 'cyan', label: `Top ${ins.topClientShare.count} clientes`, value: `${ins.topClientShare.share.toFixed(1)}%`, meta: `Lidera: ${safeShortText(ins.topClientShare.names[0] || '-', 30)}` });
+    if (ins.topVendor && ins.topVendor.name && ins.topVendor.name !== 'Sem Vendedor') cards.push({ tone: 'amber', label: 'Vendedor mais exposto', value: safeShortText(ins.topVendor.name, 22), meta: `${ins.topVendor.share.toFixed(1)}% · ${formatCurrencyBR(ins.topVendor.total)}` });
+    if (ins.trend) {
+      const t = ins.trend;
+      const tone = t.dir === 'up' ? 'red' : t.dir === 'down' ? 'green' : 'blue';
+      const text = t.dir === 'up' ? 'Em alta' : t.dir === 'down' ? 'Em queda' : 'Estável';
+      cards.push({ tone, label: 'Tendência histórica', value: text, meta: `${t.slopePct >= 0 ? '+' : ''}${t.slopePct.toFixed(1)}% por mês · ${ins.monthsWithData} meses` });
+    }
+    if (ins.avgTicket > 0) cards.push({ tone: 'blue', label: 'Ticket médio', value: formatCurrencyBR(ins.avgTicket), meta: `Mediana: ${formatCurrencyBR(ins.medianTicket)}` });
+    // Layout: 4 cards por linha, totalmente responsável ao espaço útil
+    const cardsPerRow = 4;
+    const gutter = 4;
+    const usableW = pageWidth - 30;
+    const cardW = (usableW - gutter * (cardsPerRow - 1)) / cardsPerRow;
+    const cardH = 22;
+    for (let i = 0; i < cards.length; i++) {
+      const col = i % cardsPerRow;
+      const row = Math.floor(i / cardsPerRow);
+      if (col === 0 && row > 0) y += cardH + 4;
+      // Quebra de página se necessário
+      if (col === 0 && y + cardH > doc.internal.pageSize.getHeight() - 20) {
+        doc.addPage();
+        y = 20;
+      }
+      const x = 15 + col * (cardW + gutter);
+      const c = C[cards[i].tone] || C.blue;
+      // Fundo
+      doc.setFillColor(c.fill[0], c.fill[1], c.fill[2]);
+      doc.roundedRect(x, y, cardW, cardH, 2, 2, 'F');
+      // Faixa lateral
+      doc.setFillColor(c.stripe[0], c.stripe[1], c.stripe[2]);
+      doc.rect(x, y, 1.6, cardH, 'F');
+      // Label
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(7);
+      doc.setTextColor(100, 116, 139);
+      doc.text(String(cards[i].label).toUpperCase(), x + 4, y + 5);
+      // Value
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(11);
+      doc.setTextColor(c.text[0], c.text[1], c.text[2]);
+      const valueText = String(cards[i].value);
+      const valueLines = doc.splitTextToSize(valueText, cardW - 6);
+      doc.text(valueLines[0] || '', x + 4, y + 11);
+      // Meta
+      doc.setFont('helvetica', 'normal');
+      doc.setFontSize(7);
+      doc.setTextColor(71, 85, 105);
+      const metaText = String(cards[i].meta || '');
+      const metaLines = doc.splitTextToSize(metaText, cardW - 6);
+      doc.text(metaLines.slice(0, 2), x + 4, y + 16);
+    }
+    const rowsUsed = Math.ceil(cards.length / cardsPerRow);
+    y += cardH * 1 + (rowsUsed - 1) * (cardH + 4) + 12;
+  }
+} catch (insErr) {
+  // Falha em insights não deve interromper a geração do PDF
+  console.warn('Falha ao gerar bloco de insights do PDF de inadimplência:', insErr);
+}
 // ===== RESUMO POR VENDEDOR =====
 if (y > 160) { doc.addPage(); y = 20; }
 const vendMap = {};
@@ -4274,6 +6142,962 @@ alert('Erro ao gerar PDF de Inadimplência: ' + err.message);
 return null;
 }
 }
+
+// ============== DÍVIDAS ATUAIS (DebAtual) ==============
+
+// ---- Window mode / drag ----
+let debAtualWindowDragBound = false;
+let debAtualWindowState = 'normal';
+let debAtualWindowPrevPos = null;
+
+function updateDebAtualWindowOverlay() {
+const overlay = document.getElementById('debAtualWindowOverlay');
+if (!overlay) return;
+const modalEl = document.getElementById('debAtualModal');
+const isOpen = !!(modalEl && modalEl.classList.contains('show'));
+overlay.classList.toggle('show', isOpen && debAtualWindowState === 'maximized');
+}
+function resetDebAtualWindowState(modalEl) {
+modalEl.classList.remove('debatual-window-maximized', 'debatual-window-minimized');
+modalEl.classList.add('debatual-window-mode');
+debAtualWindowState = 'normal';
+debAtualWindowPrevPos = null;
+const icon = document.getElementById('debAtualMaximizeIcon');
+if (icon) icon.className = 'fas fa-expand';
+const maxBtn = document.getElementById('debAtualBtnMaximize');
+if (maxBtn) maxBtn.title = 'Maximizar';
+const minBtn = document.getElementById('debAtualBtnMinimize');
+if (minBtn) minBtn.title = 'Minimizar';
+const dialog = modalEl.querySelector('.modal-dialog');
+if (dialog) { dialog.style.top = ''; dialog.style.left = ''; }
+updateDebAtualWindowOverlay();
+}
+function centerDebAtualWindow(modalEl) {
+const dialog = modalEl.querySelector('.modal-dialog');
+if (!dialog || debAtualWindowState !== 'normal') return;
+const rect = dialog.getBoundingClientRect();
+const top = Math.max(16, (window.innerHeight - rect.height) / 2);
+const left = Math.max(16, (window.innerWidth - rect.width) / 2);
+dialog.style.top = `${top}px`;
+dialog.style.left = `${left}px`;
+}
+function setupDebAtualWindowDrag(modalEl) {
+if (debAtualWindowDragBound) return;
+debAtualWindowDragBound = true;
+const header = document.getElementById('debAtualModalHeader');
+const dialog = modalEl.querySelector('.modal-dialog');
+if (!header || !dialog) return;
+let dragging = false, startX = 0, startY = 0, startTop = 0, startLeft = 0;
+header.addEventListener('mousedown', (e) => {
+if (e.target.closest('.debatual-window-controls') || e.target.closest('button')) return;
+if (debAtualWindowState === 'maximized' || debAtualWindowState === 'minimized') return;
+dragging = true;
+modalEl.classList.add('debatual-dragging');
+const rect = dialog.getBoundingClientRect();
+startX = e.clientX; startY = e.clientY;
+startTop = rect.top; startLeft = rect.left;
+e.preventDefault();
+});
+document.addEventListener('mousemove', (e) => {
+if (!dragging) return;
+const dx = e.clientX - startX, dy = e.clientY - startY;
+dialog.style.top = `${Math.min(Math.max(0, startTop + dy), window.innerHeight - 60)}px`;
+dialog.style.left = `${Math.min(Math.max(0, startLeft + dx), window.innerWidth - 60)}px`;
+});
+document.addEventListener('mouseup', () => {
+if (dragging) { dragging = false; modalEl.classList.remove('debatual-dragging'); }
+});
+}
+function toggleMaximizeDebAtualModal(event) {
+if (event) event.stopPropagation();
+const modalEl = document.getElementById('debAtualModal');
+if (!modalEl) return;
+const dialog = modalEl.querySelector('.modal-dialog');
+const icon = document.getElementById('debAtualMaximizeIcon');
+const btn = document.getElementById('debAtualBtnMaximize');
+if (debAtualWindowState === 'minimized') {
+modalEl.classList.remove('debatual-window-minimized');
+debAtualWindowState = 'normal';
+}
+if (debAtualWindowState === 'maximized') {
+modalEl.classList.remove('debatual-window-maximized');
+debAtualWindowState = 'normal';
+if (icon) icon.className = 'fas fa-expand';
+if (btn) btn.title = 'Maximizar';
+if (dialog && debAtualWindowPrevPos) {
+dialog.style.top = debAtualWindowPrevPos.top;
+dialog.style.left = debAtualWindowPrevPos.left;
+}
+} else {
+if (dialog) debAtualWindowPrevPos = { top: dialog.style.top, left: dialog.style.left };
+modalEl.classList.add('debatual-window-maximized');
+debAtualWindowState = 'maximized';
+if (icon) icon.className = 'fas fa-compress';
+if (btn) btn.title = 'Restaurar';
+}
+updateDebAtualWindowOverlay();
+}
+function minimizeDebAtualModal(event) {
+if (event) event.stopPropagation();
+const modalEl = document.getElementById('debAtualModal');
+if (!modalEl) return;
+if (debAtualWindowState === 'minimized') {
+modalEl.classList.remove('debatual-window-minimized');
+debAtualWindowState = 'normal';
+} else {
+modalEl.classList.remove('debatual-window-maximized');
+modalEl.classList.add('debatual-window-minimized');
+debAtualWindowState = 'minimized';
+}
+updateDebAtualWindowOverlay();
+}
+
+// ---- Open modal ----
+function openDebAtualModal() {
+if (!debAtualRawData || debAtualRawData.length === 0) {
+alert('Nenhum dado de dívidas atuais encontrado. Importe a planilha com a aba "DebAtual".');
+return;
+}
+debAtualFilteredData = [...debAtualRawData];
+initDebAtualFilters();
+applyDebAtualFilters();
+const modalEl = document.getElementById('debAtualModal');
+if (!modalEl) return;
+debAtualWindowDragBound = false;
+resetDebAtualWindowState(modalEl);
+modalEl.addEventListener('hidden.bs.modal', () => {
+destroyDebAtualCharts();
+resetDebAtualWindowState(modalEl);
+updateDebAtualWindowOverlay();
+}, { once: true });
+bootstrap.Modal.getOrCreateInstance(modalEl).show();
+modalEl.addEventListener('shown.bs.modal', () => {
+centerDebAtualWindow(modalEl);
+updateDebAtualWindowOverlay();
+}, { once: true });
+setupDebAtualWindowDrag(modalEl);
+}
+
+// ---- Filters ----
+function initDebAtualFilters() {
+const mesesMap = new Map();
+const anosSet = new Set();
+(debAtualRawData || []).forEach(r => {
+const dataRef = r[1];
+if (dataRef instanceof Date && !isNaN(dataRef)) {
+const ano = dataRef.getFullYear();
+anosSet.add(String(ano));
+const mesChave = `${ano}-${String(dataRef.getMonth()+1).padStart(2,'0')}`;
+if (!mesesMap.has(mesChave)) {
+mesesMap.set(mesChave, {
+value: mesChave, year: String(ano), checked: true,
+label: new Date(ano, dataRef.getMonth(), 1).toLocaleDateString('pt-BR', { month: '2-digit', year: 'numeric' })
+});
+}
+}
+});
+debAtualMonthOptions = Array.from(mesesMap.values()).sort((a, b) => b.value.localeCompare(a.value));
+debAtualVisibleYear = 'all';
+debAtualUserEmpresaSel = null;
+debAtualUserClienteSel = null;
+debAtualUserVendedorSel = null;
+document.getElementById('allDebAtualEmpresas').checked = true;
+document.getElementById('allDebAtualClientes').checked = true;
+document.getElementById('allDebAtualVendedores').checked = true;
+const anosGroup = document.getElementById('debAtualAnosGroup');
+if (anosGroup) {
+anosGroup.innerHTML = `<span class="debatual-year-pill active" id="debatual-year-all" onclick="setDebAtualYear('all')"><i class="fas fa-calendar-check"></i>Todos</span>`;
+Array.from(anosSet).sort().reverse().forEach(a => {
+anosGroup.innerHTML += `<span class="debatual-year-pill" data-debatual-year="${a}" onclick="setDebAtualYear(${a})"><i class="fas fa-calendar"></i>${a}</span>`;
+});
+}
+renderDebAtualMonthList();
+document.getElementById('allDebAtualMeses').checked = true;
+document.getElementById('debAtualDataInicio').value = '';
+document.getElementById('debAtualDataFim').value = '';
+document.getElementById('debAtualSearch').value = '';
+refreshDebAtualDynamicFilterLists();
+}
+
+function passesDebAtualBaseFilters(r, { skipEmpresa, skipCliente, skipVendedor } = {}) {
+const searchVal = (document.getElementById('debAtualSearch')?.value || '').toLowerCase().trim();
+const dataInicio = document.getElementById('debAtualDataInicio')?.value;
+const dataFim = document.getElementById('debAtualDataFim')?.value;
+const start = dataInicio ? new Date(dataInicio + 'T00:00:00') : null;
+const end = dataFim ? new Date(dataFim + 'T23:59:59') : null;
+const mesSel = new Set(debAtualMonthOptions.filter(o => o.checked).map(o => o.value));
+if (!skipEmpresa && debAtualUserEmpresaSel) {
+const emp = String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim();
+if (!debAtualUserEmpresaSel.has(emp)) return false;
+}
+if (!skipCliente && debAtualUserClienteSel) {
+const cli = String(r[INADIMPLENCIA_COLS.CLIENTE] || '').trim();
+if (cli && !debAtualUserClienteSel.has(cli)) return false;
+}
+if (!skipVendedor && debAtualUserVendedorSel) {
+const vend = String(r[INADIMPLENCIA_COLS.VENDEDOR] || '').trim();
+if (vend && !debAtualUserVendedorSel.has(vend)) return false;
+}
+const dataRef = r[1];
+if (dataRef instanceof Date && !isNaN(dataRef)) {
+if (debAtualVisibleYear !== 'all' && String(dataRef.getFullYear()) !== String(debAtualVisibleYear)) return false;
+if (mesSel.size) {
+const mk = `${dataRef.getFullYear()}-${String(dataRef.getMonth()+1).padStart(2,'0')}`;
+if (!mesSel.has(mk)) return false;
+}
+if (start && dataRef < start) return false;
+if (end && dataRef > end) return false;
+}
+if (searchVal) {
+const haystack = [
+r[INADIMPLENCIA_COLS.CLIENTE], r[INADIMPLENCIA_COLS.EMPRESA],
+r[INADIMPLENCIA_COLS.VENDEDOR], String(r[INADIMPLENCIA_COLS.DESCRICAO] || ''),
+formatCurrencyBR(r[3])
+].join(' ').toLowerCase();
+if (!haystack.includes(searchVal)) return false;
+}
+return true;
+}
+
+function renderDebAtualCheckList(groupEl, values, { prefix, cssClass, userSel, sanitizeId, onChangeType }) {
+if (!groupEl) return;
+groupEl.innerHTML = '';
+values.sort().forEach(v => {
+const id = `${prefix}${sanitizeId(v)}`;
+const isChecked = !userSel || userSel.has(v);
+groupEl.innerHTML += `<div class="debatual-checkbox-wrapper"><input type="checkbox" id="${id}" class="${cssClass}" value="${v.replace(/"/g,'&quot;')}" ${isChecked ? 'checked' : ''} onchange="syncDebAtualAllCheckbox('${onChangeType}'); applyDebAtualFilters()"><label for="${id}">${v}</label></div>`;
+});
+}
+
+function refreshDebAtualDynamicFilterLists() {
+const empresasVisiveis = new Set();
+const clientesVisiveis = new Set();
+const vendedoresVisiveis = new Set();
+(debAtualRawData || []).forEach(r => {
+const emp = String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim();
+const cli = String(r[INADIMPLENCIA_COLS.CLIENTE] || '').trim();
+const vend = String(r[INADIMPLENCIA_COLS.VENDEDOR] || '').trim();
+if (emp && passesDebAtualBaseFilters(r, { skipEmpresa: true })) empresasVisiveis.add(emp);
+if (cli && passesDebAtualBaseFilters(r, { skipCliente: true })) clientesVisiveis.add(cli);
+if (vend && passesDebAtualBaseFilters(r, { skipVendedor: true })) vendedoresVisiveis.add(vend);
+});
+renderDebAtualCheckList(document.getElementById('debAtualEmpresasGroup'), Array.from(empresasVisiveis), {
+prefix: 'debatual-emp-', cssClass: 'debatual-empresa-check', userSel: debAtualUserEmpresaSel,
+sanitizeId: e => e.replace(/[^a-zA-Z0-9]+/g,'-'), onChangeType: 'empresa'
+});
+renderDebAtualCheckList(document.getElementById('debAtualClientesGroup'), Array.from(clientesVisiveis), {
+prefix: 'debatual-cli-', cssClass: 'debatual-cliente-check', userSel: debAtualUserClienteSel,
+sanitizeId: c => c.replace(/[^a-zA-Z0-9]+/g,'-'), onChangeType: 'cliente'
+});
+renderDebAtualCheckList(document.getElementById('debAtualVendedoresGroup'), Array.from(vendedoresVisiveis), {
+prefix: 'debatual-vend-', cssClass: 'debatual-vendedor-check', userSel: debAtualUserVendedorSel,
+sanitizeId: v => v.replace(/[^a-zA-Z0-9]+/g,'-'), onChangeType: 'vendedor'
+});
+syncDebAtualAllLabel('empresa');
+syncDebAtualAllLabel('cliente');
+syncDebAtualAllLabel('vendedor');
+}
+
+function setDebAtualYear(year) {
+debAtualVisibleYear = year;
+document.querySelectorAll('#debAtualAnosGroup .debatual-year-pill').forEach(p => p.classList.remove('active'));
+if (year === 'all') {
+const allPill = document.getElementById('debatual-year-all');
+if (allPill) allPill.classList.add('active');
+} else {
+const pill = document.querySelector(`#debAtualAnosGroup [data-debatual-year="${year}"]`);
+if (pill) pill.classList.add('active');
+}
+renderDebAtualMonthList();
+applyDebAtualFilters();
+}
+
+function renderDebAtualMonthList() {
+const el = document.getElementById('debAtualMesesGroup');
+if (!el) return;
+const visible = debAtualMonthOptions.filter(o => debAtualVisibleYear === 'all' || String(o.year) === String(debAtualVisibleYear));
+el.innerHTML = '';
+visible.forEach(o => {
+const id = `debatual-mes-${o.value}`;
+el.innerHTML += `<div class="debatual-checkbox-wrapper"><input type="checkbox" id="${id}" class="debatual-mes-check" value="${o.value}" ${o.checked ? 'checked' : ''} onchange="syncDebAtualAllMesCheckbox(); applyDebAtualFilters()"><label for="${id}">${o.label}</label></div>`;
+});
+syncDebAtualAllMesCheckbox();
+}
+
+function syncDebAtualAllMesCheckbox() {
+const all = document.querySelectorAll('#debAtualMesesGroup .debatual-mes-check');
+const checked = document.querySelectorAll('#debAtualMesesGroup .debatual-mes-check:checked');
+const allCk = document.getElementById('allDebAtualMeses');
+if (allCk) allCk.checked = all.length > 0 && all.length === checked.length;
+const visibleValues = new Set(Array.from(all).map(i => i.value));
+debAtualMonthOptions = debAtualMonthOptions.map(o => visibleValues.has(o.value)
+? { ...o, checked: !!document.querySelector(`#debatual-mes-${o.value}:checked`) } : o);
+}
+
+function toggleAllDebAtual(type) {
+if (type === 'empresa') {
+const checked = document.getElementById('allDebAtualEmpresas').checked;
+document.querySelectorAll('.debatual-empresa-check').forEach(i => i.checked = checked);
+debAtualUserEmpresaSel = checked ? null : new Set();
+} else if (type === 'cliente') {
+const checked = document.getElementById('allDebAtualClientes').checked;
+document.querySelectorAll('.debatual-cliente-check').forEach(i => i.checked = checked);
+debAtualUserClienteSel = checked ? null : new Set();
+} else if (type === 'vendedor') {
+const checked = document.getElementById('allDebAtualVendedores').checked;
+document.querySelectorAll('.debatual-vendedor-check').forEach(i => i.checked = checked);
+debAtualUserVendedorSel = checked ? null : new Set();
+}
+applyDebAtualFilters();
+}
+
+function toggleAllDebAtualMeses() {
+const checked = document.getElementById('allDebAtualMeses').checked;
+document.querySelectorAll('#debAtualMesesGroup .debatual-mes-check').forEach(i => i.checked = checked);
+debAtualMonthOptions = debAtualMonthOptions.map(o => ({ ...o, checked }));
+applyDebAtualFilters();
+}
+
+function syncDebAtualAllLabel(type) {
+const map = {
+empresa: { cls: '.debatual-empresa-check', all: 'allDebAtualEmpresas' },
+cliente: { cls: '.debatual-cliente-check', all: 'allDebAtualClientes' },
+vendedor: { cls: '.debatual-vendedor-check', all: 'allDebAtualVendedores' }
+};
+const cfg = map[type]; if (!cfg) return;
+const all = document.querySelectorAll(cfg.cls);
+const chk = document.querySelectorAll(cfg.cls + ':checked');
+const el = document.getElementById(cfg.all);
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+}
+
+function syncDebAtualAllCheckbox(type) {
+if (type === 'empresa') {
+const all = document.querySelectorAll('.debatual-empresa-check');
+const chk = document.querySelectorAll('.debatual-empresa-check:checked');
+const el = document.getElementById('allDebAtualEmpresas');
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+debAtualUserEmpresaSel = (all.length > 0 && all.length === chk.length) ? null : new Set(Array.from(chk).map(i => i.value));
+} else if (type === 'cliente') {
+const all = document.querySelectorAll('.debatual-cliente-check');
+const chk = document.querySelectorAll('.debatual-cliente-check:checked');
+const el = document.getElementById('allDebAtualClientes');
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+debAtualUserClienteSel = (all.length > 0 && all.length === chk.length) ? null : new Set(Array.from(chk).map(i => i.value));
+} else if (type === 'vendedor') {
+const all = document.querySelectorAll('.debatual-vendedor-check');
+const chk = document.querySelectorAll('.debatual-vendedor-check:checked');
+const el = document.getElementById('allDebAtualVendedores');
+if (el) el.checked = all.length > 0 && all.length === chk.length;
+debAtualUserVendedorSel = (all.length > 0 && all.length === chk.length) ? null : new Set(Array.from(chk).map(i => i.value));
+}
+}
+
+function resetDebAtualFilters() {
+debAtualUserEmpresaSel = null;
+debAtualUserClienteSel = null;
+debAtualUserVendedorSel = null;
+document.getElementById('allDebAtualEmpresas').checked = true;
+document.getElementById('allDebAtualClientes').checked = true;
+document.getElementById('allDebAtualVendedores').checked = true;
+debAtualVisibleYear = 'all';
+debAtualMonthOptions = debAtualMonthOptions.map(o => ({ ...o, checked: true }));
+document.querySelectorAll('#debAtualAnosGroup .debatual-year-pill').forEach(p => p.classList.remove('active'));
+const allPill = document.getElementById('debatual-year-all');
+if (allPill) allPill.classList.add('active');
+renderDebAtualMonthList();
+document.getElementById('debAtualDataInicio').value = '';
+document.getElementById('debAtualDataFim').value = '';
+document.getElementById('debAtualSearch').value = '';
+const timerEl = document.getElementById('debAtualSearchTimer');
+const overlayEl = document.getElementById('debAtualSearchProcessOverlay');
+if (timerEl) timerEl.style.display = 'none';
+if (overlayEl) overlayEl.style.display = 'none';
+applyDebAtualFilters();
+}
+
+function applyDebAtualFiltersWithTimer() {
+const searchInput = document.getElementById('debAtualSearch');
+const hasSearch = searchInput && searchInput.value.trim().length > 0;
+const timerEl = document.getElementById('debAtualSearchTimer');
+const timeValEl = document.getElementById('debAtualSearchTimeValue');
+const timeValLargeEl = document.getElementById('debAtualSearchTimeValueLarge');
+const overlayEl = document.getElementById('debAtualSearchProcessOverlay');
+const iconEl = document.getElementById('debAtualSearchIcon');
+const spinnerEl = document.getElementById('debAtualSearchSpinner');
+if (hasSearch) {
+if (overlayEl) overlayEl.style.display = 'flex';
+if (timerEl) timerEl.style.display = 'inline-flex';
+if (iconEl) iconEl.style.display = 'none';
+if (spinnerEl) spinnerEl.style.display = 'block';
+} else {
+if (overlayEl) overlayEl.style.display = 'none';
+if (timerEl) timerEl.style.display = 'none';
+if (iconEl) iconEl.style.display = 'block';
+if (spinnerEl) spinnerEl.style.display = 'none';
+}
+setTimeout(() => {
+const start = performance.now();
+applyDebAtualFilters();
+const dur = Math.round(performance.now() - start);
+if (hasSearch) {
+if (timeValEl) timeValEl.textContent = `${dur}ms`;
+if (timeValLargeEl) timeValLargeEl.textContent = `${dur}ms`;
+}
+setTimeout(() => {
+if (overlayEl) overlayEl.style.display = 'none';
+if (spinnerEl) spinnerEl.style.display = 'none';
+if (hasSearch && iconEl) iconEl.style.display = 'block';
+}, 300);
+}, 50);
+}
+
+function applyDebAtualFilters() {
+syncDebAtualAllMesCheckbox();
+refreshDebAtualDynamicFilterLists();
+debAtualFilteredData = (debAtualRawData || []).filter(r => passesDebAtualBaseFilters(r));
+debAtualFilteredData.sort((a, b) => {
+const da = a[1] instanceof Date && !isNaN(a[1]) ? a[1].getTime() : 0;
+const db = b[1] instanceof Date && !isNaN(b[1]) ? b[1].getTime() : 0;
+return da - db;
+});
+updateDebAtualUI();
+}
+
+function updateDebAtualUI() {
+const data = debAtualFilteredData;
+const total = data.reduce((s, r) => s + r[3], 0);
+const count = data.length;
+const clientes = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.CLIENTE] || '').trim())).size;
+const empresas = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.EMPRESA] || '').trim())).size;
+const maxRecord = data.reduce((max, r) => r[3] > max[3] ? r : max, data[0] || {3:0, 0:'-'});
+const el = id => document.getElementById(id);
+if (el('debAtualTotal')) el('debAtualTotal').textContent = formatCurrencyBR(total);
+if (el('debAtualTotalMeta')) el('debAtualTotalMeta').textContent = `${count} registros`;
+if (el('debAtualTicket')) el('debAtualTicket').textContent = formatCurrencyBR(count ? total / count : 0);
+if (el('debAtualClientes')) el('debAtualClientes').textContent = clientes;
+if (el('debAtualEmpresas')) el('debAtualEmpresas').textContent = empresas;
+if (el('debAtualMaior')) el('debAtualMaior').textContent = formatCurrencyBR(maxRecord[3] || 0);
+if (el('debAtualMaiorCliente')) el('debAtualMaiorCliente').textContent = safeShortText(maxRecord[INADIMPLENCIA_COLS.CLIENTE] || '-', 22);
+if (el('debAtualTableCount')) el('debAtualTableCount').textContent = `${count} itens`;
+if (el('debAtualRegistrosBadge')) el('debAtualRegistrosBadge').textContent = `${count} registros`;
+// Table
+const tbody = el('debAtualTableBody');
+if (tbody) {
+const MAX_ROWS = 150;
+tbody.innerHTML = data.slice(0, MAX_ROWS).map(r => `
+<tr>
+<td><small class="fw-bold">${r[INADIMPLENCIA_COLS.EMPRESA] || 'N/A'}</small></td>
+<td style="max-width:180px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;" title="${r[INADIMPLENCIA_COLS.CLIENTE] || ''}">${safeShortText(r[INADIMPLENCIA_COLS.CLIENTE] || '-', 28)}</td>
+<td><span class="badge" style="background:rgba(217,119,6,0.12);color:#d97706;font-size:0.65rem;">${r[INADIMPLENCIA_COLS.DESCRICAO] || '-'}</span></td>
+<td style="white-space:nowrap;">${formatDateBR(r[1])}</td>
+<td>${r[INADIMPLENCIA_COLS.VENDEDOR] || '-'}</td>
+<td class="text-end fw-bold" style="white-space:nowrap;color:#d97706;">${formatCurrencyBR(r[3])}</td>
+</tr>`).join('');
+const footer = el('debAtualTableFooter');
+if (footer) {
+if (data.length > MAX_ROWS) {
+footer.textContent = `Exibindo ${MAX_ROWS} de ${data.length} registros. Utilize os filtros para refinar.`;
+} else {
+footer.textContent = `${data.length} registro(s) exibido(s). Total: ${formatCurrencyBR(total)}.`;
+}
+}
+}
+renderDebAtualCharts();
+}
+
+function destroyDebAtualCharts() {
+if (debAtualEmpresaChart) { debAtualEmpresaChart.destroy(); debAtualEmpresaChart = null; }
+if (debAtualVendedorChart) { debAtualVendedorChart.destroy(); debAtualVendedorChart = null; }
+if (debAtualMesChart) { debAtualMesChart.destroy(); debAtualMesChart = null; }
+if (debAtualFaturamentoClienteChart) { debAtualFaturamentoClienteChart.destroy(); debAtualFaturamentoClienteChart = null; }
+}
+
+function renderDebAtualCharts() {
+destroyDebAtualCharts();
+const data = debAtualFilteredData;
+const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+const gridColor = isDark ? 'rgba(148,163,184,0.12)' : 'rgba(100,116,139,0.10)';
+const tickColor = isDark ? '#cbd5e1' : '#64748b';
+// Chart 1: Por Empresa (Doughnut)
+const empMap = {};
+data.forEach(r => { const e = String(r[INADIMPLENCIA_COLS.EMPRESA] || 'Sem Empresa').trim(); empMap[e] = (empMap[e] || 0) + r[3]; });
+const empCanvas = document.getElementById('debAtualEmpresaChart');
+if (empCanvas && Object.keys(empMap).length > 0) {
+debAtualEmpresaChart = new Chart(empCanvas.getContext('2d'), {
+type: 'doughnut',
+data: {
+labels: Object.keys(empMap),
+datasets: [{ data: Object.values(empMap), backgroundColor: ['#d97706','#ef4444','#4f46e5','#10b981','#8b5cf6','#06b6d4'], borderColor: isDark ? '#0f172a' : '#ffffff', borderWidth: 2, hoverOffset: 6 }]
+},
+options: {
+responsive: true, maintainAspectRatio: false,
+plugins: {
+legend: { position: 'bottom', labels: { color: tickColor, font: { family: 'Inter', weight: '600', size: 11 }, padding: 12 } },
+tooltip: { callbacks: { label: ctx => ` ${ctx.label}: ${formatCurrencyBR(ctx.parsed)}` } }
+}
+}
+});
+}
+// Chart 2: Por Vendedor (horizontal bar)
+const vendMap = {};
+data.forEach(r => { const v = String(r[INADIMPLENCIA_COLS.VENDEDOR] || 'Sem Vendedor').trim(); vendMap[v] = (vendMap[v] || 0) + r[3]; });
+const vendSorted = Object.entries(vendMap).sort((a,b) => b[1]-a[1]).slice(0, 10);
+const vendCanvas = document.getElementById('debAtualVendedorChart');
+if (vendCanvas && vendSorted.length > 0) {
+debAtualVendedorChart = new Chart(vendCanvas.getContext('2d'), {
+type: 'bar',
+data: {
+labels: vendSorted.map(e => e[0]),
+datasets: [{ label: 'Total', data: vendSorted.map(e => e[1]), backgroundColor: 'rgba(217,119,6,0.80)', borderColor: '#d97706', borderWidth: 1.5, borderRadius: 6, maxBarThickness: 32 }]
+},
+options: {
+indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+scales: {
+x: { ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } }, grid: { color: gridColor } },
+y: { ticks: { color: tickColor, font: { size: 10 } }, grid: { display: false } }
+},
+plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => ` ${formatCurrencyBR(ctx.parsed.x)}` } } }
+}
+});
+}
+// Chart 3: Comparativo Mensal por Ano (grouped bar)
+const yearMonthMap = {};
+const yearTotals = {};
+data.forEach(r => {
+const d = r[1];
+if (d instanceof Date && !isNaN(d)) {
+const yr = d.getFullYear(), mo = d.getMonth() + 1;
+if (!yearMonthMap[yr]) yearMonthMap[yr] = {};
+yearMonthMap[yr][mo] = (yearMonthMap[yr][mo] || 0) + (r[3] || 0);
+yearTotals[yr] = (yearTotals[yr] || 0) + (r[3] || 0);
+}
+});
+const monthLabels = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+const yearsSorted = Object.keys(yearMonthMap).map(y => parseInt(y, 10)).sort((a,b) => a - b);
+const yearPalette = [
+{ bg: 'rgba(217,119,6,0.78)', border: '#d97706' },
+{ bg: 'rgba(239,68,68,0.78)', border: '#ef4444' },
+{ bg: 'rgba(79,70,229,0.78)', border: '#4f46e5' },
+{ bg: 'rgba(16,185,129,0.78)', border: '#10b981' },
+{ bg: 'rgba(6,182,212,0.78)', border: '#06b6d4' },
+{ bg: 'rgba(139,92,246,0.78)', border: '#8b5cf6' },
+{ bg: 'rgba(236,72,153,0.78)', border: '#ec4899' }
+];
+const yearDatasets = yearsSorted.map((yr, idx) => {
+const color = yearPalette[idx % yearPalette.length];
+return { label: String(yr), data: monthLabels.map((_, i) => yearMonthMap[yr][i + 1] || 0), backgroundColor: color.bg, borderColor: color.border, borderWidth: 1.5, borderRadius: 4, maxBarThickness: 28 };
+});
+const yearBadge = document.getElementById('debAtualYearCompareBadge');
+if (yearBadge) {
+if (yearsSorted.length === 0) yearBadge.textContent = 'Sem dados';
+else if (yearsSorted.length === 1) yearBadge.textContent = `Ano único: ${yearsSorted[0]}`;
+else yearBadge.textContent = `${yearsSorted.length} anos · ${yearsSorted[0]} → ${yearsSorted[yearsSorted.length - 1]}`;
+}
+const mesCanvas = document.getElementById('debAtualMesChart');
+if (mesCanvas) {
+debAtualMesChart = new Chart(mesCanvas.getContext('2d'), {
+type: 'bar',
+data: { labels: monthLabels, datasets: yearDatasets },
+options: {
+responsive: true, maintainAspectRatio: false,
+interaction: { mode: 'index', intersect: false },
+scales: {
+y: { beginAtZero: true, ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } }, grid: { color: gridColor } },
+x: { ticks: { color: tickColor, font: { size: 10, weight: '600' } }, grid: { display: false } }
+},
+plugins: {
+legend: { display: yearDatasets.length > 0, position: 'top', labels: { color: tickColor, font: { size: 10, weight: '700' }, padding: 12, usePointStyle: true, boxWidth: 10 } },
+tooltip: {
+callbacks: {
+title: ctx => ctx[0] ? `${ctx[0].label} — comparativo anual` : '',
+label: ctx => ` ${ctx.dataset.label}: ${formatCurrencyBR(ctx.parsed.y)}`,
+footer: items => { const sum = items.reduce((s, i) => s + (i.parsed.y || 0), 0); return items.length > 1 ? `Soma do mês: ${formatCurrencyBR(sum)}` : ''; }
+}
+}
+}
+}
+});
+}
+// Render insights
+renderDebAtualInsights(data, yearMonthMap, yearsSorted, yearTotals);
+// Chart 4: Comparativo por Cliente (line)
+const faturamentoCanvas = document.getElementById('debAtualFaturamentoClienteChart');
+if (faturamentoCanvas) {
+const clienteAnoMesMap = {};
+(debAtualRawData || []).forEach(r => {
+if (!passesDebAtualBaseFilters(r)) return;
+const c = String(r[INADIMPLENCIA_COLS.CLIENTE] || 'Sem Cliente').trim();
+const d = r[1];
+if (!(d instanceof Date) || isNaN(d)) return;
+const yr = d.getFullYear(), mo = d.getMonth() + 1;
+if (!clienteAnoMesMap[c]) clienteAnoMesMap[c] = {};
+if (!clienteAnoMesMap[c][yr]) clienteAnoMesMap[c][yr] = {};
+clienteAnoMesMap[c][yr][mo] = (clienteAnoMesMap[c][yr][mo] || 0) + (r[3] || 0);
+});
+const clientesPresentes = Object.keys(clienteAnoMesMap).sort();
+const anosPresentes = Array.from(new Set(clientesPresentes.flatMap(c => Object.keys(clienteAnoMesMap[c]).map(Number)))).sort((a,b) => a-b);
+const clientePalette = [
+{ base: '#d97706', bgs: ['rgba(217,119,6,0.80)','rgba(217,119,6,0.50)','rgba(217,119,6,0.30)'] },
+{ base: '#4f46e5', bgs: ['rgba(79,70,229,0.80)','rgba(79,70,229,0.50)','rgba(79,70,229,0.30)'] },
+{ base: '#ef4444', bgs: ['rgba(239,68,68,0.80)','rgba(239,68,68,0.50)','rgba(239,68,68,0.30)'] },
+{ base: '#10b981', bgs: ['rgba(16,185,129,0.80)','rgba(16,185,129,0.50)','rgba(16,185,129,0.30)'] },
+{ base: '#06b6d4', bgs: ['rgba(6,182,212,0.80)','rgba(6,182,212,0.50)','rgba(6,182,212,0.30)'] },
+{ base: '#8b5cf6', bgs: ['rgba(139,92,246,0.80)','rgba(139,92,246,0.50)','rgba(139,92,246,0.30)'] },
+{ base: '#ec4899', bgs: ['rgba(236,72,153,0.80)','rgba(236,72,153,0.50)','rgba(236,72,153,0.30)'] },
+{ base: '#14b8a6', bgs: ['rgba(20,184,166,0.80)','rgba(20,184,166,0.50)','rgba(20,184,166,0.30)'] },
+];
+const borderDashStyles = [[], [6, 3], [2, 3], [8, 4, 2, 4]];
+const clientesExibidos = (debAtualUserClienteSel && debAtualUserClienteSel.size > 0 && debAtualUserClienteSel.size <= 8)
+? clientesPresentes.filter(c => debAtualUserClienteSel.has(c))
+: (() => {
+const totais = clientesPresentes.map(c => ({ c, total: Object.values(clienteAnoMesMap[c]).flatMap(m => Object.values(m)).reduce((s,v) => s+v, 0) }));
+return totais.sort((a,b) => b.total-a.total).slice(0,8).map(x => x.c);
+})();
+const datasets = [];
+clientesExibidos.forEach((cliente, ci) => {
+const palette = clientePalette[ci % clientePalette.length];
+const anosDoCliente = Object.keys(clienteAnoMesMap[cliente]).map(Number).sort((a,b) => a-b);
+anosDoCliente.forEach((yr, yi) => {
+const monthData = monthLabels.map((_, i) => clienteAnoMesMap[cliente][yr][i + 1] || null);
+if (!monthData.some(v => v !== null && v > 0)) return;
+datasets.push({
+label: clientesExibidos.length === 1 ? String(yr) : `${safeShortText(cliente, 20)} – ${yr}`,
+data: monthData, borderColor: palette.base, backgroundColor: palette.bgs[yi % palette.bgs.length],
+borderWidth: 2, borderDash: borderDashStyles[yi % borderDashStyles.length],
+pointRadius: 4, pointHoverRadius: 6, tension: 0.3, spanGaps: false, fill: false
+});
+});
+});
+const totalGeral = clientesExibidos.reduce((s,c) => s + Object.values(clienteAnoMesMap[c] || {}).flatMap(m => Object.values(m)).reduce((a,v) => a+v, 0), 0);
+const faturamentoBadge = document.getElementById('debAtualFaturamentoClienteBadge');
+if (faturamentoBadge) {
+faturamentoBadge.textContent = clientesExibidos.length > 0
+? `${clientesExibidos.length} cliente(s) · ${anosPresentes.length} ano(s) · Total: ${formatCurrencyBR(totalGeral)}`
+: 'Sem dados';
+}
+debAtualFaturamentoClienteChart = new Chart(faturamentoCanvas.getContext('2d'), {
+type: 'line',
+data: { labels: monthLabels, datasets },
+options: {
+responsive: true, maintainAspectRatio: false,
+interaction: { mode: 'index', intersect: false },
+scales: {
+x: { ticks: { color: tickColor, font: { size: 10, weight: '600' } }, grid: { color: gridColor } },
+y: { beginAtZero: true, ticks: { color: tickColor, callback: v => formatCurrencyBR(v), font: { size: 9 } }, grid: { color: gridColor } }
+},
+plugins: {
+legend: { display: datasets.length > 0, position: 'top', labels: { color: tickColor, font: { size: 10, weight: '700' }, padding: 12, usePointStyle: true, boxWidth: 10 } },
+tooltip: {
+callbacks: {
+title: ctx => ctx[0] ? `${ctx[0].label}` : '',
+label: ctx => { const v = ctx.parsed.y; if (v === null || v === undefined) return null; return ` ${ctx.dataset.label}: ${formatCurrencyBR(v)}`; },
+footer: items => { const sum = items.reduce((s,i) => s + (i.parsed.y||0), 0); return items.length > 1 ? `Total do mês: ${formatCurrencyBR(sum)}` : ''; }
+}
+}
+}
+}
+});
+}
+}
+
+function renderDebAtualInsights(data, yearMonthMap, yearsSorted, yearTotals) {
+const grid = document.getElementById('debAtualInsightsGrid');
+const section = document.getElementById('debAtualInsightsSection');
+if (!grid) return;
+// Reuse the same computeInadimplenciaInsights logic (data has same structure)
+const ins = computeInadimplenciaInsights(data);
+if (!ins.hasData) { grid.innerHTML = ''; if (section) section.style.display = 'none'; return; }
+if (section) section.style.display = '';
+const cards = [];
+if (ins.peakMonth) cards.push({ tone: 'red', icon: 'fa-arrow-trend-up', label: 'Mês mais crítico', value: ins.peakMonth.label, meta: `${formatCurrencyBR(ins.peakMonth.value)} em aberto` });
+if (ins.worstYear && ins.worstYear.year != null) {
+const share = ins.total > 0 ? (ins.worstYear.total / ins.total) * 100 : 0;
+cards.push({ tone: 'amber', icon: 'fa-calendar-xmark', label: 'Ano de maior volume', value: String(ins.worstYear.year), meta: `${formatCurrencyBR(ins.worstYear.total)} · ${share.toFixed(1)}% do histórico` });
+}
+if (ins.yoyChange && ins.yoyChange.deltaPct != null) {
+const dp = ins.yoyChange.deltaPct;
+const tone = dp > 0 ? 'red' : (dp < 0 ? 'green' : 'blue');
+const arrow = dp > 0 ? '↑' : dp < 0 ? '↓' : '→';
+cards.push({ tone, icon: 'fa-right-left', label: `Variação ${ins.yoyChange.from} → ${ins.yoyChange.to}`, value: `${arrow} ${Math.abs(dp).toFixed(1)}%`, meta: `${formatCurrencyBR(ins.yoyChange.fromTotal)} → ${formatCurrencyBR(ins.yoyChange.toTotal)}` });
+} else if (ins.yearsSorted.length === 1) {
+cards.push({ tone: 'blue', icon: 'fa-circle-info', label: 'Comparação YoY', value: '—', meta: `Apenas ${ins.yearsSorted[0]} no filtro` });
+}
+if (ins.seasonalQuarter) cards.push({ tone: 'violet', icon: 'fa-chart-column', label: 'Trimestre crítico', value: ins.seasonalQuarter.label, meta: `${formatCurrencyBR(ins.seasonalQuarter.total)} consolidados` });
+if (ins.topClientShare) cards.push({ tone: 'cyan', icon: 'fa-users-line', label: `Top ${ins.topClientShare.count} clientes`, value: `${ins.topClientShare.share.toFixed(1)}%`, meta: `${safeShortText(ins.topClientShare.names[0] || '—', 28)} lidera` });
+if (ins.topVendor && ins.topVendor.name && ins.topVendor.name !== 'Sem Vendedor') cards.push({ tone: 'amber', icon: 'fa-user-tie', label: 'Vendedor mais exposto', value: safeShortText(ins.topVendor.name, 22), meta: `${ins.topVendor.share.toFixed(1)}% · ${formatCurrencyBR(ins.topVendor.total)}` });
+if (ins.trend) {
+const t = ins.trend;
+const tone = t.dir === 'up' ? 'red' : t.dir === 'down' ? 'green' : 'blue';
+const arrow = t.dir === 'up' ? '↗' : t.dir === 'down' ? '↘' : '→';
+const text = t.dir === 'up' ? 'Em alta' : t.dir === 'down' ? 'Em queda' : 'Estável';
+cards.push({ tone, icon: 'fa-wave-square', label: 'Tendência histórica', value: `${arrow} ${text}`, meta: `${t.slopePct >= 0 ? '+' : ''}${t.slopePct.toFixed(1)}% por mês · ${ins.monthsWithData} meses` });
+}
+if (ins.avgTicket > 0) {
+const skew = ins.medianTicket > 0 ? (ins.avgTicket / ins.medianTicket) : 1;
+const meta = skew > 1.5 ? `Mediana: ${formatCurrencyBR(ins.medianTicket)} · alta dispersão` : `Mediana: ${formatCurrencyBR(ins.medianTicket)}`;
+cards.push({ tone: 'blue', icon: 'fa-scale-balanced', label: 'Ticket médio', value: formatCurrencyBR(ins.avgTicket), meta });
+}
+grid.innerHTML = cards.map(c => `
+<div class="debatual-insight-card tone-${c.tone}">
+<i class="fas ${c.icon} debatual-insight-icon"></i>
+<div class="debatual-insight-label">${c.label}</div>
+<div class="debatual-insight-value" title="${String(c.value).replace(/"/g,'&quot;')}">${c.value}</div>
+<div class="debatual-insight-meta">${c.meta}</div>
+</div>
+`).join('');
+}
+
+// ---- Excel Export ----
+function exportDebAtualXlsx() {
+const data = debAtualFilteredData;
+if (!data || data.length === 0) { alert('Nenhum dado de dívidas atuais para exportar.'); return; }
+const header = ['Empresa', 'Cliente', 'Nº Documento', 'Vencimento', 'Vendedor', 'Valor (R$)'];
+const rows = data.map(r => [
+String(r[INADIMPLENCIA_COLS.EMPRESA] || ''),
+String(r[INADIMPLENCIA_COLS.CLIENTE] || ''),
+String(r[INADIMPLENCIA_COLS.DESCRICAO] || ''),
+r[1] instanceof Date && !isNaN(r[1]) ? r[1].toLocaleDateString('pt-BR') : '',
+String(r[INADIMPLENCIA_COLS.VENDEDOR] || ''),
+Number((r[3] || 0).toFixed(2))
+]);
+const total = data.reduce((s, r) => s + r[3], 0);
+rows.push(['', '', '', '', 'TOTAL', Number(total.toFixed(2))]);
+const ws = XLSX.utils.aoa_to_sheet([header, ...rows]);
+ws['!cols'] = [{ wch: 14 }, { wch: 32 }, { wch: 22 }, { wch: 13 }, { wch: 22 }, { wch: 16 }];
+const wb = XLSX.utils.book_new();
+XLSX.utils.book_append_sheet(wb, ws, 'Dívidas Atuais');
+XLSX.writeFile(wb, `dividas_atuais_${new Date().getTime()}.xlsx`);
+}
+
+// ---- PDF Export ----
+let debAtualPdfUrl = null;
+function previewDebAtualPDF() {
+const pdfBlob = generateDebAtualPDF();
+if (!pdfBlob) return;
+if (debAtualPdfUrl) { URL.revokeObjectURL(debAtualPdfUrl); debAtualPdfUrl = null; }
+debAtualPdfUrl = URL.createObjectURL(pdfBlob);
+const frame = document.getElementById('debAtualPdfFrame');
+if (frame) { frame.removeAttribute('src'); frame.src = debAtualPdfUrl; }
+const downloadBtn = document.getElementById('debAtualPdfDownloadBtn');
+if (downloadBtn) {
+downloadBtn.onclick = () => {
+const link = document.createElement('a');
+link.href = debAtualPdfUrl;
+link.download = `dividas_atuais_${new Date().getTime()}.pdf`;
+link.click();
+};
+}
+function closeDebAtualPdfOverlay() {
+const overlayEl = document.getElementById('debAtualPdfModal');
+const bsModal = bootstrap.Modal.getInstance(overlayEl);
+if (bsModal) bsModal.hide();
+}
+const closeBtn = document.getElementById('debAtualPdfClose');
+const closeBtnFooter = document.getElementById('debAtualPdfCloseBtn');
+if (closeBtn) closeBtn.onclick = closeDebAtualPdfOverlay;
+if (closeBtnFooter) closeBtnFooter.onclick = closeDebAtualPdfOverlay;
+const overlayEl = document.getElementById('debAtualPdfModal');
+overlayEl.addEventListener('hidden.bs.modal', () => {
+if (debAtualPdfUrl) { URL.revokeObjectURL(debAtualPdfUrl); debAtualPdfUrl = null; }
+if (frame) frame.removeAttribute('src');
+const debEl = document.getElementById('debAtualModal');
+if (debEl && debEl.classList.contains('show')) document.body.classList.add('modal-open');
+}, { once: true });
+const pdfOverlayModal = bootstrap.Modal.getOrCreateInstance(overlayEl, { backdrop: true, keyboard: false });
+pdfOverlayModal.show();
+}
+
+function generateDebAtualPDF() {
+try {
+const data = debAtualFilteredData;
+if (!data || data.length === 0) { alert('Nenhum dado de dívidas atuais para exportar.'); return null; }
+const { jsPDF } = window.jspdf;
+const doc = new jsPDF('l', 'mm', 'a4');
+const pageWidth = doc.internal.pageSize.getWidth();
+let y = 15;
+// Cabeçalho
+doc.setFillColor(15, 23, 42);
+doc.rect(0, 0, pageWidth, 38, 'F');
+doc.setFillColor(217, 119, 6);
+doc.rect(0, 35, pageWidth, 3, 'F');
+doc.setFont('helvetica', 'bold');
+doc.setFontSize(16);
+doc.setTextColor(255, 255, 255);
+doc.text('GRUPO LABMEDIC', 15, 16);
+doc.setFontSize(10);
+doc.setFont('helvetica', 'normal');
+doc.setTextColor(148, 163, 184);
+doc.text('RELATÓRIO DE DÍVIDAS ATUAIS · Carteira de Recebíveis em Aberto (DebAtual)', 15, 23);
+doc.setFontSize(8);
+doc.text(`Emissão: ${formatDateTimeBR(new Date())}`, 15, 30);
+const debInicio = document.getElementById('debAtualDataInicio').value || 'Início';
+const debFim = document.getElementById('debAtualDataFim').value || 'Fim';
+doc.setFont('helvetica', 'bold'); doc.setTextColor(255, 255, 255);
+doc.text(`Período: ${debInicio} — ${debFim}`, pageWidth - 15, 19, { align: 'right' });
+doc.setFont('helvetica', 'normal'); doc.setTextColor(148, 163, 184);
+doc.text(`Registros: ${data.length}  |  Versão: Confidencial`, pageWidth - 15, 26, { align: 'right' });
+y = 48;
+// Título
+doc.setFont('helvetica', 'bold'); doc.setFontSize(14); doc.setTextColor(30, 41, 59);
+doc.text('ANÁLISE DE DÍVIDAS ATUAIS', pageWidth / 2, y, { align: 'center' });
+y += 5;
+doc.setFillColor(217, 119, 6);
+doc.rect(pageWidth/2 - 30, y, 60, 0.8, 'F');
+y += 10;
+// Resumo executivo
+const total = data.reduce((s,r) => s+r[3], 0);
+const count = data.length;
+const clientes = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.CLIENTE]||'').trim())).size;
+const empresas = new Set(data.map(r => String(r[INADIMPLENCIA_COLS.EMPRESA]||'').trim())).size;
+const vendedores = new Set(data.filter(r => r[INADIMPLENCIA_COLS.VENDEDOR]).map(r => String(r[INADIMPLENCIA_COLS.VENDEDOR]).trim())).size;
+const ticketMedio = count ? total / count : 0;
+const maxRec = data.reduce((m,r) => r[3] > m[3] ? r : m, data[0]);
+doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(217, 119, 6);
+doc.text('RESUMO EXECUTIVO', 15, y);
+y += 6;
+doc.autoTable({
+startY: y,
+head: [['Indicador', 'Valor']],
+body: [
+['Total em Aberto', formatCurrencyBR(total)],
+['Total de Registros', count.toString()],
+['Clientes Envolvidos', clientes.toString()],
+['Empresas Afetadas', empresas.toString()],
+['Vendedores Envolvidos', vendedores.toString()],
+['Ticket Médio', formatCurrencyBR(ticketMedio)],
+['Maior Dívida', `${formatCurrencyBR(maxRec[3])} — ${safeShortText(maxRec[INADIMPLENCIA_COLS.CLIENTE]||'-', 35)}`]
+],
+theme: 'striped', styles: { fontSize: 9, textColor: [0,0,0] },
+headStyles: { fillColor: [217,119,6], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 1: { halign: 'right' } }, bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [255, 251, 235] }, margin: { left: 15, right: pageWidth/2 + 5 }
+});
+const resumoFinalY = doc.lastAutoTable.finalY;
+const empMap = {};
+data.forEach(r => { const e = String(r[INADIMPLENCIA_COLS.EMPRESA]||'Sem Empresa').trim(); empMap[e] = (empMap[e]||0) + r[3]; });
+doc.autoTable({
+startY: y,
+head: [['Empresa', 'Total', '% Share']],
+body: Object.entries(empMap).sort((a,b)=>b[1]-a[1]).map(([e,v]) => [e, formatCurrencyBR(v), total > 0 ? ((v/total)*100).toFixed(1)+'%' : '0%']),
+theme: 'striped', styles: { fontSize: 9, textColor: [0,0,0] },
+headStyles: { fillColor: [30,41,59], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' } }, bodyStyles: { textColor: [0,0,0] },
+alternateRowStyles: { fillColor: [255, 251, 235] }, margin: { left: pageWidth/2 + 5, right: 15 }
+});
+y = Math.max(resumoFinalY, doc.lastAutoTable.finalY) + 14;
+// Insights estratégicos
+try {
+const ins = computeInadimplenciaInsights(data);
+if (ins && ins.hasData) {
+if (y > 150) { doc.addPage(); y = 20; }
+doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(217, 119, 6);
+doc.text('INSIGHTS ESTRATÉGICOS', 15, y); y += 3;
+doc.setFillColor(217, 119, 6); doc.rect(15, y, 60, 0.5, 'F'); y += 6;
+doc.setFont('helvetica', 'italic'); doc.setFontSize(8); doc.setTextColor(100, 116, 139);
+doc.text('Indicadores históricos consolidados a partir do conjunto filtrado — podem não refletir a posição atual da carteira.', 15, y); y += 6;
+const C = {
+red:    { fill: [254, 226, 226], stripe: [239, 68, 68],  text: [185, 28, 28] },
+amber:  { fill: [254, 243, 199], stripe: [217, 119, 6],  text: [146, 64, 14] },
+green:  { fill: [220, 252, 231], stripe: [16, 185, 129],  text: [4, 120, 87]  },
+blue:   { fill: [224, 231, 255], stripe: [79, 70, 229],   text: [55, 48, 163] },
+violet: { fill: [237, 233, 254], stripe: [139, 92, 246],  text: [91, 33, 182] },
+cyan:   { fill: [207, 250, 254], stripe: [6, 182, 212],   text: [21, 94, 117] }
+};
+const cards = [];
+if (ins.peakMonth) cards.push({ tone: 'red', label: 'Mês mais crítico', value: ins.peakMonth.label, meta: `${formatCurrencyBR(ins.peakMonth.value)} em aberto` });
+if (ins.worstYear?.year != null) { const sh = ins.total > 0 ? (ins.worstYear.total/ins.total)*100 : 0; cards.push({ tone: 'amber', label: 'Ano de maior volume', value: String(ins.worstYear.year), meta: `${formatCurrencyBR(ins.worstYear.total)} · ${sh.toFixed(1)}%` }); }
+if (ins.yoyChange?.deltaPct != null) { const dp = ins.yoyChange.deltaPct; cards.push({ tone: dp > 0 ? 'red' : (dp < 0 ? 'green' : 'blue'), label: `Variação ${ins.yoyChange.from} -> ${ins.yoyChange.to}`, value: `${dp > 0 ? 'Alta' : dp < 0 ? 'Queda' : 'Estável'} ${Math.abs(dp).toFixed(1)}%`, meta: `${formatCurrencyBR(ins.yoyChange.fromTotal)} -> ${formatCurrencyBR(ins.yoyChange.toTotal)}` }); }
+if (ins.seasonalQuarter) cards.push({ tone: 'violet', label: 'Trimestre crítico', value: ins.seasonalQuarter.label, meta: `${formatCurrencyBR(ins.seasonalQuarter.total)} consolidados` });
+if (ins.topClientShare) cards.push({ tone: 'cyan', label: `Top ${ins.topClientShare.count} clientes`, value: `${ins.topClientShare.share.toFixed(1)}%`, meta: `Lidera: ${safeShortText(ins.topClientShare.names[0] || '-', 30)}` });
+if (ins.topVendor?.name && ins.topVendor.name !== 'Sem Vendedor') cards.push({ tone: 'amber', label: 'Vendedor mais exposto', value: safeShortText(ins.topVendor.name, 22), meta: `${ins.topVendor.share.toFixed(1)}% · ${formatCurrencyBR(ins.topVendor.total)}` });
+if (ins.trend) { const t = ins.trend; cards.push({ tone: t.dir === 'up' ? 'red' : t.dir === 'down' ? 'green' : 'blue', label: 'Tendência histórica', value: t.dir === 'up' ? 'Em alta' : t.dir === 'down' ? 'Em queda' : 'Estável', meta: `${t.slopePct >= 0 ? '+' : ''}${t.slopePct.toFixed(1)}% por mês · ${ins.monthsWithData} meses` }); }
+if (ins.avgTicket > 0) cards.push({ tone: 'blue', label: 'Ticket médio', value: formatCurrencyBR(ins.avgTicket), meta: `Mediana: ${formatCurrencyBR(ins.medianTicket)}` });
+const cardsPerRow = 4, gutter = 4, usableW = pageWidth - 30;
+const cardW = (usableW - gutter * (cardsPerRow - 1)) / cardsPerRow, cardH = 22;
+for (let i = 0; i < cards.length; i++) {
+const col = i % cardsPerRow, row = Math.floor(i / cardsPerRow);
+if (col === 0 && row > 0) y += cardH + 4;
+if (col === 0 && y + cardH > doc.internal.pageSize.getHeight() - 20) { doc.addPage(); y = 20; }
+const x = 15 + col * (cardW + gutter);
+const c = C[cards[i].tone] || C.blue;
+doc.setFillColor(c.fill[0], c.fill[1], c.fill[2]); doc.roundedRect(x, y, cardW, cardH, 2, 2, 'F');
+doc.setFillColor(c.stripe[0], c.stripe[1], c.stripe[2]); doc.rect(x, y, 1.6, cardH, 'F');
+doc.setFont('helvetica', 'bold'); doc.setFontSize(7); doc.setTextColor(100, 116, 139);
+doc.text(String(cards[i].label).toUpperCase(), x + 4, y + 5);
+doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(c.text[0], c.text[1], c.text[2]);
+doc.text(doc.splitTextToSize(String(cards[i].value), cardW - 6)[0] || '', x + 4, y + 11);
+doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(71, 85, 105);
+doc.text(doc.splitTextToSize(String(cards[i].meta || ''), cardW - 6).slice(0, 2), x + 4, y + 16);
+}
+const rowsUsed = Math.ceil(cards.length / cardsPerRow);
+y += cardH * 1 + (rowsUsed - 1) * (cardH + 4) + 12;
+}
+} catch(insErr) { console.warn('Insights PDF debAtual:', insErr); }
+// Por Vendedor
+if (y > 160) { doc.addPage(); y = 20; }
+const vendMap2 = {};
+data.forEach(r => { const v = String(r[INADIMPLENCIA_COLS.VENDEDOR]||'Sem Vendedor').trim(); vendMap2[v] = (vendMap2[v]||0) + r[3]; });
+doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(217, 119, 6);
+doc.text('DÍVIDAS POR VENDEDOR', 15, y); y += 8;
+doc.autoTable({
+startY: y,
+head: [['Vendedor', 'Total em Aberto', '% do Total', 'Qtd. Registros']],
+body: Object.entries(vendMap2).sort((a,b)=>b[1]-a[1]).map(([v,val]) => [v, formatCurrencyBR(val), total > 0 ? ((val/total)*100).toFixed(1)+'%' : '0%', String(data.filter(r => String(r[INADIMPLENCIA_COLS.VENDEDOR]||'').trim() === v).length)]),
+theme: 'striped', styles: { fontSize: 9, textColor: [0,0,0] },
+headStyles: { fillColor: [217,119,6], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 1: { halign: 'right' }, 2: { halign: 'center' }, 3: { halign: 'center' } },
+bodyStyles: { textColor: [0,0,0] }, alternateRowStyles: { fillColor: [255, 251, 235] }, margin: { left: 15, right: 15 }
+});
+y = doc.lastAutoTable.finalY + 14;
+// Maiores devedores
+if (y > 170) { doc.addPage(); y = 20; }
+const clientMap2 = {};
+data.forEach(r => {
+const c = String(r[INADIMPLENCIA_COLS.CLIENTE]||'Sem Cliente').trim();
+const e = String(r[INADIMPLENCIA_COLS.EMPRESA]||'-').trim();
+if (!clientMap2[c]) clientMap2[c] = { total: 0, count: 0, empresa: e };
+clientMap2[c].total += r[3]; clientMap2[c].count++;
+});
+doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(217, 119, 6);
+doc.text('MAIORES DEVEDORES (TOP 20)', 15, y); y += 6;
+doc.autoTable({
+startY: y,
+head: [['Cliente', 'Empresa', 'Total em Aberto', 'Registros', '% Total']],
+body: Object.entries(clientMap2).sort((a,b)=>b[1].total-a[1].total).slice(0,20).map(([c,info]) => [safeShortText(c,38), info.empresa, formatCurrencyBR(info.total), String(info.count), total > 0 ? ((info.total/total)*100).toFixed(1)+'%' : '0%']),
+theme: 'striped', styles: { fontSize: 8, textColor: [0,0,0] },
+headStyles: { fillColor: [217,119,6], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 2: { halign: 'right' }, 3: { halign: 'center' }, 4: { halign: 'center' } },
+bodyStyles: { textColor: [0,0,0] }, alternateRowStyles: { fillColor: [255, 251, 235] }, margin: { left: 15, right: 15 }
+});
+y = doc.lastAutoTable.finalY + 14;
+// Listagem completa
+if (y > 170) { doc.addPage(); y = 20; }
+doc.setFont('helvetica', 'bold'); doc.setFontSize(11); doc.setTextColor(217, 119, 6);
+doc.text('LISTAGEM COMPLETA DE REGISTROS', 15, y); y += 6;
+doc.autoTable({
+startY: y,
+head: [['Empresa', 'Cliente', 'Nº Doc.', 'Vencimento', 'Vendedor', 'Valor']],
+body: data.map(r => [String(r[INADIMPLENCIA_COLS.EMPRESA]||'-'), safeShortText(r[INADIMPLENCIA_COLS.CLIENTE]||'-', 30), String(r[INADIMPLENCIA_COLS.DESCRICAO]||'-'), formatDateBR(r[1]), String(r[INADIMPLENCIA_COLS.VENDEDOR]||'-'), formatCurrencyBR(r[3])]),
+theme: 'striped', styles: { fontSize: 7, textColor: [0,0,0] },
+headStyles: { fillColor: [15,23,42], textColor: [255,255,255], fontStyle: 'bold' },
+columnStyles: { 5: { halign: 'right', textColor: [146,64,14] } },
+bodyStyles: { textColor: [0,0,0] }, alternateRowStyles: { fillColor: [255, 251, 235] }, margin: { left: 15, right: 15 },
+didDrawPage: (hookData) => {
+const pW = doc.internal.pageSize.getWidth(), pH = doc.internal.pageSize.getHeight();
+doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(148, 163, 184);
+doc.text(`GRUPO LABMEDIC — Relatório Confidencial de Dívidas Atuais — Gerado em ${formatDateTimeBR(new Date())}`, pW/2, pH - 6, { align: 'center' });
+doc.text(`Página ${hookData.pageNumber}`, pW - 15, pH - 6, { align: 'right' });
+}
+});
+const pW = doc.internal.pageSize.getWidth(), pH = doc.internal.pageSize.getHeight();
+doc.setFont('helvetica', 'normal'); doc.setFontSize(7); doc.setTextColor(148, 163, 184);
+doc.text(`GRUPO LABMEDIC — Relatório Confidencial de Dívidas Atuais — Gerado em ${formatDateTimeBR(new Date())}`, pW/2, pH - 6, { align: 'center' });
+doc.text(`Página ${doc.internal.getNumberOfPages()}`, pW - 15, pH - 6, { align: 'right' });
+return doc.output('blob');
+} catch(err) { alert('Erro ao gerar PDF de Dívidas Atuais: ' + err.message); return null; }
+}
+
 // Initialize theme on page load
 window.addEventListener('DOMContentLoaded', () => {
 initTheme();
@@ -4299,5 +7123,6 @@ refreshDespesasDashboard(true);
 });
 });
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
