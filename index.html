@@ -1531,79 +1531,248 @@ opacity: 0;
 	border-radius: 20px;
 	font-weight: 700;
 	}
-	
-/* ============================================================
-   RESPONSIVIDADE MOBILE (adicionada) — preserva desktop intacto
-   ============================================================ */
-@media (max-width: 991.98px) {
-  html { -webkit-text-size-adjust: 100%; }
-  body { font-size: 15px; }
-  .navbar { padding: 0.75rem 1rem; }
-  .brand-title { font-size: 1rem; gap: 8px; }
-  .container-fluid.py-4.px-lg-5 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; padding-top: 1rem !important; }
-  .filter-pane { padding: 1rem !important; }
-  .card-header { padding: 0.85rem 1rem; }
-  .card-body { padding: 1rem; }
-  /* Rolagem horizontal segura para tabelas densas */
-  .table-responsive, .table-wrapper { -webkit-overflow-scrolling: touch; overflow-x: auto; }
-  table { min-width: 560px; }
-  .table thead th, .table td { padding: 0.6rem 0.6rem; font-size: 0.8rem; }
-  /* Botões e ações */
-  .action-buttons-bar { gap: 0.5rem !important; }
-  .action-buttons-bar .btn { flex: 1 1 auto; min-width: 44%; justify-content: center; }
-  .btn { min-height: 42px; }
-  /* Modais em tela cheia no celular */
-  .modal-dialog { margin: 0; max-width: 100%; }
-  .modal-fullscreen, .modal-xl, .modal-lg { height: 100%; }
-  .modal-content { border-radius: 0; min-height: 100vh; }
-  .modal-body { padding: 1rem; }
-  .modal-header { padding: 0.85rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
-  .modal-header .btn-close { margin-left: auto; }
-  /* Sidebars de filtro dos modais viram bloco no topo */
-  .modal .col-lg-3.border-end { border-right: 0 !important; border-bottom: 1px solid var(--border-color); }
-  /* Tabs com rolagem horizontal */
-  .nav-tabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
-  .nav-tabs::-webkit-scrollbar { display: none; }
-  .nav-tabs .nav-link { white-space: nowrap; padding: 0.6rem 0.9rem; font-size: 0.9rem; }
-  /* Gráficos com altura adaptada */
-  canvas { max-width: 100% !important; height: auto !important; }
-  .chart-container { position: relative; width: 100%; min-height: 240px; }
-  /* Grades densas quebram para 1-2 colunas */
-  .receitas-metric-grid, .inadimplencia-metric-grid, .debatual-metric-grid {
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
-    gap: 0.75rem !important;
-  }
-  /* Filtros verticais */
-  .filter-pane .row.g-3 > [class*="col-"] { margin-bottom: 0.25rem; }
-  /* Inputs maiores para toque */
-  .form-control, .form-select { min-height: 44px; font-size: 16px; }
-  /* Dropdowns não estouram a viewport */
-  .dropdown-menu { max-width: calc(100vw - 24px); overflow-x: hidden; }
-  /* Cards com espaçamento reduzido entre linhas */
-  .row > [class*="col-"] { margin-bottom: 0.75rem; }
-  /* Loading overlay cabe na tela */
-  .loading-card { width: calc(100% - 32px); max-width: 420px; }
-}
-
-@media (max-width: 575.98px) {
-  .brand-title span { display: none; }
-  .action-buttons-bar .btn { min-width: 100%; }
-  .action-buttons-bar .btn span { display: inline; }
-  .card-header { font-size: 0.95rem; }
-  h1, .h1 { font-size: 1.4rem; }
-  h2, .h2 { font-size: 1.2rem; }
-  h3, .h3 { font-size: 1.05rem; }
-  .modal-header .modal-title { font-size: 1rem; }
-  .theme-switch-container .small { display: none; }
-  /* Sticky column removida em telas muito pequenas para evitar sobreposição */
-  .table .sticky-col { position: static !important; }
-}
-
-/* Impede overflow horizontal geral */
-html, body { overflow-x: hidden; max-width: 100vw; }
-img, canvas, svg, video { max-width: 100%; }
-
-</style>
+	/* ===== RESPONSIVIDADE AVANÇADA PARA MOBILE ===== */
+	html, body {
+	max-width: 100%;
+	overflow-x: hidden;
+	}
+	.navbar .container-fluid {
+	gap: 1rem;
+	}
+	.brand-title {
+	min-width: 0;
+	flex: 1 1 auto;
+	}
+	.brand-title span {
+	min-width: 0;
+	}
+	.nav-tabs {
+	flex-wrap: nowrap;
+	overflow-x: auto;
+	overflow-y: hidden;
+	-webkit-overflow-scrolling: touch;
+	scrollbar-width: none;
+	}
+	.nav-tabs::-webkit-scrollbar {
+	display: none;
+	}
+	.nav-tabs .nav-item {
+	flex: 0 0 auto;
+	}
+	.table-responsive {
+	overflow-x: auto;
+	-webkit-overflow-scrolling: touch;
+	}
+	.table-responsive table {
+	min-width: 680px;
+	}
+	.action-buttons-bar {
+	align-items: stretch !important;
+	}
+	.action-buttons-bar .btn,
+	.action-buttons-bar .btn-group {
+	min-height: 42px;
+	}
+	.dropdown-fluxo-caixa .dropdown-menu {
+	max-width: min(100vw - 2rem, 420px);
+	}
+	@media (max-width: 991.98px) {
+	.container-fluid.py-4.px-lg-5 {
+	padding: 1rem !important;
+	}
+	.navbar {
+	padding: 0.875rem 1rem;
+	}
+	.navbar .container-fluid {
+	flex-wrap: wrap;
+	align-items: flex-start;
+	}
+	.brand-title {
+	width: 100%;
+	font-size: 1rem;
+	gap: 10px;
+	}
+	.brand-title span {
+	display: -webkit-box !important;
+	-webkit-line-clamp: 2;
+	-webkit-box-orient: vertical;
+	overflow: hidden;
+	white-space: normal;
+	line-height: 1.25;
+	}
+	.theme-switch-container {
+	margin-left: auto;
+	}
+	.filter-pane,
+	.receitas-filter-pane,
+	.card,
+	.stat-item,
+	.comparison-summary-card {
+	border-radius: 14px;
+	}
+	.card-header {
+	padding: 1rem;
+	gap: 0.75rem;
+	flex-wrap: wrap;
+	}
+	.stat-grid,
+	.receitas-metric-grid,
+	.inadimplencia-metric-grid,
+	.debatual-metric-grid {
+	gap: 0.875rem;
+	}
+	.action-buttons-bar {
+	display: grid !important;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	}
+	.action-buttons-bar .btn,
+	.action-buttons-bar .btn-group {
+	width: 100%;
+	justify-content: center;
+	}
+	.action-buttons-bar .dropdown-toggle,
+	.action-buttons-bar .btn span {
+	display: inline-flex !important;
+	justify-content: center;
+	align-items: center;
+	}
+	.comparison-chart-wrap,
+	.inadimplencia-chart-wrap,
+	.debatual-chart-wrap {
+	min-height: 280px;
+	height: 280px;
+	}
+	.card-body[style*="height: 350px"] {
+	height: 300px !important;
+	}
+	#pdfPreviewFrame,
+	#inadimplenciaPdfFrame,
+	#debAtualPdfFrame {
+	height: 68dvh !important;
+	}
+	#pdfModal .modal-dialog,
+	#inadimplenciaPdfModal .modal-dialog,
+	#debAtualPdfModal .modal-dialog {
+	margin: 0.5rem;
+	}
+	#inadimplenciaModal .modal-dialog,
+	#debAtualModal .modal-dialog,
+	#inadimplenciaModal.inadi-window-mode .modal-dialog,
+	#debAtualModal.debatual-window-mode .modal-dialog,
+	#inadimplenciaModal.inadi-window-minimized .modal-dialog,
+	#debAtualModal.debatual-window-minimized .modal-dialog,
+	#inadimplenciaModal.inadi-window-maximized .modal-dialog,
+	#debAtualModal.debatual-window-maximized .modal-dialog {
+	position: fixed;
+	inset: 0;
+	margin: 0 !important;
+	width: 100vw !important;
+	max-width: 100vw !important;
+	height: 100dvh !important;
+	max-height: 100dvh !important;
+	top: 0 !important;
+	left: 0 !important;
+	bottom: auto !important;
+	right: auto !important;
+	transform: none !important;
+	}
+	#inadimplenciaModal .modal-content,
+	#debAtualModal .modal-content {
+	height: 100dvh !important;
+	max-height: 100dvh !important;
+	border-radius: 0 !important;
+	}
+	.inadi-window-controls,
+	.debatual-window-controls {
+	display: none !important;
+	}
+	#inadimplenciaModal .modal-header,
+	#debAtualModal .modal-header {
+	flex-wrap: wrap;
+	gap: 0.75rem;
+	padding: 1rem;
+	}
+	.inadi-export-group,
+	.debatual-export-group {
+	width: 100%;
+	margin: 0 !important;
+	justify-content: space-between;
+	flex-wrap: wrap;
+	}
+	.modal-export-btn-pdf,
+	.modal-export-btn-xlsx {
+	flex: 1 1 calc(50% - 0.35rem);
+	justify-content: center;
+	}
+	#inadimplenciaModal .modal-body,
+	#debAtualModal .modal-body {
+	padding: 0.75rem !important;
+	}
+	.debatual-search-card,
+	.inadi-search-card {
+	min-width: min(260px, calc(100vw - 2rem));
+	}
+	}
+	@media (max-width: 767.98px) {
+	.brand-title span {
+	display: block !important;
+	font-size: 0.92rem;
+	}
+	.nav-link {
+	padding: 0.75rem 0.95rem;
+	}
+	.btn span {
+	display: inline !important;
+	}
+	.action-buttons-bar {
+	grid-template-columns: 1fr;
+	}
+	.action-buttons-bar .btn,
+	.action-buttons-bar .btn-group,
+	.dropdown-fluxo-caixa,
+	.dropdown-fluxo-caixa .dropdown-toggle {
+	width: 100%;
+	}
+	.dropdown-fluxo-caixa .dropdown-menu {
+	width: 100%;
+	min-width: 0;
+	}
+	.export-actions-bar {
+	flex-direction: column;
+	}
+	.export-actions-bar > .btn {
+	width: 100%;
+	justify-content: center;
+	}
+	.table thead th,
+	.table td {
+	padding: 0.75rem;
+	font-size: 0.82rem;
+	white-space: nowrap;
+	}
+	.comparison-chart-wrap,
+	.inadimplencia-chart-wrap,
+	.debatual-chart-wrap {
+	min-height: 260px;
+	height: 260px;
+	padding: 0.5rem;
+	}
+	.card-body[style*="height: 350px"] {
+	height: 260px !important;
+	}
+	#pdfPreviewFrame,
+	#inadimplenciaPdfFrame,
+	#debAtualPdfFrame {
+	height: 62dvh !important;
+	}
+	.scroll-list,
+	.receitas-scroll-list,
+	.inadi-scroll-list,
+	.debatual-scroll-list {
+	max-height: 220px;
+	}
+	}
+	</style>
 </head>
 <body>
 <nav class="navbar">
@@ -1881,7 +2050,7 @@ Empresas
 </div>
 </div>
 <!-- Botões de Exportação ao final da lista -->
-<div class="mt-4 d-flex gap-2">
+<div class="mt-4 d-flex gap-2 export-actions-bar">
 <button class="btn btn-outline-success shadow-sm" onclick="exportDespesasExcel()"><i class="fas fa-file-excel"></i><span>Exportar Excel</span></button>
 <button class="btn btn-outline-danger shadow-sm" onclick="previewDespesasPDF()"><i class="fas fa-file-pdf"></i><span>Exportar PDF</span></button>
 </div>
@@ -2076,7 +2245,7 @@ Empresas
 </div>
 </div>
 <!-- Receitas Export -->
-<div class="mt-4 d-flex gap-2">
+<div class="mt-4 d-flex gap-2 export-actions-bar">
 <button class="btn btn-success" onclick="previewReceitasPDF()"><i class="fas fa-file-pdf me-2"></i>Exportar para PDF</button>
 <button class="btn btn-outline-primary" onclick="exportReceitasExcel()"><i class="fas fa-file-excel me-2"></i>Exportar para Excel</button>
 </div>
@@ -3002,6 +3171,33 @@ const isOpen = body.classList.contains('open');
 body.classList.toggle('open', !isOpen);
 btn.classList.toggle('expanded', !isOpen);
 btn.setAttribute('aria-expanded', String(!isOpen));
+}
+function isMobileViewport() {
+return window.matchMedia('(max-width: 991.98px)').matches;
+}
+function forceInadiMobileLayout() {
+const modalEl = document.getElementById('inadimplenciaModal');
+if (!modalEl || !isMobileViewport()) return;
+modalEl.classList.remove('inadi-window-minimized');
+modalEl.classList.add('inadi-window-maximized');
+inadiWindowState = 'maximized';
+const icon = document.getElementById('inadiMaximizeIcon');
+const btn = document.getElementById('inadiBtnMaximize');
+if (icon) icon.className = 'fas fa-compress';
+if (btn) btn.title = 'Restaurar';
+updateInadiWindowOverlay();
+}
+function forceDebAtualMobileLayout() {
+const modalEl = document.getElementById('debAtualModal');
+if (!modalEl || !isMobileViewport()) return;
+modalEl.classList.remove('debatual-window-minimized');
+modalEl.classList.add('debatual-window-maximized');
+debAtualWindowState = 'maximized';
+const icon = document.getElementById('debAtualMaximizeIcon');
+const btn = document.getElementById('debAtualBtnMaximize');
+if (icon) icon.className = 'fas fa-compress';
+if (btn) btn.title = 'Restaurar';
+updateDebAtualWindowOverlay();
 }
 function refreshReceitasDashboard(force = false) {
 const receitasPane = document.getElementById('receitas-content');
@@ -4526,6 +4722,7 @@ updateInadiWindowOverlay();
 bootstrap.Modal.getOrCreateInstance(modalEl).show();
 modalEl.addEventListener('shown.bs.modal', () => {
 centerInadimplenciaWindow(modalEl);
+forceInadiMobileLayout();
 updateInadiWindowOverlay();
 }, { once: true });
 setupInadimplenciaWindowDrag(modalEl);
@@ -6345,6 +6542,7 @@ updateDebAtualWindowOverlay();
 bootstrap.Modal.getOrCreateInstance(modalEl).show();
 modalEl.addEventListener('shown.bs.modal', () => {
 centerDebAtualWindow(modalEl);
+forceDebAtualMobileLayout();
 updateDebAtualWindowOverlay();
 }, { once: true });
 setupDebAtualWindowDrag(modalEl);
@@ -7186,6 +7384,12 @@ if (pdfModalEl) {
 pdfModalEl.addEventListener('hidden.bs.modal', revokeActivePdfUrl);
 }
 window.addEventListener('resize', () => {
+if (document.getElementById('inadimplenciaModal')?.classList.contains('show')) {
+forceInadiMobileLayout();
+}
+if (document.getElementById('debAtualModal')?.classList.contains('show')) {
+forceDebAtualMobileLayout();
+}
 const receitasPane = document.getElementById('receitas-content');
 if (receitasPane && receitasPane.classList.contains('show') && receitasPane.classList.contains('active')) {
 refreshReceitasDashboard(true);
@@ -7196,5 +7400,6 @@ refreshDespesasDashboard(true);
 });
 </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/v833ccba57c9e4d2798f2e76cebdd09a11778172276447" integrity="sha512-57MDmcccJXYtNnH+ZiBwzC4jb2rvgVCEokYN+L/nLlmO8rfYT/gIpW2A569iJ/3b+0UEasghjuZH/ma3wIs/EQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
