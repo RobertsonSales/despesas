@@ -1459,6 +1459,33 @@ background: rgba(239,68,68,0.85);
 color: #fff;
 border-color: rgba(239,68,68,0.85);
 }
+/* ===== MOBILE CLOSE BUTTON FOR INADIMPLÊNCIA MODALS ===== */
+.mobile-modal-close {
+  display: none;
+}
+@media (max-width: 991px) {
+  .mobile-modal-close {
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border-radius: 8px;
+    border: 1px solid rgba(255,255,255,0.25);
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: var(--transition);
+    margin-left: auto;
+    flex-shrink: 0;
+  }
+  .mobile-modal-close:hover, .mobile-modal-close:active {
+    background: rgba(255,255,255,0.2);
+    border-color: rgba(255,255,255,0.4);
+  }
+}
+
 /* Quando o backdrop não deve bloquear a tela (janela flutuante "solta") */
 #inadimplenciaModal.inadi-window-mode:not(.inadi-window-maximized) ~ .modal-backdrop {
 opacity: 0;
@@ -2388,6 +2415,9 @@ Empresas
 <div class="debatual-header-subtitle" style="font-size:0.72rem;color:#fed7aa;font-weight:500;margin-top:1px;">GRUPO LABMEDIC · Carteira de Recebíveis em Aberto (DebAtual)</div>
 </div>
 </div>
+<button type="button" class="mobile-modal-close" title="Fechar" aria-label="Fechar" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('debAtualModal')).hide();">
+  <i class="fas fa-times"></i>
+</button>
 <div class="d-flex align-items-center gap-2 ms-auto me-3 debatual-export-group">
 <span class="debatual-badge" id="debAtualRegistrosBadge">0 registros</span>
 <button class="modal-export-btn-pdf debatual-btn-pdf" id="debAtualExportPdfBtn" onclick="previewDebAtualPDF()" title="Exportar relatório em PDF">
@@ -2634,6 +2664,9 @@ Empresas
 <div class="inadi-header-subtitle" style="font-size:0.72rem;color:#94a3b8;font-weight:500;margin-top:1px;">GRUPO LABMEDIC · Painel de Crédito e Cobrança</div>
 </div>
 </div>
+<button type="button" class="mobile-modal-close" title="Fechar" aria-label="Fechar" onclick="bootstrap.Modal.getOrCreateInstance(document.getElementById('inadimplenciaModal')).hide();">
+  <i class="fas fa-times"></i>
+</button>
 <div class="d-flex align-items-center gap-2 ms-auto me-3 inadi-export-group">
 <span class="inadi-badge" id="inadiRegistrosBadge">0 registros</span>
 <button class="modal-export-btn-pdf inadi-btn-pdf" id="inadiExportPdfBtn" onclick="previewInadimplenciaPDF()" title="Exportar relatório em PDF">
