@@ -2007,6 +2007,11 @@ Empresas
     <i class="fas fa-clock"></i><span>Dívidas Atuais</span>
 </button>
 
+<!-- BOTÃO ANÁLISE DE ASSIST. TÉCNICA -->
+<button class="btn btn-outline-info btn-sm shadow-sm" onclick="openAssistTecnicaApp()" id="btnAssistTecnica">
+    <i class="fas fa-tools"></i><span>Análise de Assistência Técnica</span>
+</button>
+
 <button class="btn btn-primary btn-sm shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
 </div>
 <div class="row">
@@ -2225,6 +2230,11 @@ Empresas
 <!-- BOTÃO DÍVIDAS ATUAIS -->
 <button class="btn btn-outline-warning btn-sm shadow-sm" onclick="openDebAtualModal()" id="btnDebAtualReceitas" style="display:none">
     <i class="fas fa-clock"></i><span>Dívidas Atuais</span>
+</button>
+
+<!-- BOTÃO ANÁLISE DE ASSIST. TÉCNICA -->
+<button class="btn btn-outline-info btn-sm shadow-sm" onclick="openAssistTecnicaApp()" id="btnAssistTecnicaReceitas">
+    <i class="fas fa-tools"></i><span>Análise de Assitência Técnica</span>
 </button>
 
 <button class="btn btn-primary btn-sm shadow-sm" id="btnDetailReceitas" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
@@ -6552,6 +6562,11 @@ modalEl.classList.add('debatual-window-minimized');
 debAtualWindowState = 'minimized';
 }
 updateDebAtualWindowOverlay();
+}
+
+// ---- Abrir aplicação externa de Análise de Assist. Técnica ----
+function openAssistTecnicaApp() {
+window.open('https://custo-dt.vercel.app/', '_blank', 'noopener,noreferrer');
 }
 
 // ---- Open modal ----
