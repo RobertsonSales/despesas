@@ -1531,7 +1531,79 @@ opacity: 0;
 	border-radius: 20px;
 	font-weight: 700;
 	}
-	</style>
+	
+/* ============================================================
+   RESPONSIVIDADE MOBILE (adicionada) — preserva desktop intacto
+   ============================================================ */
+@media (max-width: 991.98px) {
+  html { -webkit-text-size-adjust: 100%; }
+  body { font-size: 15px; }
+  .navbar { padding: 0.75rem 1rem; }
+  .brand-title { font-size: 1rem; gap: 8px; }
+  .container-fluid.py-4.px-lg-5 { padding-left: 0.75rem !important; padding-right: 0.75rem !important; padding-top: 1rem !important; }
+  .filter-pane { padding: 1rem !important; }
+  .card-header { padding: 0.85rem 1rem; }
+  .card-body { padding: 1rem; }
+  /* Rolagem horizontal segura para tabelas densas */
+  .table-responsive, .table-wrapper { -webkit-overflow-scrolling: touch; overflow-x: auto; }
+  table { min-width: 560px; }
+  .table thead th, .table td { padding: 0.6rem 0.6rem; font-size: 0.8rem; }
+  /* Botões e ações */
+  .action-buttons-bar { gap: 0.5rem !important; }
+  .action-buttons-bar .btn { flex: 1 1 auto; min-width: 44%; justify-content: center; }
+  .btn { min-height: 42px; }
+  /* Modais em tela cheia no celular */
+  .modal-dialog { margin: 0; max-width: 100%; }
+  .modal-fullscreen, .modal-xl, .modal-lg { height: 100%; }
+  .modal-content { border-radius: 0; min-height: 100vh; }
+  .modal-body { padding: 1rem; }
+  .modal-header { padding: 0.85rem 1rem; flex-wrap: wrap; gap: 0.5rem; }
+  .modal-header .btn-close { margin-left: auto; }
+  /* Sidebars de filtro dos modais viram bloco no topo */
+  .modal .col-lg-3.border-end { border-right: 0 !important; border-bottom: 1px solid var(--border-color); }
+  /* Tabs com rolagem horizontal */
+  .nav-tabs { flex-wrap: nowrap; overflow-x: auto; overflow-y: hidden; -webkit-overflow-scrolling: touch; }
+  .nav-tabs::-webkit-scrollbar { display: none; }
+  .nav-tabs .nav-link { white-space: nowrap; padding: 0.6rem 0.9rem; font-size: 0.9rem; }
+  /* Gráficos com altura adaptada */
+  canvas { max-width: 100% !important; height: auto !important; }
+  .chart-container { position: relative; width: 100%; min-height: 240px; }
+  /* Grades densas quebram para 1-2 colunas */
+  .receitas-metric-grid, .inadimplencia-metric-grid, .debatual-metric-grid {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)) !important;
+    gap: 0.75rem !important;
+  }
+  /* Filtros verticais */
+  .filter-pane .row.g-3 > [class*="col-"] { margin-bottom: 0.25rem; }
+  /* Inputs maiores para toque */
+  .form-control, .form-select { min-height: 44px; font-size: 16px; }
+  /* Dropdowns não estouram a viewport */
+  .dropdown-menu { max-width: calc(100vw - 24px); overflow-x: hidden; }
+  /* Cards com espaçamento reduzido entre linhas */
+  .row > [class*="col-"] { margin-bottom: 0.75rem; }
+  /* Loading overlay cabe na tela */
+  .loading-card { width: calc(100% - 32px); max-width: 420px; }
+}
+
+@media (max-width: 575.98px) {
+  .brand-title span { display: none; }
+  .action-buttons-bar .btn { min-width: 100%; }
+  .action-buttons-bar .btn span { display: inline; }
+  .card-header { font-size: 0.95rem; }
+  h1, .h1 { font-size: 1.4rem; }
+  h2, .h2 { font-size: 1.2rem; }
+  h3, .h3 { font-size: 1.05rem; }
+  .modal-header .modal-title { font-size: 1rem; }
+  .theme-switch-container .small { display: none; }
+  /* Sticky column removida em telas muito pequenas para evitar sobreposição */
+  .table .sticky-col { position: static !important; }
+}
+
+/* Impede overflow horizontal geral */
+html, body { overflow-x: hidden; max-width: 100vw; }
+img, canvas, svg, video { max-width: 100%; }
+
+</style>
 </head>
 <body>
 <nav class="navbar">
