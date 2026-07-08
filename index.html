@@ -2054,6 +2054,11 @@ Empresas
     <i class="fas fa-tools"></i><span>Análise de Assistência Técnica</span>
 </button>
 
+<!-- BOTÃO ANÁLISE DE LUCRATIVIDADE -->
+<button class="btn btn-outline-success btn-sm shadow-sm" onclick="openLucratividadeApp()" id="btnLucratividade">
+    <i class="fas fa-chart-line"></i><span>Análise de Lucratividade</span>
+</button>
+
 <button class="btn btn-primary btn-sm shadow-sm" id="btnDetail" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
 </div>
 <div class="row">
@@ -2277,6 +2282,11 @@ Empresas
 <!-- BOTÃO ANÁLISE DE ASSIST. TÉCNICA -->
 <button class="btn btn-outline-info btn-sm shadow-sm" onclick="openAssistTecnicaApp()" id="btnAssistTecnicaReceitas">
     <i class="fas fa-tools"></i><span>Análise de Assitência Técnica</span>
+</button>
+
+<!-- BOTÃO ANÁLISE DE LUCRATIVIDADE -->
+<button class="btn btn-outline-success btn-sm shadow-sm" onclick="openLucratividadeApp()" id="btnLucratividadeReceitas">
+    <i class="fas fa-chart-line"></i><span>Análise de Lucratividade</span>
 </button>
 
 <button class="btn btn-primary btn-sm shadow-sm" id="btnDetailReceitas" style="display:none" onclick="showCategoryDetail()"><i class="fas fa-search-plus"></i><span>Análise Detalhada</span></button>
@@ -6611,6 +6621,11 @@ function openAssistTecnicaApp() {
 window.open('https://custo-dt.vercel.app/', '_blank', 'noopener,noreferrer');
 }
 
+// ---- Abrir aplicação externa de Análise de Lucratividade ----
+function openLucratividadeApp() {
+window.open('https://analiselucratividade.vercel.app/', '_blank', 'noopener,noreferrer');
+}
+
 // ---- Open modal ----
 function openDebAtualModal() {
 if (!debAtualRawData || debAtualRawData.length === 0) {
@@ -7525,5 +7540,6 @@ refreshDespesasDashboard(true);
   }, true);
 })();
 </script>
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"4edd5f8ec12a48cfa682ab8261b80a79","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
