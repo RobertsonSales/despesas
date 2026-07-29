@@ -4189,34 +4189,51 @@ legend: { display: false }
 }
 });
 }
+// Faixa plausível de anos para uma data de negócio válida nesta planilha.
+// Qualquer valor que, depois de convertido, caia fora dessa faixa é descartado
+// (retorna null) em vez de virar uma data "fantasma" nos filtros de ANO/MÊS.
+const DATA_ANO_MIN = 2000;
+const DATA_ANO_MAX = new Date().getFullYear() + 5;
+function isDataPlausivel(date) {
+if (!(date instanceof Date) || isNaN(date.getTime())) return false;
+const ano = date.getFullYear();
+return ano >= DATA_ANO_MIN && ano <= DATA_ANO_MAX;
+}
 function parseDate(v) {
 if (v === null || v === undefined || v === '') return null;
+let resultado = null;
 // Se já for um objeto Date (comum em algumas versões do SheetJS)
 if (v instanceof Date) {
 // Criar uma nova data ignorando o fuso horário (usando os valores UTC como locais)
-return new Date(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate());
-}
+resultado = new Date(v.getUTCFullYear(), v.getUTCMonth(), v.getUTCDate());
+} else if (typeof v === 'number') {
 // Se for um número serial do Excel
-if (typeof v === 'number') {
-return excelSerialToLocalDate(v);
-}
+resultado = excelSerialToLocalDate(v);
+} else {
 const raw = v.toString().trim();
 if (!raw) return null;
 // Formato ISO (YYYY-MM-DD)
 const iso = raw.match(/^(\d{4})-(\d{2})-(\d{2})/);
 if (iso) {
-return new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
-}
+resultado = new Date(Number(iso[1]), Number(iso[2]) - 1, Number(iso[3]));
+} else {
 // Formato Brasileiro (DD/MM/YYYY)
 const br = raw.match(/^(\d{1,2})[\/-](\d{1,2})[\/-](\d{2,4})$/);
 if (br) {
 let y = Number(br[3]);
 if (y < 100) y += 2000;
-return new Date(y, Number(br[2]) - 1, Number(br[1]));
+resultado = new Date(y, Number(br[2]) - 1, Number(br[1]));
 }
-return null;
+}
+}
+// Bug corrigido: números que não são datas do Excel (preços, quantidades,
+// códigos NCM/CFOP, valores de desconto etc.) eram convertidos "com sucesso"
+// para datas caindo em 1900-1931, poluindo os filtros de ANO/MÊS. Agora,
+// qualquer resultado fora de uma faixa de anos plausível é descartado.
+return isDataPlausivel(resultado) ? resultado : null;
 }
 function excelSerialToLocalDate(serial) {
+if (typeof serial !== 'number' || !isFinite(serial)) return null;
 // O Excel considera 1900 como bissexto (erro histórico), o SheetJS costuma corrigir
 // Usamos a época correta e adicionamos os dias
 const excelEpoch = new Date(1899, 11, 30, 0, 0, 0);
